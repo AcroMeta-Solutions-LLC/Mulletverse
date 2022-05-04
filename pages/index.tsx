@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { Fragment } from "react";
-import { Container, Title } from "../styles/HomeStyled";
+import { Hero, Title } from "../styles/HomeStyled";
 
 const Home: NextPage = () => {
   return (
@@ -11,9 +11,9 @@ const Home: NextPage = () => {
         <meta name="description" content="Simplify Web3 by providing an NFT marketplace" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Container>
-        <Title>MulletVerse</Title>
-      </Container>
+      <Hero>
+        <Title>MULLETVERSE</Title>
+      </Hero>
     </Fragment>
   );
 };

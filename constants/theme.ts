@@ -1,10 +1,10 @@
-import { themeType } from "../types/themeType";
+import ThemeType from "../types/themeType";
 import COLORS from "./colors";
 
-export const LIGHT: themeType = {
+export const LIGHT: ThemeType = {
   PRIMARY: COLORS.PURPLE.DARK,
   BACKGROUND: COLORS.CLEAR,
-  NAVIGATION: COLORS.CLEAR,
+  NAVIGATION: COLORS.WHITE,
   TEXT: COLORS.DARK,
 };
 

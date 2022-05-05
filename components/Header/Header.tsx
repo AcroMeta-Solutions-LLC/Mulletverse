@@ -1,25 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
-import { Container, Search, Tab, Input, Icon } from "./HeaderStyled";
+import { Container, Search, Tab, Input, SearchIcon, MenuIcon } from "./HeaderStyled";
 
 function Header() {
+  const [isMenuOpen, setIsMenuOpen] = useState(true);
+
   return (
-    <Container>
+    <Container isOpen={isMenuOpen}>
+      <MenuIcon onClick={() => setIsMenuOpen(!isMenuOpen)} size={25} />
       <Link href="/">
-        <Tab>Home</Tab>
+        <Tab isOpen={isMenuOpen}>Home</Tab>
       </Link>
       <Link href="/">
-        <Tab>Marketplace</Tab>
+        <Tab isOpen={isMenuOpen}>Marketplace</Tab>
       </Link>
-      <Search>
-        <Icon />
+      <Search isOpen={isMenuOpen}>
+        <SearchIcon />
         <Input placeholder="Search items, collections, and accounts" />
       </Search>
       <Link href="/">
-        <Tab>Create</Tab>
+        <Tab isOpen={isMenuOpen}>Create</Tab>
       </Link>
       <Link href="/">
-        <Tab>Sign Up/Sign In</Tab>
+        <Tab isOpen={isMenuOpen}>Sign Up/Sign In</Tab>
       </Link>
     </Container>
   );

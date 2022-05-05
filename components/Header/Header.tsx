@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Container, Search, Tab, Input, SearchIcon, MenuIcon } from "./HeaderStyled";
 
 function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(true);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <Container isOpen={isMenuOpen}>

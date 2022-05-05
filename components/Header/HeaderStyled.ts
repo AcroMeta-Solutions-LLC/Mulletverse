@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { ELEVATION } from "../../constants/elevation";
 import { FiSearch } from "react-icons/fi";
-import ThemeType from "../../types/themeType";
 import COLORS from "../../constants/colors";
 
 export const Container = styled.header`

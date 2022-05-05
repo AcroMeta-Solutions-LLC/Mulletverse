@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { Fragment } from "react";
-import { Hero, Title } from "../styles/HomeStyled";
+import { About, Hero, Title } from "../styles/HomeStyled";
 
 const Home: NextPage = () => {
   return (
@@ -14,6 +14,7 @@ const Home: NextPage = () => {
       <Hero>
         <Title>MULLETVERSE</Title>
       </Hero>
+      <About>Foo Bar</About>
     </Fragment>
   );
 };

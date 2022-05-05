@@ -4,7 +4,7 @@ export const COLORS = {
   DARK: "#4e5760",
   PURPLE: {
     LIGHT: "#c77fcd",
-    DARK: "#a345ae",
+    DARK: "#6c4cd8",
   },
   WHITE: "#ffffff",
 };

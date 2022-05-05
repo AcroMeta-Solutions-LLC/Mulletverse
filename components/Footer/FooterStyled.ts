@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { SCREEN } from "../../constants/screen";
 import ThemeType from "../../types/themeType";
 
 export const Container = styled.footer`
@@ -13,17 +14,31 @@ export const Container = styled.footer`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+
+  @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
+    flex-direction: column;
+    align-items: flex-start;
+    height: 100px;
+  }
 `;
 
 export const Tab = styled.a`
   padding: 0 20px;
   color: ${({ theme }: { theme: ThemeType }) => theme.TEXT};
   cursor: pointer;
+
+  @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
+    padding: 0 20px 0 0;
+  }
 `;
 
 export const Redirect = styled.a`
   padding: 0 10px;
   cursor: pointer;
+
+  @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
+    padding: 0 20px 0 0;
+  }
 `;
 
 export const Links = styled.div`

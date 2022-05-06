@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import COLORS from "../constants/colors";
 import { SCREEN } from "../constants/screen";
 import { TYPOGRAPHY } from "../constants/typography";
 import ThemeType from "../types/themeType";
@@ -22,7 +23,7 @@ export const About = styled.section`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  background-color: ${({ theme }: { theme: ThemeType }) => theme.NAVIGATION};
+  background-color: ${({ theme }: { theme: ThemeType }) => theme.BACKGROUND};
   padding: 0 40px;
 
   @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
@@ -36,8 +37,8 @@ export const Featured = styled.section`
   flex: 1;
   display: flex;
   flex-direction: column;
-  background-color: ${({ theme }: { theme: ThemeType }) => theme.BACKGROUND};
-  padding: 0 40px;
+  background-color: ${({ theme }: { theme: ThemeType }) => theme.PRIMARY};
+  padding: 40px;
 `;
 
 export const AboutWrapper = styled.div`
@@ -57,9 +58,15 @@ export const AboutWrapper = styled.div`
   }
 `;
 
-export const Title = styled.h1`
+export const AboutTitle = styled.h1`
   font-size: ${TYPOGRAPHY.SIZE.TITLE};
   margin: 0;
+`;
+
+export const FeaturedTitle = styled.h1`
+  font-size: ${TYPOGRAPHY.SIZE.TITLE};
+  margin: 0 0 20px 0;
+  color: ${COLORS.WHITE};
 `;
 
 export const AboutDescription = styled.p`
@@ -77,7 +84,7 @@ export const AboutCircle = styled.div`
   border-radius: 200px;
   background-color: grey;
   margin-top: -170px;
-  background-color: ${({ theme }: { theme: ThemeType }) => theme.NAVIGATION};
+  background-color: ${({ theme }: { theme: ThemeType }) => theme.BACKGROUND};
   display: flex;
   justify-content: center;
   padding-top: 40px;

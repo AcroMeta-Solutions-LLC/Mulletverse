@@ -38,7 +38,43 @@ export const Featured = styled.section`
   display: flex;
   flex-direction: column;
   background-color: ${({ theme }: { theme: ThemeType }) => theme.PRIMARY};
-  padding: 40px;
+  padding: 40px 0;
+`;
+
+export const SliderWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+export const FeaturedSlider = styled.div`
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  padding-left: 40px;
+  position: relative;
+  scroll-behavior: smooth;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
+export const NFTWrapper = styled.span`
+  max-width: 300px;
+  margin-right: 20px;
+  border-radius: 16px;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+`;
+
+export const ButtonNFTBuy = styled.button`
+  background-color: white;
+  color: black;
+  border: none;
+  align-self: flex-end;
+  background-color: red;
+  width: max-content;
 `;
 
 export const AboutWrapper = styled.div`
@@ -65,7 +101,7 @@ export const AboutTitle = styled.h1`
 
 export const FeaturedTitle = styled.h1`
   font-size: ${TYPOGRAPHY.SIZE.TITLE};
-  margin: 0 0 20px 0;
+  margin: 0 0 20px 40px;
   color: ${COLORS.WHITE};
 `;
 
@@ -135,5 +171,27 @@ export const MobileOnly = styled.div`
   display: none;
   @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
     display: inherit;
+  }
+`;
+
+export const Chevron = styled.div`
+  position: absolute;
+  background-color: white;
+  align-self: center;
+  right: ${({ position }: { position: "left" | "right" }) => (position === "right" ? "20px" : "unset")};
+  left: ${({ position }: { position: "left" | "right" }) => (position === "left" ? "20px" : "unset")};
+  cursor: pointer;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  opacity: 0.7;
+  border: 1px ${({ theme }: { theme: ThemeType }) => theme.TEXT} solid;
+
+  @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
+    width: 40px;
+    height: 40px;
   }
 `;

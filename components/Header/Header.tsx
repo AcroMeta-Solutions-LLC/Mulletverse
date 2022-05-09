@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { Container, Search, Tab, Input, SearchIcon, MenuIcon } from "./HeaderStyled";
+import { useMoralis } from "react-moralis";
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { authenticate } = useMoralis();
 
   return (
     <Container isOpen={isMenuOpen}>
@@ -21,9 +23,9 @@ function Header() {
       <Link href="/">
         <Tab isOpen={isMenuOpen}>Create</Tab>
       </Link>
-      <Link href="/">
+      <span onClick={() => authenticate()}>
         <Tab isOpen={isMenuOpen}>Sign Up/Sign In</Tab>
-      </Link>
+      </span>
     </Container>
   );
 }

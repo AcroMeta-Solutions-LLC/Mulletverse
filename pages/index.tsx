@@ -1,7 +1,11 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { Fragment } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { NFT, INFTProps } from "web3uikit";
+import { useMoralis } from "react-moralis";
+import { toast } from "react-toastify";
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import {
   About,
   Hero,
@@ -14,24 +18,55 @@ import {
   FeaturedTitle,
   MobileOnly,
   DesktopOnly,
+  FeaturedSlider,
+  NFTWrapper,
+  Chevron,
+  SliderWrapper,
+  ButtonNFTBuy,
 } from "../styles/HomeStyled";
-import { useMoralis } from "react-moralis";
-import Slider from "react-slick";
-import { NFT } from "web3uikit";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 
 const Home: NextPage = () => {
-  const { authenticate } = useMoralis();
+  const { isInitialized, Moralis } = useMoralis();
+  const [nfts, setNfts] = useState<INFTProps[]>([]);
+  const sliderRef = useRef<HTMLDivElement>(null);
 
-  const settings = {
-    infinite: true,
-    slidesToShow: 4,
-    slidesToScroll: 1,
-    autoplay: true,
-    speed: 2000,
-    autoplaySpeed: 1000,
-    cssEase: "linear",
+  const ADDRESS: string = "0xd45058Bf25BBD8F586124C479D384c8C708CE23A";
+  const CHAIN = "eth";
+
+  useEffect(() => {
+    if (isInitialized) {
+      Moralis.Web3API.account
+        .getNFTs({ address: ADDRESS, chain: CHAIN, limit: 20 })
+        .then((response) => {
+          const nftList: INFTProps[] =
+            response.result?.map((data) => ({
+              address: data.token_address,
+              chain: CHAIN,
+              tokenId: data.token_id,
+              fetchMetadata: false,
+              name: data.name,
+              metadata: data.metadata ? JSON.parse(data.metadata) : {},
+            })) || [];
+          setNfts(nftList);
+        })
+        .catch((error) => {
+          toast.error(error);
+        });
+    }
+  }, [isInitialized, Moralis.Web3API.account]);
+
+  const scrollSlider = (direction: "left" | "right") => {
+    const offset = sliderRef.current && sliderRef.current.offsetWidth ? sliderRef.current.offsetWidth : 0;
+    switch (direction) {
+      case "left":
+        sliderRef?.current?.scrollTo({ left: sliderRef?.current.scrollLeft - offset });
+        break;
+      case "right":
+        sliderRef?.current?.scrollTo({ left: sliderRef?.current.scrollLeft + offset });
+        break;
+      default:
+        break;
+    }
   };
 
   return (
@@ -43,7 +78,6 @@ const Home: NextPage = () => {
       </Head>
       <Hero>
         <HeroTitle>MULLETVERSE</HeroTitle>
-        <button onClick={() => authenticate()}>Authenticate</button>
       </Hero>
       <About>
         <AboutWrapper>
@@ -52,25 +86,31 @@ const Home: NextPage = () => {
         </AboutWrapper>
         <AboutCircle>
           <DesktopOnly>
-            <Image alt="Boxer" src="/assets/purple-boxer.png" width={250} height={500} />
+            <Image alt="Boxer" src="/assets/purple-boxer.png" width={280} height={500} />
           </DesktopOnly>
           <MobileOnly>
-            <Image alt="Boxer" src="/assets/purple-boxer.png" width={150} height={300} />
+            <Image alt="Boxer" src="/assets/purple-boxer.png" width={170} height={300} />
           </MobileOnly>
         </AboutCircle>
       </About>
       <Featured>
         <FeaturedTitle>Featured Artists</FeaturedTitle>
-        <Slider {...settings}>
-          <NFT address="0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB" chain="eth" fetchMetadata tokenId="1" />
-          <NFT address="0x306b1ea3ecdf94aB739F1910bbda052Ed4A9f949" chain="eth" fetchMetadata tokenId="2280" />
-          <NFT address="0x306b1ea3ecdf94aB739F1910bbda052Ed4A9f949" chain="eth" fetchMetadata tokenId="19788" />
-          <NFT address="0x306b1ea3ecdf94aB739F1910bbda052Ed4A9f949" chain="eth" fetchMetadata tokenId="10786" />
-          <NFT address="0x306b1ea3ecdf94aB739F1910bbda052Ed4A9f949" chain="eth" fetchMetadata tokenId="2687" />
-          <NFT address="0x306b1ea3ecdf94aB739F1910bbda052Ed4A9f949" chain="eth" fetchMetadata tokenId="17119" />
-          <NFT address="0x306b1ea3ecdf94aB739F1910bbda052Ed4A9f949" chain="eth" fetchMetadata tokenId="6963" />
-          <NFT address="0x306b1ea3ecdf94aB739F1910bbda052Ed4A9f949" chain="eth" fetchMetadata tokenId="892" />
-        </Slider>
+        <SliderWrapper>
+          <FeaturedSlider ref={sliderRef}>
+            {nfts.map((nft) => (
+              <NFTWrapper key={nft.tokenId}>
+                <NFT {...nft} />
+                {/* <ButtonNFTBuy>BUY</ButtonNFTBuy> */}
+              </NFTWrapper>
+            ))}
+          </FeaturedSlider>
+          <Chevron position="left" onClick={() => scrollSlider("left")}>
+            <FiChevronLeft size={30} />
+          </Chevron>
+          <Chevron position="right" onClick={() => scrollSlider("right")}>
+            <FiChevronRight size={30} />
+          </Chevron>
+        </SliderWrapper>
       </Featured>
     </Fragment>
   );

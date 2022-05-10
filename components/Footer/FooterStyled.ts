@@ -3,8 +3,9 @@ import { SCREEN } from "../../constants/screen";
 import ThemeType from "../../types/themeType";
 
 export const Container = styled.footer`
+  position: ${({ isFixed }: { isFixed: boolean }) => (isFixed ? "fixed" : "static")};
   height: 72px;
-  top: 0;
+  bottom: 0;
   left: 0;
   right: 0;
   max-width: 100vw;

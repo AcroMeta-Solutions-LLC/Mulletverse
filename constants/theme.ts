@@ -6,6 +6,7 @@ export const LIGHT: ThemeType = {
   BACKGROUND: COLORS.CLEAR,
   NAVIGATION: COLORS.WHITE,
   TEXT: COLORS.DARK,
+  TITLE: COLORS.BLUE,
 };
 
 const THEME = {

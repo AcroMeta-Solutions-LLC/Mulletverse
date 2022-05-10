@@ -1,5 +1,4 @@
 import type { NextPage } from "next";
-import Head from "next/head";
 import { Fragment, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { NFT, INFTProps, Loading } from "web3uikit";
@@ -77,11 +76,6 @@ const Home: NextPage = () => {
 
   return (
     <Fragment>
-      <Head>
-        <title>MulletVerse</title>
-        <meta name="description" content="Simplify Web3 by providing an NFT marketplace" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
       <Hero>
         <HeroTitle>MULLETVERSE</HeroTitle>
       </Hero>

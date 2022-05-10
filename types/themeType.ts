@@ -3,6 +3,7 @@ export type ThemeType = {
   BACKGROUND: string;
   NAVIGATION: string;
   TEXT: string;
+  TITLE: string;
 };
 
 export default ThemeType;

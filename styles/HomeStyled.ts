@@ -66,15 +66,19 @@ export const NFTWrapper = styled.span`
   background-color: white;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
 `;
 
 export const ButtonNFTBuy = styled.button`
-  background-color: white;
+  background-color: ${({ theme }: { theme: ThemeType }) => theme.BACKGROUND};
   color: black;
   border: none;
   align-self: flex-end;
-  background-color: red;
-  width: max-content;
+  width: 100%;
+  padding: 10px 0;
+  border-radius: 0 0 16px 16px;
+  cursor: pointer;
+  font-weight: 600;
 `;
 
 export const AboutWrapper = styled.div`

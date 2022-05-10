@@ -100,7 +100,7 @@ const Home: NextPage = () => {
             {nfts.map((nft) => (
               <NFTWrapper key={nft.tokenId}>
                 <NFT {...nft} />
-                {/* <ButtonNFTBuy>BUY</ButtonNFTBuy> */}
+                <ButtonNFTBuy>BUY</ButtonNFTBuy>
               </NFTWrapper>
             ))}
           </FeaturedSlider>

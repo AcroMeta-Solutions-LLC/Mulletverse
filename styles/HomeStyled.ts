@@ -78,7 +78,7 @@ export const NFTWrapper = styled.span`
 
 export const ButtonNFTBuy = styled.button`
   background-color: ${({ theme }: { theme: ThemeType }) => theme.BACKGROUND};
-  color: black;
+  color: ${({ theme }: { theme: ThemeType }) => theme.TITLE};
   border: none;
   align-self: flex-end;
   width: 100%;

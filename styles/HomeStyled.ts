@@ -59,6 +59,13 @@ export const FeaturedSlider = styled.div`
   }
 `;
 
+export const LoadingWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+`;
+
 export const NFTWrapper = styled.span`
   max-width: 300px;
   margin-right: 20px;

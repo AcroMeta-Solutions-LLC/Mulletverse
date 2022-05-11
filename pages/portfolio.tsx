@@ -1,10 +1,10 @@
 import type { NextPage } from "next";
-import { Container } from "../styles/MarketplaceStyled";
+import { Container } from "../styles/PortfolioStyled";
 
 const Marketplace: NextPage = () => {
   return (
     <Container>
-      <h1>Marketplace</h1>
+      <h1>Portfolio</h1>
     </Container>
   );
 };

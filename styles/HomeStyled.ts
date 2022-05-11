@@ -16,6 +16,10 @@ export const Hero = styled.main`
   background-position: center;
   background-size: cover;
   background-color: ${({ theme }: { theme: ThemeType }) => theme.NAVIGATION};
+
+  @media only screen and (max-width: ${SCREEN.MOBILE}) {
+    min-height: 60vh;
+  }
 `;
 
 export const About = styled.section`

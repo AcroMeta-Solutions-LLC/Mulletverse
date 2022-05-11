@@ -3,22 +3,21 @@ import { ELEVATION } from "../../constants/elevation";
 import { FiSearch, FiMenu } from "react-icons/fi";
 import COLORS from "../../constants/colors";
 import { SCREEN } from "../../constants/screen";
-import ThemeType from "../../types/themeType";
 
 type HeaderType = {
-  isTransparent?: boolean;
+  isLandingPage?: boolean;
   isOpen?: boolean;
 };
 
 export const Container = styled.header<HeaderType>`
   height: 72px;
-  position: fixed;
+  position: ${(props) => (props.isLandingPage ? "absolute" : "fixed")};
   top: 0;
   left: 0;
   right: 0;
   max-width: 100vw;
   box-shadow: rgb(4 17 29 / 25%) 0px 0px 8px 0px;
-  background-color: ${(props) => (props.isTransparent ? "rgba(0, 0, 0, 0.6)" : props.theme?.NAVIGATION)};
+  background-color: ${(props) => (props.isLandingPage ? "rgba(0, 0, 0, 0.1)" : props.theme?.NAVIGATION)};
   z-index: ${ELEVATION.NAVIGATION};
   padding: 16px;
   display: flex;
@@ -29,7 +28,7 @@ export const Container = styled.header<HeaderType>`
   @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
     flex-direction: column;
     align-items: flex-start;
-    background-color: ${(props) => (props.isTransparent ? "rgba(0, 0, 0, 0.8)" : props.theme?.NAVIGATION)};
+    background-color: ${(props) => (props.isLandingPage ? "rgba(0, 0, 0, 0.8)" : props.theme?.NAVIGATION)};
     height: ${(props) => (props.isOpen ? "max-content" : "60px")};
   }
 `;
@@ -60,7 +59,7 @@ export const Input = styled.input<HeaderType>`
   width: 100%;
   margin-left: 10px;
   background-color: transparent;
-  color: ${(props) => (props.isTransparent ? COLORS.CLEAR : props.theme?.TEXT)};
+  color: ${(props) => (props.isLandingPage ? COLORS.CLEAR : props.theme?.TEXT)};
 `;
 
 export const SearchIcon = styled(FiSearch)`
@@ -80,7 +79,7 @@ export const MenuIcon = styled(FiMenu)`
 export const Tab = styled.a<HeaderType>`
   padding: 20px 10px;
   border-bottom: 2px transparent solid;
-  color: ${(props) => (props.isTransparent ? COLORS.CLEAR : props.theme?.TEXT)};
+  color: ${(props) => (props.isLandingPage ? COLORS.CLEAR : props.theme?.TEXT)};
   cursor: pointer;
 
   &:hover {
@@ -107,7 +106,7 @@ export const UserWrapper = styled.div`
 `;
 
 export const UserAddress = styled.span<HeaderType>`
-  color: ${(props) => (props.isTransparent ? COLORS.CLEAR : props.theme?.TEXT)};
+  color: ${(props) => (props.isLandingPage ? COLORS.CLEAR : props.theme?.TEXT)};
   margin: 0 10px;
   font-weight: 600;
 `;

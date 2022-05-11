@@ -8,6 +8,7 @@ import { MoralisProvider } from "react-moralis";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Head from "next/head";
+import RouteGuard from "../components/RouteGuard";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -23,7 +24,9 @@ function MyApp({ Component, pageProps }: AppProps) {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <Header />
-        <Component {...pageProps} />
+        <RouteGuard>
+          <Component {...pageProps} />
+        </RouteGuard>
         <Footer />
       </MoralisProvider>
     </ThemeProvider>

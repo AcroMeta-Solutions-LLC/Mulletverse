@@ -52,7 +52,7 @@ const Home: NextPage = () => {
           setNfts(nftList);
         })
         .catch((error) => {
-          toast.error(error);
+          toast.error(error.message);
         })
         .finally(() => {
           setIsLoading(false);

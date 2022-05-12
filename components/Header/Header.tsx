@@ -1,28 +1,53 @@
 import React, { Fragment, useState, useRef } from "react";
-import Link from "next/link";
-import { Container, Search, Tab, Input, SearchIcon, MenuIcon, UserWrapper, UserAddress } from "./HeaderStyled";
 import { useMoralis } from "react-moralis";
-import { Blockie, PopoverDropdown, PopoverElement, WalletModal } from "web3uikit";
+import { Blockie, WalletModal } from "web3uikit";
+import { FiChevronDown } from "react-icons/fi";
 import { getDisplayName } from "../../helpers/getDisplayName";
 import { useRouter } from "next/router";
 import COLORS from "../../constants/colors";
 import { useClickOutside } from "../../hooks/useClickOutside";
+import {
+  Container,
+  Search,
+  Tab,
+  Input,
+  SearchIcon,
+  MenuIcon,
+  UserWrapper,
+  UserAddress,
+  Dropdown,
+  DropdownLabel,
+  DropdownArea,
+  DropdownButton,
+  DropdownItem,
+} from "./HeaderStyled";
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isPortfolioOpen, setIsPortfolioOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isConnectModalOpen, setIsConnectModalOpen] = useState(false);
   const { isAuthenticated, user, logout } = useMoralis();
+  const { pathname, push } = useRouter();
   const containerRef = useRef<HTMLElement>(null);
-
-  const { pathname } = useRouter();
+  const portfolioDropdownRef = useRef<HTMLDivElement>(null);
+  const userDropdownRef = useRef<HTMLDivElement>(null);
   const isLandingPage = pathname === "/";
-
-  useClickOutside(containerRef, () => setIsMenuOpen(false));
 
   const openAuthModal = () => {
     setIsConnectModalOpen(true);
     setIsMenuOpen(false);
   };
+
+  const redirectTo = (route: string): void => {
+    setIsPortfolioOpen(false);
+    setIsMenuOpen(false);
+    push({ pathname: route });
+  };
+
+  useClickOutside(containerRef, () => setIsMenuOpen(false));
+  useClickOutside(portfolioDropdownRef, () => setIsPortfolioOpen(false));
+  useClickOutside(userDropdownRef, () => setIsUserMenuOpen(false));
 
   return (
     <Fragment>
@@ -33,54 +58,50 @@ function Header() {
           size={25}
         />
         {!isAuthenticated && (
-          <Link href="/">
-            <Tab isLandingPage={isLandingPage} isOpen={isMenuOpen}>
-              Home
-            </Tab>
-          </Link>
+          <Tab onClick={() => redirectTo("/")} isLandingPage={isLandingPage} isOpen={isMenuOpen}>
+            Home
+          </Tab>
         )}
         {isAuthenticated && (
-          <Link href="/portfolio">
-            <Tab isLandingPage={isLandingPage} isOpen={isMenuOpen}>
-              Portfolio
-            </Tab>
-          </Link>
+          <Dropdown isLandingPage={isLandingPage} isOpen={isMenuOpen} ref={portfolioDropdownRef}>
+            <DropdownButton onClick={() => setIsPortfolioOpen(!isPortfolioOpen)}>
+              <DropdownLabel isLandingPage={isLandingPage}>Portfolio</DropdownLabel>
+              <FiChevronDown color={isLandingPage ? COLORS.CLEAR : COLORS.DARK} />
+            </DropdownButton>
+            <DropdownArea position="left" isLandingPage={isLandingPage} isOpen={isPortfolioOpen}>
+              <DropdownItem onClick={() => redirectTo("/portfolio")}>NFT Dashboard</DropdownItem>
+              <DropdownItem onClick={() => redirectTo("/portfolio")}>Your Collection</DropdownItem>
+              <DropdownItem onClick={() => redirectTo("/portfolio")}>MulletSwap</DropdownItem>
+            </DropdownArea>
+          </Dropdown>
         )}
-        <Link href="/marketplace">
-          <Tab isLandingPage={isLandingPage} isOpen={isMenuOpen}>
-            Marketplace
-          </Tab>
-        </Link>
+        <Tab onClick={() => redirectTo("/marketplace")} isLandingPage={isLandingPage} isOpen={isMenuOpen}>
+          Marketplace
+        </Tab>
         <Search isOpen={isMenuOpen}>
           <SearchIcon color={isLandingPage ? COLORS.CLEAR : COLORS.DARK} />
           <Input isLandingPage={isLandingPage} placeholder="Search items, collections, and accounts" />
         </Search>
-        <Link href="/">
-          <Tab isLandingPage={isLandingPage} isOpen={isMenuOpen}>
-            Create
-          </Tab>
-        </Link>
+        <Tab isLandingPage={isLandingPage} isOpen={isMenuOpen}>
+          Create
+        </Tab>
         {!isAuthenticated && (
-          <span onClick={openAuthModal}>
-            <Tab isLandingPage={isLandingPage} isOpen={isMenuOpen}>
-              Sign Up/Sign In
-            </Tab>
-          </span>
+          <Tab onClick={openAuthModal} isLandingPage={isLandingPage} isOpen={isMenuOpen}>
+            Sign In
+          </Tab>
         )}
         {isAuthenticated && (
-          <PopoverDropdown
-            moveBody={-55}
-            parent={
+          <Dropdown isLandingPage={isLandingPage} isOpen={isMenuOpen} ref={userDropdownRef}>
+            <DropdownButton onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}>
               <UserWrapper isOpen={isMenuOpen}>
-                <Blockie seed={user?.get("ethAddress")} />
+                <Blockie seed={user?.get("ethAddress")} scale={3} />
                 <UserAddress isLandingPage={isLandingPage}>{getDisplayName(user?.get("ethAddress"))}</UserAddress>
               </UserWrapper>
-            }
-            position="bottom"
-          >
-            <PopoverElement icon="cog" text="Account Settings" textColor="#FFFFFF" />
-            <PopoverElement icon="logOut" iconColor="#EB5757" onClick={logout} text="Logout" textColor="#EB5757" />
-          </PopoverDropdown>
+            </DropdownButton>
+            <DropdownArea position="right" isLandingPage={isLandingPage} isOpen={isUserMenuOpen}>
+              <DropdownItem onClick={logout}>Logout</DropdownItem>
+            </DropdownArea>
+          </Dropdown>
         )}
       </Container>
       <WalletModal moralisAuth={true} isOpened={isConnectModalOpen} setIsOpened={setIsConnectModalOpen} />

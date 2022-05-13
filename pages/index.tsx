@@ -1,10 +1,9 @@
 import type { NextPage } from "next";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import Image from "next/image";
 import { NFT, INFTProps, Loading } from "web3uikit";
 import { useMoralis } from "react-moralis";
 import { toast } from "react-toastify";
-import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import {
   About,
   Hero,
@@ -17,19 +16,16 @@ import {
   FeaturedTitle,
   MobileOnly,
   DesktopOnly,
-  FeaturedSlider,
   NFTWrapper,
-  Chevron,
-  SliderWrapper,
   ButtonNFTBuy,
   LoadingWrapper,
 } from "../styles/HomeStyled";
+import Carousel from "../components/Carousel/Carousel";
 
 const Home: NextPage = () => {
   const { isInitialized, Moralis } = useMoralis();
   const [nfts, setNfts] = useState<INFTProps[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const sliderRef = useRef<HTMLDivElement>(null);
 
   const ADDRESS: string = "0xd45058Bf25BBD8F586124C479D384c8C708CE23A";
   const CHAIN = "eth";
@@ -60,20 +56,6 @@ const Home: NextPage = () => {
     }
   }, [isInitialized, Moralis.Web3API.account]);
 
-  const scrollSlider = (direction: "left" | "right") => {
-    const offset = sliderRef.current && sliderRef.current.offsetWidth ? sliderRef.current.offsetWidth : 0;
-    switch (direction) {
-      case "left":
-        sliderRef?.current?.scrollTo({ left: sliderRef?.current.scrollLeft - offset });
-        break;
-      case "right":
-        sliderRef?.current?.scrollTo({ left: sliderRef?.current.scrollLeft + offset });
-        break;
-      default:
-        break;
-    }
-  };
-
   return (
     <Fragment>
       <Hero>
@@ -101,26 +83,14 @@ const Home: NextPage = () => {
           </LoadingWrapper>
         )}
         {!isLoading && (
-          <SliderWrapper>
-            <FeaturedSlider ref={sliderRef}>
-              {nfts.map((nft) => (
-                <NFTWrapper key={nft.tokenId}>
-                  <NFT {...nft} />
-                  <ButtonNFTBuy>BUY</ButtonNFTBuy>
-                </NFTWrapper>
-              ))}
-            </FeaturedSlider>
-            {nfts.length > 0 && (
-              <Fragment>
-                <Chevron position="left" onClick={() => scrollSlider("left")}>
-                  <FiChevronLeft size={30} />
-                </Chevron>
-                <Chevron position="right" onClick={() => scrollSlider("right")}>
-                  <FiChevronRight size={30} />
-                </Chevron>
-              </Fragment>
-            )}
-          </SliderWrapper>
+          <Carousel size={nfts.length}>
+            {nfts.map((nft) => (
+              <NFTWrapper key={nft.tokenId}>
+                <NFT {...nft} />
+                <ButtonNFTBuy>BUY</ButtonNFTBuy>
+              </NFTWrapper>
+            ))}
+          </Carousel>
         )}
       </Featured>
     </Fragment>

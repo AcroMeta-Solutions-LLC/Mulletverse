@@ -1,11 +1,19 @@
 import type { NextPage } from "next";
-import { Container } from "../styles/MarketplaceStyled";
+import { Main, Section, Title } from "../styles/MarketplaceStyled";
 
 const Marketplace: NextPage = () => {
   return (
-    <Container>
-      <h1>Marketplace</h1>
-    </Container>
+    <Main>
+      <Section>
+        <Title>Featured Artists</Title>
+      </Section>
+      <Section>
+        <Title>Marketplace</Title>
+      </Section>
+      <Section>
+        <Title>Minting Market</Title>
+      </Section>
+    </Main>
   );
 };
 

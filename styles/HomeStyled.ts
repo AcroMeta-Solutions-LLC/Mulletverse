@@ -110,23 +110,26 @@ export const AboutWrapper = styled.div`
 `;
 
 export const AboutTitle = styled.h1`
-  font-size: ${TYPOGRAPHY.SIZE.TITLE};
+  font-size: ${TYPOGRAPHY.SIZE.HEADLINE_1};
+  font-weight: ${TYPOGRAPHY.WEIGHT.HEADLINE_1};
   margin: 0;
 `;
 
 export const FeaturedTitle = styled.h1`
-  font-size: ${TYPOGRAPHY.SIZE.TITLE};
+  font-size: ${TYPOGRAPHY.SIZE.HEADLINE_1};
+  font-weight: ${TYPOGRAPHY.WEIGHT.HEADLINE_1};
   margin: 0 0 20px 40px;
   color: ${COLORS.WHITE};
 `;
 
 export const AboutDescription = styled.p`
   color: ${({ theme }: { theme: ThemeType }) => theme.TEXT};
-  font-size: ${TYPOGRAPHY.SIZE.SUBTITLE};
+  font-size: ${TYPOGRAPHY.SIZE.SUBTITLE_1};
+  font-weight: ${TYPOGRAPHY.WEIGHT.SUBTITLE_1};
   margin: 0;
 
   @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
-    font-size: ${TYPOGRAPHY.SIZE.TEXT};
+    font-size: ${TYPOGRAPHY.SIZE.BODY_1};
   }
 `;
 

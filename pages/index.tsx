@@ -1,9 +1,13 @@
 import type { NextPage } from "next";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect } from "react";
 import Image from "next/image";
-import { NFT, INFTProps, Loading } from "web3uikit";
+import { NFT, Loading } from "web3uikit";
 import { useMoralis } from "react-moralis";
-import { toast } from "react-toastify";
+import Carousel from "../components/Carousel/Carousel";
+import { getNFTs } from "../config/marketplaceSlice";
+import { useSelector, useDispatch } from "react-redux";
+import StoreType from "../types/StoreType";
+import type { AppDispatch } from "../config/store";
 import {
   About,
   Hero,
@@ -20,41 +24,19 @@ import {
   ButtonNFTBuy,
   LoadingWrapper,
 } from "../styles/HomeStyled";
-import Carousel from "../components/Carousel/Carousel";
 
 const Home: NextPage = () => {
   const { isInitialized, Moralis } = useMoralis();
-  const [nfts, setNfts] = useState<INFTProps[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
+  const { nfts, isLoading } = useSelector((store: StoreType) => store.marketplace);
+  const dispatch = useDispatch<AppDispatch>();
   const ADDRESS: string = "0xd45058Bf25BBD8F586124C479D384c8C708CE23A";
   const CHAIN = "eth";
 
   useEffect(() => {
     if (isInitialized) {
-      setIsLoading(true);
-      Moralis.Web3API.account
-        .getNFTs({ address: ADDRESS, chain: CHAIN, limit: 20 })
-        .then((response) => {
-          const nftList: INFTProps[] =
-            response.result?.map((data) => ({
-              address: data.token_address,
-              chain: CHAIN,
-              tokenId: data.token_id,
-              fetchMetadata: false,
-              name: data.name,
-              metadata: data.metadata ? JSON.parse(data.metadata) : {},
-            })) || [];
-          setNfts(nftList);
-        })
-        .catch((error) => {
-          toast.error(error.message);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
+      dispatch(getNFTs({ account: Moralis.Web3API.account, address: ADDRESS, chain: CHAIN, limit: 20 }));
     }
-  }, [isInitialized, Moralis.Web3API.account]);
+  }, [isInitialized, Moralis.Web3API.account, dispatch]);
 
   return (
     <Fragment>

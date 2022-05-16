@@ -6,9 +6,10 @@ import { Container, Tab, Links, Redirect } from "./FooterStyled";
 
 function Footer() {
   const { pathname } = useRouter();
+  const PATHS_WITH_FIXED_FOOTER: string[] = [];
 
   return (
-    <Container isFixed={pathname !== "/"}>
+    <Container isFixed={PATHS_WITH_FIXED_FOOTER.includes(pathname)}>
       <Links>
         <Link href="/">
           <Redirect>

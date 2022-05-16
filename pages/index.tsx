@@ -20,10 +20,9 @@ import {
   FeaturedTitle,
   MobileOnly,
   DesktopOnly,
-  NFTWrapper,
-  ButtonNFTBuy,
   LoadingWrapper,
 } from "../styles/HomeStyled";
+import NFTBuyCard from "../components/NFTBuyCard/NFTBuyCard";
 
 const Home: NextPage = () => {
   const { isInitialized, Moralis } = useMoralis();
@@ -67,10 +66,7 @@ const Home: NextPage = () => {
         {!isLoading && (
           <Carousel size={nfts.length}>
             {nfts.map((nft) => (
-              <NFTWrapper key={nft.tokenId}>
-                <NFT {...nft} />
-                <ButtonNFTBuy>BUY</ButtonNFTBuy>
-              </NFTWrapper>
+              <NFTBuyCard data={nft} key={nft.tokenId} />
             ))}
           </Carousel>
         )}

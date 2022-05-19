@@ -4,7 +4,7 @@ import Image from "next/image";
 import { NFT, Loading } from "web3uikit";
 import { useMoralis } from "react-moralis";
 import Carousel from "../components/Carousel/Carousel";
-import { getNFTs } from "../config/marketplaceSlice";
+import { getNFTs } from "../config/landingSlice";
 import { useSelector, useDispatch } from "react-redux";
 import StoreType from "../types/StoreType";
 import type { AppDispatch } from "../config/store";
@@ -26,7 +26,7 @@ import NFTBuyCard from "../components/NFTBuyCard/NFTBuyCard";
 
 const Home: NextPage = () => {
   const { isInitialized, Moralis } = useMoralis();
-  const { nfts, isLoading } = useSelector((store: StoreType) => store.marketplace);
+  const { nfts, isLoading } = useSelector((store: StoreType) => store.landing);
   const dispatch = useDispatch<AppDispatch>();
   const ADDRESS: string = "0xd45058Bf25BBD8F586124C479D384c8C708CE23A";
   const CHAIN = "eth";

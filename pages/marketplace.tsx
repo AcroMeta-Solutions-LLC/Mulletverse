@@ -6,22 +6,40 @@ import { useMoralis } from "react-moralis";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import NFTGrid from "../components/NFTGrid/NFTGrid";
-import { getMarketplaceNFTs } from "../config/marketplaceSlice";
+import { clearStore, getMarketplaceNFTs } from "../config/marketplaceSlice";
 import { AppDispatch } from "../config/store";
 import { GridSection, Main, Section, Tab, TabRow, Title } from "../styles/MarketplaceStyled";
 import StoreType from "../types/StoreType";
 
 const Marketplace: NextPage = () => {
   const { isInitialized, Moralis } = useMoralis();
-  const { nfts, isLoading } = useSelector((store: StoreType) => store.marketplace);
   const dispatch = useDispatch<AppDispatch>();
   const { pathname } = useRouter();
+  const PAGE_SIZE = 20;
+  const { data, isLoading, total, nextCursor, previousCursor, page } = useSelector(
+    (store: StoreType) => store.marketplace.main,
+  );
 
   useEffect(() => {
-    if (isInitialized) {
-      dispatch(getMarketplaceNFTs({ account: Moralis.Web3API.account }));
-    }
+    if (isInitialized) dispatch(getMarketplaceNFTs({ account: Moralis.Web3API.account, limit: PAGE_SIZE }));
+    return () => {
+      dispatch(clearStore());
+    };
   }, [isInitialized, Moralis.Web3API.account, dispatch]);
+
+  const onPreviousPage = () => {
+    dispatch(
+      getMarketplaceNFTs({
+        account: Moralis.Web3API.account,
+        limit: PAGE_SIZE,
+        cursor: previousCursor[previousCursor.length - 2],
+      }),
+    );
+  };
+
+  const onNextPage = () => {
+    dispatch(getMarketplaceNFTs({ account: Moralis.Web3API.account, limit: PAGE_SIZE, cursor: nextCursor }));
+  };
 
   return (
     <Main>
@@ -39,7 +57,15 @@ const Marketplace: NextPage = () => {
       <Section>
         <Title>Marketplace</Title>
         <GridSection>
-          <NFTGrid size={5} data={nfts} isLoading={isLoading} />
+          <NFTGrid
+            onNext={onNextPage}
+            onPrevious={onPreviousPage}
+            size={PAGE_SIZE}
+            total={total}
+            data={data}
+            isLoading={isLoading}
+            page={page}
+          />
         </GridSection>
       </Section>
     </Main>

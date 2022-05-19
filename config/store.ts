@@ -6,7 +6,7 @@ import marketplaceReducer from "./marketplaceSlice";
 import landingReducer from "./landingSlice";
 
 export const rootReducer = combineReducers({
-  marketplace: persistReducer({ key: "marketplace", storage }, marketplaceReducer),
+  marketplace: marketplaceReducer,
   landing: persistReducer({ key: "landing", storage }, landingReducer),
 });
 

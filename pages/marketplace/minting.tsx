@@ -6,22 +6,40 @@ import { useMoralis } from "react-moralis";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import NFTGrid from "../../components/NFTGrid/NFTGrid";
-import { getMintingNFTs } from "../../config/marketplaceSlice";
+import { clearStore, getMintingNFTs } from "../../config/marketplaceSlice";
 import { AppDispatch } from "../../config/store";
 import { GridSection, Main, Section, Tab, TabRow, Title } from "../../styles/MarketplaceStyled";
 import StoreType from "../../types/StoreType";
 
 const Marketplace: NextPage = () => {
   const { isInitialized, Moralis } = useMoralis();
-  const { minting, isMintingLoading } = useSelector((store: StoreType) => store.marketplace);
   const dispatch = useDispatch<AppDispatch>();
   const { pathname } = useRouter();
+  const PAGE_SIZE = 20;
+  const { data, isLoading, total, nextCursor, previousCursor, page } = useSelector(
+    (store: StoreType) => store.marketplace.minting,
+  );
 
   useEffect(() => {
-    if (isInitialized) {
-      dispatch(getMintingNFTs({ account: Moralis.Web3API.account }));
-    }
+    if (isInitialized) dispatch(getMintingNFTs({ account: Moralis.Web3API.account, limit: PAGE_SIZE }));
+    return () => {
+      dispatch(clearStore());
+    };
   }, [isInitialized, Moralis.Web3API.account, dispatch]);
+
+  const onPreviousPage = () => {
+    dispatch(
+      getMintingNFTs({
+        account: Moralis.Web3API.account,
+        limit: PAGE_SIZE,
+        cursor: previousCursor[previousCursor.length - 2],
+      }),
+    );
+  };
+
+  const onNextPage = () => {
+    dispatch(getMintingNFTs({ account: Moralis.Web3API.account, limit: PAGE_SIZE, cursor: nextCursor }));
+  };
 
   return (
     <Main>
@@ -39,7 +57,15 @@ const Marketplace: NextPage = () => {
       <Section>
         <Title>Minting Market</Title>
         <GridSection>
-          <NFTGrid size={20} data={minting} isLoading={isMintingLoading} />
+          <NFTGrid
+            onNext={onNextPage}
+            onPrevious={onPreviousPage}
+            size={PAGE_SIZE}
+            total={total}
+            data={data}
+            isLoading={isLoading}
+            page={page}
+          />
         </GridSection>
       </Section>
     </Main>

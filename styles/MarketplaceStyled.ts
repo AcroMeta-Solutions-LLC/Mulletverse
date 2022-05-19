@@ -6,6 +6,7 @@ export const Main = styled.main`
   padding: 70px 0 50px 0;
   display: flex;
   flex-direction: column;
+  min-height: calc(100vh - 72px);
 `;
 
 export const TabRow = styled.div`

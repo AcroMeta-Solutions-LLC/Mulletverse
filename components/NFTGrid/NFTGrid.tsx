@@ -1,29 +1,35 @@
 import { useState } from "react";
 import { INFTProps, Skeleton } from "web3uikit";
 import NFTBuyCard from "../NFTBuyCard/NFTBuyCard";
-import { CardWrapper, Container, Grid, LoadingWrapper } from "./NFTGridStyled";
+import { CardWrapper, Container, Grid, LoadingWrapper, PageButton } from "./NFTGridStyled";
 
-type NFTGridType = { data: INFTProps[]; size: number; isLoading?: boolean };
+type NFTGridType = {
+  data: INFTProps[];
+  size: number;
+  isLoading?: boolean;
+  onNext: Function;
+  onPrevious: Function;
+  total: number;
+  page: number;
+};
 
 function NFTGrid(props: NFTGridType) {
-  const [currentPage, setCurrentPage] = useState(0);
-
   const hasPreviousPage = () => {
-    return currentPage > 0;
+    return props.page > 0;
   };
 
   const hasNextPage = () => {
-    return currentPage < Math.ceil(props.data.length / props.size) - 1;
+    return props.page < Math.floor(props.total / props.size);
   };
 
   const onPreviousPage = () => {
     if (!hasPreviousPage()) return;
-    setCurrentPage(currentPage - 1);
+    props.onPrevious();
   };
 
   const onNextPage = () => {
     if (!hasNextPage()) return;
-    setCurrentPage(currentPage + 1);
+    props.onNext();
   };
 
   const renderLoading = () => {
@@ -39,15 +45,16 @@ function NFTGrid(props: NFTGridType) {
   ) : (
     <Container>
       <Grid>
-        {props.data.slice(currentPage * props.size, currentPage * props.size + props.size).map((nft) => (
+        {props.data.map((nft) => (
           <CardWrapper key={nft.tokenId}>
             <NFTBuyCard data={nft} />
           </CardWrapper>
         ))}
       </Grid>
       <div>
-        {hasPreviousPage() && <button onClick={onPreviousPage}>previous</button>}
-        {hasNextPage() && <button onClick={onNextPage}>next</button>}
+        {hasPreviousPage() && <PageButton onClick={onPreviousPage}>Previous</PageButton>}
+        {props.page + 1}...{Math.floor(props.total / props.size) + 1}
+        {hasNextPage() && <PageButton onClick={onNextPage}>Next</PageButton>}
       </div>
     </Container>
   );

@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { ELEVATION } from "../../constants/elevation";
 import { SCREEN } from "../../constants/screen";
 import ThemeType from "../../types/themeType";
 
@@ -15,6 +16,8 @@ export const Container = styled.footer`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  z-index: ${ELEVATION.NAVIGATION};
+  box-shadow: ${(props) => (props.isFixed ? "rgb(4 17 29 / 25%) 0px 0px 8px 0px" : "none")};
 
   @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
     flex-direction: column;

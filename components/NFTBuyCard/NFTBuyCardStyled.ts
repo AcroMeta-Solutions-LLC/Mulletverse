@@ -9,6 +9,7 @@ export const NFTWrapper = styled.span`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  border: 1px solid ${({ theme }: { theme: ThemeType }) => theme.BACKGROUND};
 `;
 
 export const ButtonNFTBuy = styled.button`

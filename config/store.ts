@@ -3,9 +3,11 @@ import { configureStore } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import marketplaceReducer from "./marketplaceSlice";
+import landingReducer from "./landingSlice";
 
 export const rootReducer = combineReducers({
   marketplace: persistReducer({ key: "marketplace", storage }, marketplaceReducer),
+  landing: persistReducer({ key: "landing", storage }, landingReducer),
 });
 
 const store = configureStore({

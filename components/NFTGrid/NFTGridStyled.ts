@@ -14,11 +14,8 @@ export const Grid = styled.div`
   flex-direction: row;
   flex-wrap: wrap;
   width: 100%;
-
-  @media only screen and (max-width: ${SCREEN.MOBILE}) {
-    justify-content: center;
-    align-items: center;
-  }
+  justify-content: center;
+  align-items: center;
 `;
 
 export const CardWrapper = styled.div`

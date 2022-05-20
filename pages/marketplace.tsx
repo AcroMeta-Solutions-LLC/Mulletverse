@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { useMoralis } from "react-moralis";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+import ErrorBanner from "../components/ErrorBanner/ErrorBanner";
 import NFTGrid from "../components/NFTGrid/NFTGrid";
 import { clearStore, getMarketplaceNFTs } from "../config/marketplaceSlice";
 import { AppDispatch } from "../config/store";
@@ -16,7 +17,7 @@ const Marketplace: NextPage = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { pathname } = useRouter();
   const PAGE_SIZE = 20;
-  const { data, isLoading, total, nextCursor, previousCursor, page } = useSelector(
+  const { data, isLoading, total, nextCursor, previousCursor, page, hasError } = useSelector(
     (store: StoreType) => store.marketplace.main,
   );
 
@@ -56,6 +57,7 @@ const Marketplace: NextPage = () => {
       </TabRow>
       <Section>
         <Title>Marketplace</Title>
+        <ErrorBanner hasError={hasError} />
         <GridSection>
           <NFTGrid
             onNext={onNextPage}

@@ -1,3 +1,3 @@
 export const ELEVATION = {
-  NAVIGATION: 120,
+  NAVIGATION: 25,
 };

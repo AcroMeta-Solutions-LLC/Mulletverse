@@ -5,11 +5,12 @@ import { useEffect } from "react";
 import { useMoralis } from "react-moralis";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+import EmptyState from "../../components/EmptyState/EmptyState";
 import ErrorBanner from "../../components/ErrorBanner/ErrorBanner";
 import NFTGrid from "../../components/NFTGrid/NFTGrid";
 import { clearStore, getMintingNFTs } from "../../config/marketplaceSlice";
 import { AppDispatch } from "../../config/store";
-import { GridSection, Main, Section, Tab, TabRow, Title } from "../../styles/MarketplaceStyled";
+import { Container, GridSection, Main, Section, Tab, TabRow, Title } from "../../styles/MarketplaceStyled";
 import StoreType from "../../types/StoreType";
 
 const Marketplace: NextPage = () => {
@@ -44,32 +45,35 @@ const Marketplace: NextPage = () => {
 
   return (
     <Main>
-      <TabRow>
-        <Link href="/marketplace">
-          <Tab isActive={pathname === "/marketplace"}>Marketplace</Tab>
-        </Link>
-        <Link href="/marketplace/featured">
-          <Tab isActive={pathname === "/marketplace/featured"}>Featured Artists</Tab>
-        </Link>
-        <Link href="/marketplace/minting">
-          <Tab isActive={pathname === "/marketplace/minting"}>Minting Market</Tab>
-        </Link>
-      </TabRow>
-      <Section>
-        <Title>Minting Market</Title>
-        <ErrorBanner hasError={hasError} />
-        <GridSection>
-          <NFTGrid
-            onNext={onNextPage}
-            onPrevious={onPreviousPage}
-            size={PAGE_SIZE}
-            total={total}
-            data={data}
-            isLoading={isLoading}
-            page={page}
-          />
-        </GridSection>
-      </Section>
+      <Container>
+        <TabRow>
+          <Link href="/marketplace">
+            <Tab isActive={pathname === "/marketplace"}>Marketplace</Tab>
+          </Link>
+          <Link href="/marketplace/featured">
+            <Tab isActive={pathname === "/marketplace/featured"}>Featured Artists</Tab>
+          </Link>
+          <Link href="/marketplace/minting">
+            <Tab isActive={pathname === "/marketplace/minting"}>Minting Market</Tab>
+          </Link>
+        </TabRow>
+        <Section>
+          <Title>Minting Market</Title>
+          <EmptyState isEmpty={data.length === 0 && !hasError && !isLoading} />
+          <ErrorBanner hasError={hasError} />
+          <GridSection>
+            <NFTGrid
+              onNext={onNextPage}
+              onPrevious={onPreviousPage}
+              size={PAGE_SIZE}
+              total={total}
+              data={data}
+              isLoading={isLoading}
+              page={page}
+            />
+          </GridSection>
+        </Section>
+      </Container>
     </Main>
   );
 };

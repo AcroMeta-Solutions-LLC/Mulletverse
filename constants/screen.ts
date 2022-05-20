@@ -3,5 +3,5 @@ export const SCREEN = {
   TABLET_SMALL: "768px",
   TABLET_BIG: "992px",
   LAPTOP: "1200px",
-  DESKTOP: "1400px",
+  DESKTOP: "1440px",
 };

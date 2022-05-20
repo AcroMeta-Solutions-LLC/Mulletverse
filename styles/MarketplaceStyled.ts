@@ -6,7 +6,7 @@ import ThemeType from "../types/themeType";
 export const Main = styled.main`
   padding: 70px 0 50px 0;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   min-height: calc(100vh - 72px);
 
   @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
@@ -14,9 +14,15 @@ export const Main = styled.main`
   }
 `;
 
+export const Container = styled.div`
+  max-width: ${SCREEN.DESKTOP};
+`;
+
 export const TabRow = styled.div`
   display: flex;
   flex-direction: row;
+  justify-content: center;
+  align-items: center;
   margin: 24px 24px 0 24px;
 
   @media only screen and (max-width: ${SCREEN.MOBILE}) {
@@ -32,7 +38,7 @@ export const Tab = styled.a`
   margin-right: 10px;
 
   @media only screen and (max-width: ${SCREEN.MOBILE}) {
-    margin-bottom: 10px;
+    margin: 0 0 10px 0;
   }
 `;
 
@@ -45,8 +51,13 @@ export const Title = styled.h1`
   font-size: ${TYPOGRAPHY.SIZE.HEADLINE_1};
   font-weight: ${TYPOGRAPHY.WEIGHT.HEADLINE_1};
   padding: 0 24px;
+  align-self: center;
 `;
 
 export const GridSection = styled.section`
   padding: 0 25px;
+
+  @media only screen and (max-width: ${SCREEN.MOBILE}) {
+    padding: 0;
+  }
 `;

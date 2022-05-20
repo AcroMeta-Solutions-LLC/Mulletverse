@@ -138,14 +138,17 @@ const marketplaceSlice = createSlice({
       state.main.previousCursor = [""];
       state.main.page = 0;
       state.main.total = 0;
+      state.main.hasError = false;
       state.minting.nextCursor = "";
       state.minting.previousCursor = [""];
       state.minting.page = 0;
       state.minting.total = 0;
+      state.minting.hasError = false;
       state.featured.nextCursor = "";
       state.featured.previousCursor = [""];
       state.featured.page = 0;
       state.featured.total = 0;
+      state.featured.hasError = false;
     },
   },
   extraReducers: (builder) => {

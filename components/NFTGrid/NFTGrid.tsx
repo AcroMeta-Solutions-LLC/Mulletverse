@@ -51,11 +51,13 @@ function NFTGrid(props: NFTGridType) {
           </CardWrapper>
         ))}
       </Grid>
-      <div>
-        {hasPreviousPage() && <PageButton onClick={onPreviousPage}>Previous</PageButton>}
-        {props.page + 1}...{Math.floor(props.total / props.size) + 1}
-        {hasNextPage() && <PageButton onClick={onNextPage}>Next</PageButton>}
-      </div>
+      {props.data.length > 0 && (
+        <div>
+          {hasPreviousPage() && <PageButton onClick={onPreviousPage}>Previous</PageButton>}
+          {props.page + 1}...{Math.floor(props.total / props.size) + 1}
+          {hasNextPage() && <PageButton onClick={onNextPage}>Next</PageButton>}
+        </div>
+      )}
     </Container>
   );
 }

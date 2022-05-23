@@ -1,6 +1,6 @@
 import { Fragment, useRef, useState } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
-import { Chevron, FeaturedSlider, SliderWrapper } from "./CarouselStyled";
+import { Chevron, DataSlider, SliderWrapper } from "./CarouselStyled";
 
 type CarouselPropType = { children: React.ReactNode; size: number };
 
@@ -27,15 +27,15 @@ function Carousel({ children, size }: CarouselPropType) {
 
   return (
     <SliderWrapper>
-      <FeaturedSlider ref={sliderRef}>{children}</FeaturedSlider>
       {size > 0 && (
         <Fragment>
           {shouldShowLeftArrow && (
-            <Chevron position="left" onClick={() => scrollSlider("left")}>
+            <Chevron onClick={() => scrollSlider("left")}>
               <FiChevronLeft size={30} />
             </Chevron>
           )}
-          <Chevron position="right" onClick={() => scrollSlider("right")}>
+          <DataSlider ref={sliderRef}>{children}</DataSlider>
+          <Chevron onClick={() => scrollSlider("right")}>
             <FiChevronRight size={30} />
           </Chevron>
         </Fragment>

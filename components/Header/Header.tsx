@@ -69,9 +69,9 @@ function Header() {
               <FiChevronDown color={isLandingPage ? COLORS.CLEAR : COLORS.DARK} />
             </DropdownButton>
             <DropdownArea position="left" isLandingPage={isLandingPage} isOpen={isPortfolioOpen}>
-              <DropdownItem onClick={() => redirectTo("/nft-dashboard")}>NFT Dashboard</DropdownItem>
-              <DropdownItem onClick={() => redirectTo("/your-collection")}>Your Collection</DropdownItem>
-              <DropdownItem onClick={() => redirectTo("/mulletswap")}>MulletSwap</DropdownItem>
+              <DropdownItem onClick={() => redirectTo("/portfolio/dashboard")}>NFT Dashboard</DropdownItem>
+              <DropdownItem onClick={() => redirectTo("/portfolio/collection")}>Your Collection</DropdownItem>
+              <DropdownItem onClick={() => redirectTo("/portfolio/mulletswap")}>MulletSwap</DropdownItem>
             </DropdownArea>
           </Dropdown>
         )}

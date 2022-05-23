@@ -42,7 +42,7 @@ export const Tab = styled.a`
   }
 `;
 
-export const Section = styled.section`
+export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
 `;

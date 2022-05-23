@@ -1,14 +1,14 @@
 import { Illustration } from "web3uikit";
 import { EmptyMessage, EmptyWrapper } from "./EmptyStateStyled";
 
-type ErrorBannerPropType = { isEmpty: boolean };
+type ErrorBannerPropType = { isEmpty: boolean; message?: string };
 
-function EmptyState({ isEmpty }: ErrorBannerPropType) {
+function EmptyState({ isEmpty, message }: ErrorBannerPropType) {
   return isEmpty ? (
-    <EmptyMessage>
+    <EmptyWrapper>
       <Illustration logo="lazyNft" width={200} height={190} />
-      <EmptyWrapper>Nothing here!</EmptyWrapper>
-    </EmptyMessage>
+      <EmptyMessage>{message ? message : "Nothing here!"}</EmptyMessage>
+    </EmptyWrapper>
   ) : (
     <></>
   );

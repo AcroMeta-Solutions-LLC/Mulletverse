@@ -10,7 +10,7 @@ import ErrorBanner from "../components/ErrorBanner/ErrorBanner";
 import NFTGrid from "../components/NFTGrid/NFTGrid";
 import { clearStore, getMarketplaceNFTs } from "../config/marketplaceSlice";
 import { AppDispatch } from "../config/store";
-import { Container, GridSection, Main, Section, Tab, TabRow, Title } from "../styles/MarketplaceStyled";
+import { Container, GridSection, Main, Tab, TabRow, Title, Wrapper } from "../styles/MarketplaceStyled";
 import StoreType from "../types/StoreType";
 
 const Marketplace: NextPage = () => {
@@ -57,7 +57,7 @@ const Marketplace: NextPage = () => {
             <Tab isActive={pathname === "/marketplace/minting"}>Minting Market</Tab>
           </Link>
         </TabRow>
-        <Section>
+        <Wrapper>
           <Title>Marketplace</Title>
           <EmptyState isEmpty={data.length === 0 && !hasError && !isLoading} />
           <ErrorBanner hasError={hasError} />
@@ -72,7 +72,7 @@ const Marketplace: NextPage = () => {
               page={page}
             />
           </GridSection>
-        </Section>
+        </Wrapper>
       </Container>
     </Main>
   );

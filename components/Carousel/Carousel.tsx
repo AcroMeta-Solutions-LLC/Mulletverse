@@ -1,31 +1,50 @@
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
-import { Chevron, DataSlider, SliderWrapper } from "./CarouselStyled";
+import { Loading } from "web3uikit";
+import COLORS from "../../constants/colors";
+import { Chevron, DataSlider, Loader, SliderWrapper } from "./CarouselStyled";
 
-type CarouselPropType = { children: React.ReactNode; size: number };
+type CarouselPropType = { children: React.ReactNode; size: number; isLoading?: boolean };
 
-function Carousel({ children, size }: CarouselPropType) {
+function Carousel({ children, size, isLoading }: CarouselPropType) {
   const sliderRef = useRef<HTMLDivElement>(null);
   const [shouldShowLeftArrow, setShouldShowLeftArrow] = useState(false);
+  const [shouldShowRightArrow, setShouldShowRightArrow] = useState(false);
+  const [pageSize, setPageSize] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
+
+  useEffect(() => {
+    if (!sliderRef?.current) return;
+    const scrollWidth = sliderRef.current.scrollWidth;
+    const size = Math.floor(scrollWidth / window.innerWidth);
+    setPageSize(size);
+    setShouldShowLeftArrow(currentPage !== 0);
+    setShouldShowRightArrow(currentPage <= pageSize);
+  }, [isLoading, currentPage, pageSize]);
 
   const scrollSlider = (direction: "left" | "right") => {
-    const scrollLeft = sliderRef.current && sliderRef.current.offsetWidth ? sliderRef.current.offsetWidth : 0;
-    if (scrollLeft > 0) setShouldShowLeftArrow(true);
+    if (!sliderRef?.current) return;
+    const offset = sliderRef.current.offsetWidth;
 
-    const offset = sliderRef.current && sliderRef.current.offsetWidth ? sliderRef.current.offsetWidth : 0;
     switch (direction) {
       case "left":
-        sliderRef?.current?.scrollTo({ left: sliderRef?.current.scrollLeft - offset });
+        setCurrentPage(currentPage === 0 ? currentPage : currentPage - 1);
+        sliderRef.current.scrollTo({ left: sliderRef.current.scrollLeft - offset });
         break;
       case "right":
-        sliderRef?.current?.scrollTo({ left: sliderRef?.current.scrollLeft + offset });
+        setCurrentPage(currentPage === pageSize + 1 ? currentPage : currentPage + 1);
+        sliderRef.current.scrollTo({ left: sliderRef.current.scrollLeft + offset });
         break;
       default:
         break;
     }
   };
 
-  return (
+  return isLoading ? (
+    <Loader>
+      <Loading spinnerColor={COLORS.PURPLE.DARK} />
+    </Loader>
+  ) : (
     <SliderWrapper>
       {size > 0 && (
         <Fragment>
@@ -35,9 +54,11 @@ function Carousel({ children, size }: CarouselPropType) {
             </Chevron>
           )}
           <DataSlider ref={sliderRef}>{children}</DataSlider>
-          <Chevron onClick={() => scrollSlider("right")}>
-            <FiChevronRight size={30} />
-          </Chevron>
+          {shouldShowRightArrow && (
+            <Chevron onClick={() => scrollSlider("right")}>
+              <FiChevronRight size={30} />
+            </Chevron>
+          )}
         </Fragment>
       )}
     </SliderWrapper>

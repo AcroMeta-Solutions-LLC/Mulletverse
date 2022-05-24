@@ -22,6 +22,5 @@ export const Container = styled.div`
 export const Title = styled.h1`
   font-size: ${TYPOGRAPHY.SIZE.HEADLINE_1};
   font-weight: ${TYPOGRAPHY.WEIGHT.HEADLINE_1};
-  padding: 0 24px;
   align-self: center;
 `;

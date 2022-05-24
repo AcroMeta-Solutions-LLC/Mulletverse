@@ -4,13 +4,20 @@ import { SCREEN } from "../../constants/screen";
 export const SliderWrapper = styled.div`
   display: flex;
   flex-direction: row;
+  max-width: 100vw;
+`;
+
+export const Loader = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const DataSlider = styled.div`
   display: flex;
   flex-direction: row;
-  overflow-x: auto;
-  padding-left: 40px;
+  overflow-x: hidden;
+  margin-left: 40px;
   position: relative;
   scroll-behavior: smooth;
 

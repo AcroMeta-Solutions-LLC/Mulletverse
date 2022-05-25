@@ -1,4 +1,4 @@
-import { CHART_COLORS } from "../../constants/colors";
+import { CHART_COLORS } from "../constants/colors";
 
 export const ChartData = [
   { name: "Boo VIB", value: 14, color: CHART_COLORS[0] },

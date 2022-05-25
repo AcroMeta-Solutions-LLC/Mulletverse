@@ -24,7 +24,7 @@ import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import COLORS from "../../constants/colors";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
-import { ChartData } from "./mocks";
+import { ChartData } from "../../helpers/mocks";
 
 const NFTDashboard: NextPage = () => {
   const { isInitialized, Moralis } = useMoralis();

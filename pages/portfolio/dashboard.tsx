@@ -9,11 +9,22 @@ import ErrorBanner from "../../components/ErrorBanner/ErrorBanner";
 import NFTBuyCard from "../../components/NFTBuyCard/NFTBuyCard";
 import { clearStore, getWishlistNFTs } from "../../config/portfolioSlice";
 import { AppDispatch } from "../../config/store";
-import { Container, Main, Title } from "../../styles/DashboardStyled";
+import {
+  Section,
+  IncomeTracker,
+  Main,
+  Title,
+  DataArea,
+  ChartArea,
+  DataLabel,
+  Data,
+} from "../../styles/DashboardStyled";
 import StoreType from "../../types/StoreType";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import COLORS from "../../constants/colors";
+import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+import { ChartData } from "./mocks";
 
 const NFTDashboard: NextPage = () => {
   const { isInitialized, Moralis } = useMoralis();
@@ -36,7 +47,7 @@ const NFTDashboard: NextPage = () => {
 
   return (
     <Main>
-      <Container>
+      <Section>
         <Title>NFT Dashboard</Title>
         <Table>
           <Thead>
@@ -66,7 +77,36 @@ const NFTDashboard: NextPage = () => {
             ))}
           </Tbody>
         </Table>
+      </Section>
+      <Section>
         <Title>NFT Income Tracker</Title>
+        <IncomeTracker>
+          <DataArea>
+            <DataLabel>TOTAL SPENT</DataLabel>
+            <Data hasColor={false}>$400.00</Data>
+            <DataLabel>ACTUAL COLLECTION</DataLabel>
+            <Data hasColor>$450.00</Data>
+          </DataArea>
+          <ChartArea>
+            <ResponsiveContainer>
+              <PieChart>
+                <Pie
+                  isAnimationActive={false}
+                  dataKey="value"
+                  data={ChartData}
+                  label={(e) => `${e.name} - ${e.value}%`}
+                >
+                  {ChartData.map((entry, i) => (
+                    <Cell key={`cell-${i}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </ChartArea>
+        </IncomeTracker>
+      </Section>
+      <Section>
         <Title>Wishlist</Title>
         <EmptyState
           message="Nothing on your wishlist"
@@ -78,7 +118,7 @@ const NFTDashboard: NextPage = () => {
             <NFTBuyCard data={nft} key={nft.tokenId} />
           ))}
         </Carousel>
-      </Container>
+      </Section>
     </Main>
   );
 };

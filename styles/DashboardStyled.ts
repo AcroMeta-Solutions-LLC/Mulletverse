@@ -20,6 +20,7 @@ export const Section = styled.section`
   display: flex;
   flex-direction: column;
   width: 100%;
+  padding: 0 20px;
 `;
 
 export const Title = styled.h2`

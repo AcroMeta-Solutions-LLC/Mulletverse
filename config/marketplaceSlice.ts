@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { INFTProps, Chain } from "web3uikit";
+import { Chain } from "web3uikit";
+import NFTType from "../types/NFTType";
 
 export type MarketplaceProps = {
   main: {
-    data: INFTProps[];
+    data: NFTType[];
     isLoading: boolean;
     hasError: boolean;
     total: number;
@@ -12,7 +13,7 @@ export type MarketplaceProps = {
     page: number;
   };
   featured: {
-    data: INFTProps[];
+    data: NFTType[];
     isLoading: boolean;
     hasError: boolean;
     total: number;
@@ -21,7 +22,7 @@ export type MarketplaceProps = {
     page: number;
   };
   minting: {
-    data: INFTProps[];
+    data: NFTType[];
     isLoading: boolean;
     hasError: boolean;
     total: number;
@@ -51,26 +52,22 @@ const initialState: MarketplaceProps = {
   minting: { data: [], hasError: false, isLoading: false, total: 0, nextCursor: "", previousCursor: [""], page: 0 },
 };
 
-const getNFTList = (data: NFTResponse[]): INFTProps[] => {
-  const filteredList = data.filter((nft) => !!nft.metadata);
-  return (
-    filteredList?.map((data: NFTResponse) => ({
-      address: data.token_address,
-      chain: data.chain,
-      tokenId: data.token_id,
-      fetchMetadata: false,
-      name: data.name,
-      metadata: JSON.parse(data.metadata),
-    })) || []
-  );
-};
+const getNFTList = (list: NFTResponse[]): NFTType[] =>
+  list?.map((data: NFTResponse) => ({
+    address: data.token_address,
+    chain: data.chain,
+    tokenId: data.token_id,
+    fetchMetadata: false,
+    name: data.name,
+    metadata: JSON.parse(data.metadata),
+  })) || [];
 
 export const getMarketplaceNFTs = createAsyncThunk("marketplace/GET_MARKETPLACE", async (data: GetNFTProps) => {
   const address = "0x4F5beD793202f22d17CDC3d6eBe538c07A474126";
   const chain = "eth";
   const limit = data.limit;
   const response = await data.account.getNFTs({ address, chain, limit, cursor: data.cursor });
-  const nftList: INFTProps[] = getNFTList(response.result);
+  const nftList: NFTType[] = getNFTList(response.result);
   return {
     data: nftList,
     previousCursor: data.cursor,
@@ -85,7 +82,7 @@ export const getFeaturedNFTs = createAsyncThunk("marketplace/GET_FEATURED", asyn
   const chain = "eth";
   const limit = data.limit;
   const response = await data.account.getNFTs({ address, chain, limit, cursor: data.cursor });
-  const nftList: INFTProps[] = getNFTList(response.result);
+  const nftList: NFTType[] = getNFTList(response.result);
   return {
     data: nftList,
     previousCursor: data.cursor,
@@ -100,7 +97,7 @@ export const getMintingNFTs = createAsyncThunk("marketplace/GET_MINTING", async 
   const chain = "eth";
   const limit = data.limit;
   const response = await data.account.getNFTs({ address, chain, limit, cursor: data.cursor });
-  const nftList: INFTProps[] = getNFTList(response.result);
+  const nftList: NFTType[] = getNFTList(response.result);
   return {
     data: nftList,
     previousCursor: data.cursor,

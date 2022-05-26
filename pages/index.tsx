@@ -8,6 +8,7 @@ import { getNFTs } from "../config/landingSlice";
 import { useSelector, useDispatch } from "react-redux";
 import StoreType from "../types/StoreType";
 import type { AppDispatch } from "../config/store";
+import NFTCard from "../components/NFTCard/NFTCard";
 import {
   About,
   Hero,
@@ -22,7 +23,6 @@ import {
   DesktopOnly,
   LoadingWrapper,
 } from "../styles/HomeStyled";
-import NFTBuyCard from "../components/NFTBuyCard/NFTBuyCard";
 
 const Home: NextPage = () => {
   const { isInitialized, Moralis } = useMoralis();
@@ -66,7 +66,7 @@ const Home: NextPage = () => {
         {!isLoading && (
           <Carousel size={nfts.length}>
             {nfts.map((nft) => (
-              <NFTBuyCard data={nft} key={nft.tokenId} />
+              <NFTCard data={nft} key={nft.tokenId} />
             ))}
           </Carousel>
         )}

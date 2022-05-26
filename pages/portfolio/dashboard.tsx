@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import Carousel from "../../components/Carousel/Carousel";
 import EmptyState from "../../components/EmptyState/EmptyState";
 import ErrorBanner from "../../components/ErrorBanner/ErrorBanner";
-import NFTBuyCard from "../../components/NFTBuyCard/NFTBuyCard";
+import NFTCard from "../../components/NFTCard/NFTCard";
 import { clearStore, getWishlistNFTs } from "../../config/portfolioSlice";
 import { AppDispatch } from "../../config/store";
 import {
@@ -115,7 +115,7 @@ const NFTDashboard: NextPage = () => {
         <ErrorBanner hasError={hasErrorWishlist} />
         <Carousel size={wishlist.length} isLoading={isWishlistLoading}>
           {wishlist.map((nft) => (
-            <NFTBuyCard data={nft} key={nft.tokenId} />
+            <NFTCard data={nft} key={nft.tokenId} />
           ))}
         </Carousel>
       </Section>

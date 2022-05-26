@@ -16,6 +16,7 @@ export const Grid = styled.div`
   width: 100%;
   justify-content: center;
   align-items: center;
+  gap: 20px;
 `;
 
 export const CardWrapper = styled.div`
@@ -37,8 +38,8 @@ export const LoadingWrapper = styled.div`
 `;
 
 export const PageButton = styled.button`
-  background-color: ${({ theme }: { theme: ThemeType }) => theme.BACKGROUND};
-  border: 1px ${({ theme }: { theme: ThemeType }) => theme.TITLE} solid;
+  background-color: transparent;
+  border: none;
   padding: 10px;
   border-radius: 5px;
   cursor: pointer;

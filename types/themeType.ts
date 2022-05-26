@@ -4,6 +4,7 @@ export type ThemeType = {
   NAVIGATION: string;
   TEXT: string;
   TITLE: string;
+  BORDER: string;
 };
 
 export default ThemeType;

@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { INFTProps, Chain } from "web3uikit";
+import { Chain } from "web3uikit";
+import NFTType from "../types/NFTType";
 
 export type PortfolioProps = {
   dashboard: {
-    data: INFTProps[];
+    data: NFTType[];
     isLoading: boolean;
     hasError: boolean;
     total: number;
@@ -12,7 +13,7 @@ export type PortfolioProps = {
     page: number;
   };
   collection: {
-    data: INFTProps[];
+    data: NFTType[];
     isLoading: boolean;
     hasError: boolean;
     total: number;
@@ -21,7 +22,7 @@ export type PortfolioProps = {
     page: number;
   };
   wishlist: {
-    data: INFTProps[];
+    data: NFTType[];
     isLoading: boolean;
     hasError: boolean;
     total: number;
@@ -51,26 +52,22 @@ const initialState: PortfolioProps = {
   wishlist: { data: [], hasError: false, isLoading: false, total: 0, nextCursor: "", previousCursor: [""], page: 0 },
 };
 
-const getNFTList = (data: NFTResponse[]): INFTProps[] => {
-  const filteredList = data.filter((nft) => !!nft.metadata);
-  return (
-    filteredList?.map((data: NFTResponse) => ({
-      address: data.token_address,
-      chain: data.chain,
-      tokenId: data.token_id,
-      fetchMetadata: false,
-      name: data.name,
-      metadata: JSON.parse(data.metadata),
-    })) || []
-  );
-};
+const getNFTList = (list: NFTResponse[]): NFTType[] =>
+  list?.map((data: NFTResponse) => ({
+    address: data.token_address,
+    chain: data.chain,
+    tokenId: data.token_id,
+    fetchMetadata: false,
+    name: data.name,
+    metadata: JSON.parse(data.metadata),
+  })) || [];
 
 export const getDashboardNFTs = createAsyncThunk("portfolio/GET_DASHBOARD_NFT", async (data: GetNFTProps) => {
   const address = "0x4F5beD793202f22d17CDC3d6eBe538c07A474126";
   const chain = "eth";
   const limit = data.limit;
   const response = await data.account.getNFTs({ address, chain, limit, cursor: data.cursor });
-  const nftList: INFTProps[] = getNFTList(response.result);
+  const nftList: NFTType[] = getNFTList(response.result);
   return {
     data: nftList,
     previousCursor: data.cursor,
@@ -85,7 +82,7 @@ export const getCollectionNFTs = createAsyncThunk("portfolio/GET_COLLECTION_NFT"
   const chain = "eth";
   const limit = data.limit;
   const response = await data.account.getNFTs({ address, chain, limit, cursor: data.cursor });
-  const nftList: INFTProps[] = getNFTList(response.result);
+  const nftList: NFTType[] = getNFTList(response.result);
   return {
     data: nftList,
     previousCursor: data.cursor,
@@ -100,7 +97,7 @@ export const getWishlistNFTs = createAsyncThunk("portfolio/GET_WISHLIST_NFT", as
   const chain = "eth";
   const limit = data.limit;
   const response = await data.account.getNFTs({ address, chain, limit, cursor: data.cursor });
-  const nftList: INFTProps[] = getNFTList(response.result);
+  const nftList: NFTType[] = getNFTList(response.result);
   return {
     data: nftList,
     previousCursor: data.cursor,

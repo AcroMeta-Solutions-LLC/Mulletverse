@@ -20,6 +20,8 @@ export const DataSlider = styled.div`
   margin-left: 40px;
   position: relative;
   scroll-behavior: smooth;
+  gap: 10px;
+  padding: 5px 0;
 
   &::-webkit-scrollbar {
     display: none;

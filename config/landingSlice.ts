@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { INFTProps } from "web3uikit";
+import NFTType from "../types/NFTType";
 
 export type LandingProps = {
-  nfts: INFTProps[];
+  nfts: NFTType[];
   isLoading: boolean;
   hasError: boolean;
 };
@@ -22,7 +22,7 @@ const initialState: LandingProps = {
 
 export const getNFTs = createAsyncThunk("landing/GET_NFTS", async (data: GetNFTProps, thunkAPI) => {
   const response = await data.account.getNFTs({ address: data.address, chain: data.chain, limit: data.limit });
-  const nftList: INFTProps[] =
+  const nftList: NFTType[] =
     response.result?.map((data: any) => ({
       address: data.token_address,
       chain: data.chain,
@@ -38,7 +38,7 @@ const landingSlice = createSlice({
   name: "landing",
   initialState,
   reducers: {
-    addNFTList(state: LandingProps, { payload }: { payload: INFTProps[] }) {
+    addNFTList(state: LandingProps, { payload }: { payload: NFTType[] }) {
       state.nfts = payload;
     },
     clearStore(state: LandingProps) {

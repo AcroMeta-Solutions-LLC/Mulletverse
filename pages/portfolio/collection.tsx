@@ -43,7 +43,7 @@ const YourCollection: NextPage = () => {
   return (
     <Main>
       <Container>
-        <Title>Collection</Title>
+        <Title>Your Collection</Title>
         <EmptyState isEmpty={data.length === 0 && !hasError && !isLoading} />
         <ErrorBanner hasError={hasError} />
         <GridSection>

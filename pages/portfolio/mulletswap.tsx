@@ -1,11 +1,44 @@
 import type { NextPage } from "next";
-import { Container } from "../../styles/MulletSwapStyled";
+import {
+  Main,
+  Container,
+  Title,
+  SwapArea,
+  Swap,
+  Header,
+  Submit,
+  InputWrapper,
+  Input,
+  ChevronDown,
+} from "../../styles/MulletSwapStyled";
 
 const Mulletswap: NextPage = () => {
   return (
-    <Container>
-      <h1>Mulletswap</h1>
-    </Container>
+    <Main>
+      <Container>
+        <Title>Mulletswap</Title>
+        <SwapArea>
+          <Swap>
+            <Header>MulletSwap</Header>
+            <InputWrapper>
+              <Input />
+              <ChevronDown />
+              <Input />
+            </InputWrapper>
+            <Submit />
+          </Swap>
+          <Swap>
+            <Header>FiatSwap</Header>
+            <InputWrapper>
+              <Input />
+              <ChevronDown />
+              <Input />
+            </InputWrapper>
+            <Submit />
+          </Swap>
+        </SwapArea>
+      </Container>
+    </Main>
   );
 };
 

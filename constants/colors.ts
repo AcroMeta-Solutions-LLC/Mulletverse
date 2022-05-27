@@ -9,6 +9,7 @@ export const COLORS = {
   },
   WHITE: "#ffffff",
   BLUE: "#448bb7",
+  PEACH: "#f0ecf4",
 };
 
 export const CHART_COLORS = ["#8d5697", "#d6e6f6", "#b2dafb", "#ede8eb", "#dcb4b3"];

@@ -10,7 +10,7 @@ export const RouteGuard = (props: React.ComponentProps<any>) => {
 
   useEffect(() => {
     const path = router.asPath.split("?")[0];
-    const publicPaths = ["/"];
+    const publicPaths = ["/", "/marketplace"];
 
     if (isInitialized && !isAuthenticated && !publicPaths.includes(path)) {
       router.push({ pathname: "/" });

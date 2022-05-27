@@ -5,6 +5,7 @@ export type ThemeType = {
   TEXT: string;
   TITLE: string;
   BORDER: string;
+  INPUT: string;
 };
 
 export default ThemeType;

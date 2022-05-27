@@ -83,6 +83,9 @@ function Header() {
           <Input isLandingPage={isLandingPage} placeholder="Search items, collections, and accounts" />
         </Search>
         <Tab isLandingPage={isLandingPage} isOpen={isMenuOpen}>
+          Leaderboard
+        </Tab>
+        <Tab isLandingPage={isLandingPage} isOpen={isMenuOpen}>
           Create
         </Tab>
         {!isAuthenticated && (

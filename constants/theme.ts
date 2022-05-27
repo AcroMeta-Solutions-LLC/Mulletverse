@@ -8,6 +8,7 @@ export const LIGHT: ThemeType = {
   TEXT: COLORS.DARK,
   TITLE: COLORS.BLUE,
   BORDER: COLORS.GREY,
+  INPUT: COLORS.PEACH,
 };
 
 const THEME = {

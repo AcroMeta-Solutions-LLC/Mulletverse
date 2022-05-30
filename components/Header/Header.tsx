@@ -82,7 +82,7 @@ function Header() {
           <SearchIcon color={isLandingPage ? COLORS.CLEAR : COLORS.DARK} />
           <Input isLandingPage={isLandingPage} placeholder="Search items, collections, and accounts" />
         </Search>
-        <Tab isLandingPage={isLandingPage} isOpen={isMenuOpen}>
+        <Tab onClick={() => redirectTo("/leaderboard")} isLandingPage={isLandingPage} isOpen={isMenuOpen}>
           Leaderboard
         </Tab>
         <Tab isLandingPage={isLandingPage} isOpen={isMenuOpen}>

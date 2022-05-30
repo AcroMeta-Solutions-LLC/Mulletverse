@@ -5,10 +5,12 @@ import storage from "redux-persist/lib/storage";
 import marketplaceReducer from "./marketplaceSlice";
 import portfolioReducer from "./portfolioSlice";
 import landingReducer from "./landingSlice";
+import tokenReducer from "./tokenSlice";
 
 export const rootReducer = combineReducers({
   marketplace: marketplaceReducer,
   portfolio: portfolioReducer,
+  token: tokenReducer,
   landing: persistReducer({ key: "landing", storage }, landingReducer),
 });
 

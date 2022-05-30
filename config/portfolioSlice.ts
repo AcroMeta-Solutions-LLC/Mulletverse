@@ -78,10 +78,9 @@ export const getDashboardNFTs = createAsyncThunk("portfolio/GET_DASHBOARD_NFT", 
 });
 
 export const getCollectionNFTs = createAsyncThunk("portfolio/GET_COLLECTION_NFT", async (data: GetNFTProps) => {
-  const address = "0xd45058Bf25BBD8F586124C479D384c8C708CE23A";
   const chain = "eth";
   const limit = data.limit;
-  const response = await data.account.getNFTs({ address, chain, limit, cursor: data.cursor });
+  const response = await data.account.getNFTs({ chain, limit, cursor: data.cursor });
   const nftList: NFTType[] = getNFTList(response.result);
   return {
     data: nftList,

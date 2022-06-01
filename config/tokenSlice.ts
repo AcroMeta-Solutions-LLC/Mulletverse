@@ -10,7 +10,10 @@ export type TokenProps = {
 type GetNFTProps = {
   address: string;
   token_id: string;
-  token: { getTokenIdMetadata: Function };
+  token: {
+    getTokenIdMetadata: Function;
+    getTokenAddressTransfers: Function;
+  };
 };
 
 const initialState: TokenProps = {
@@ -36,13 +39,16 @@ const initialState: TokenProps = {
     token_hash: "",
     token_id: "",
     token_uri: "",
+    transfers: [],
   },
   hasError: false,
   isLoading: false,
 };
 
 export const getTokenData = createAsyncThunk("token/GET_TOKEN", async (data: GetNFTProps) => {
+  const transfers = await data.token.getTokenAddressTransfers({ address: data.address });
   const response = await data.token.getTokenIdMetadata({ address: data.address, token_id: data.token_id });
+  response.transfers = transfers.result;
   return response;
 });
 

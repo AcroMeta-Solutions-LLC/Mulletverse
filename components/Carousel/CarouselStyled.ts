@@ -1,9 +1,11 @@
 import styled from "styled-components";
 import { SCREEN } from "../../constants/screen";
+import ThemeType from "../../types/themeType";
 
 export const SliderWrapper = styled.div`
   display: flex;
   flex-direction: row;
+  width: 100%;
   max-width: 100vw;
 `;
 
@@ -16,15 +18,25 @@ export const Loader = styled.div`
 export const DataSlider = styled.div`
   display: flex;
   flex-direction: row;
-  overflow-x: hidden;
-  margin-left: 40px;
+  overflow-x: auto;
   position: relative;
   scroll-behavior: smooth;
   gap: 10px;
   padding: 5px 0;
 
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
   &::-webkit-scrollbar {
-    display: none;
+    /* display: none; */
+    background-color: transparent;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: ${({ theme }: { theme: ThemeType }) => theme.BORDER};
+    border-radius: 10px;
   }
 `;
 

@@ -38,6 +38,7 @@ export const Image = styled.div`
   flex: 1;
   border-radius: 5px 5px 0 0;
   background-color: ${({ theme }: { theme: ThemeType }) => theme.BACKGROUND};
+  min-width: 230px;
 `;
 
 export const Content = styled.div`

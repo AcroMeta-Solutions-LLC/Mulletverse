@@ -22,6 +22,7 @@ import {
   MobileOnly,
   DesktopOnly,
   LoadingWrapper,
+  CarouselWrapper,
 } from "../styles/HomeStyled";
 
 const Home: NextPage = () => {
@@ -64,11 +65,13 @@ const Home: NextPage = () => {
           </LoadingWrapper>
         )}
         {!isLoading && (
-          <Carousel size={nfts.length}>
-            {nfts.map((nft) => (
-              <NFTCard data={nft} key={nft.tokenId} />
-            ))}
-          </Carousel>
+          <CarouselWrapper>
+            <Carousel size={nfts.length}>
+              {nfts.map((nft) => (
+                <NFTCard data={nft} key={nft.tokenId} />
+              ))}
+            </Carousel>
+          </CarouselWrapper>
         )}
       </Featured>
     </Fragment>

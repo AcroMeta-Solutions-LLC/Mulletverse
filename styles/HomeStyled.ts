@@ -151,3 +151,7 @@ export const MobileOnly = styled.div`
     display: inherit;
   }
 `;
+
+export const CarouselWrapper = styled.div`
+  padding: 0 40px;
+`;

@@ -48,17 +48,17 @@ function Carousel({ children, size, isLoading }: CarouselPropType) {
     <SliderWrapper>
       {size > 0 && (
         <Fragment>
-          {shouldShowLeftArrow && (
+          {/* {shouldShowLeftArrow && (
             <Chevron onClick={() => scrollSlider("left")}>
               <FiChevronLeft size={30} />
             </Chevron>
-          )}
+          )} */}
           <DataSlider ref={sliderRef}>{children}</DataSlider>
-          {shouldShowRightArrow && (
+          {/* {shouldShowRightArrow && (
             <Chevron onClick={() => scrollSlider("right")}>
               <FiChevronRight size={30} />
             </Chevron>
-          )}
+          )} */}
         </Fragment>
       )}
     </SliderWrapper>

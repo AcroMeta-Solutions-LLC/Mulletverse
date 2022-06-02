@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Chain } from "web3uikit";
 import NFTType from "../types/NFTType";
+import TokenType from "../types/TokenType";
 
 export type PortfolioProps = {
   dashboard: {
@@ -25,10 +26,6 @@ export type PortfolioProps = {
     data: NFTType[];
     isLoading: boolean;
     hasError: boolean;
-    total: number;
-    previousCursor: string[];
-    nextCursor?: string;
-    page: number;
   };
 };
 
@@ -36,6 +33,10 @@ type GetNFTProps = {
   cursor?: string | null;
   limit: number;
   account: { getNFTs: Function };
+};
+
+type FetchWishlistProps = {
+  getWishlist: Function;
 };
 
 type NFTResponse = {
@@ -49,7 +50,7 @@ type NFTResponse = {
 const initialState: PortfolioProps = {
   dashboard: { data: [], hasError: false, isLoading: false, total: 0, nextCursor: "", previousCursor: [""], page: 0 },
   collection: { data: [], hasError: false, isLoading: false, total: 0, nextCursor: "", previousCursor: [""], page: 0 },
-  wishlist: { data: [], hasError: false, isLoading: false, total: 0, nextCursor: "", previousCursor: [""], page: 0 },
+  wishlist: { data: [], hasError: false, isLoading: false },
 };
 
 const getNFTList = (list: NFTResponse[]): NFTType[] =>
@@ -91,19 +92,21 @@ export const getCollectionNFTs = createAsyncThunk("portfolio/GET_COLLECTION_NFT"
   };
 });
 
-export const getWishlistNFTs = createAsyncThunk("portfolio/GET_WISHLIST_NFT", async (data: GetNFTProps) => {
-  const address = "0xd45058Bf25BBD8F586124C479D384c8C708CE23A";
-  const chain = "eth";
-  const limit = data.limit;
-  const response = await data.account.getNFTs({ address, chain, limit, cursor: data.cursor });
-  const nftList: NFTType[] = getNFTList(response.result);
-  return {
-    data: nftList,
-    previousCursor: data.cursor,
-    nextCursor: response.cursor,
-    total: response.total,
-    page: response.page,
-  };
+export const getWishlistNFTs = createAsyncThunk("portfolio/GET_WISHLIST_NFT", async (data: FetchWishlistProps) => {
+  const wishlist = await data.getWishlist();
+  const nft: NFTType[] = wishlist.map((token: { get: Function }) => ({
+    address: token.get("token_address"),
+    name: token.get("name"),
+    tokenId: token.get("token_id"),
+    metadata: {
+      name: token.get("metadata").name,
+      image: token.get("metadata").image,
+      external_url: token.get("metadata").external_url,
+      description: token.get("metadata").description,
+      attributes: token.get("metadata").attributes,
+    },
+  }));
+  return nft;
 });
 
 const setPreviousCursor = (cursorList: string[], newCursor: string | null | undefined): string[] => {
@@ -176,13 +179,9 @@ const portfolioSlice = createSlice({
       state.collection.hasError = true;
     });
     builder.addCase(getWishlistNFTs.fulfilled, (state, action) => {
-      state.wishlist.data = action.payload.data;
+      state.wishlist.data = action.payload;
       state.wishlist.isLoading = false;
       state.wishlist.hasError = false;
-      state.wishlist.nextCursor = action.payload?.nextCursor || "";
-      state.wishlist.total = action.payload.total;
-      state.wishlist.page = action.payload.page;
-      state.wishlist.previousCursor = setPreviousCursor(state.wishlist.previousCursor, action.payload?.previousCursor);
     });
     builder.addCase(getWishlistNFTs.pending, (state) => {
       state.wishlist.isLoading = true;

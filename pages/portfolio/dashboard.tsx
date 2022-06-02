@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import { useEffect } from "react";
-import { useMoralis } from "react-moralis";
+import { useMoralis, useMoralisQuery } from "react-moralis";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import Carousel from "../../components/Carousel/Carousel";
@@ -18,6 +18,7 @@ import {
   ChartArea,
   DataLabel,
   Data,
+  EmptyWrapper,
 } from "../../styles/DashboardStyled";
 import StoreType from "../../types/StoreType";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
@@ -25,11 +26,12 @@ import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import COLORS from "../../constants/colors";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { ChartData } from "../../helpers/mocks";
+import Collapsable from "../../components/Collapsable/Collapsable";
 
 const NFTDashboard: NextPage = () => {
-  const { isInitialized, Moralis } = useMoralis();
+  const { isInitialized } = useMoralis();
   const dispatch = useDispatch<AppDispatch>();
-  const PAGE_SIZE_WISHLIST = 10;
+  const { fetch: getWishlist } = useMoralisQuery("Wishlist");
   const {
     data: wishlist,
     isLoading: isWishlistLoading,
@@ -38,12 +40,12 @@ const NFTDashboard: NextPage = () => {
 
   useEffect(() => {
     if (isInitialized) {
-      dispatch(getWishlistNFTs({ account: Moralis.Web3API.account, limit: PAGE_SIZE_WISHLIST }));
+      dispatch(getWishlistNFTs({ getWishlist }));
     }
     return () => {
       dispatch(clearStore());
     };
-  }, [isInitialized, Moralis.Web3API.account, dispatch]);
+  }, [isInitialized, getWishlist, dispatch]);
 
   return (
     <Main>
@@ -107,17 +109,20 @@ const NFTDashboard: NextPage = () => {
         </IncomeTracker>
       </Section>
       <Section>
-        <Title>Wishlist</Title>
-        <EmptyState
-          message="Nothing on your wishlist"
-          isEmpty={wishlist.length === 0 && !hasErrorWishlist && !isWishlistLoading}
-        />
         <ErrorBanner hasError={hasErrorWishlist} />
-        <Carousel size={wishlist.length} isLoading={isWishlistLoading}>
-          {wishlist.map((nft) => (
-            <NFTCard data={nft} key={nft.tokenId} />
-          ))}
-        </Carousel>
+        <Collapsable isOpen title="Wishlist">
+          <Carousel size={wishlist.length} isLoading={isWishlistLoading}>
+            {wishlist.map((nft) => (
+              <NFTCard data={nft} key={nft.tokenId} />
+            ))}
+          </Carousel>
+          <EmptyWrapper>
+            <EmptyState
+              message="Nothing to see here!"
+              isEmpty={wishlist.length === 0 && !hasErrorWishlist && !isWishlistLoading}
+            />
+          </EmptyWrapper>
+        </Collapsable>
       </Section>
     </Main>
   );

@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import StoreType from "../types/StoreType";
 import TokenType from "../types/TokenType";
 
 export type TokenProps = {
@@ -14,6 +15,15 @@ type GetNFTProps = {
     getTokenIdMetadata: Function;
     getTokenAddressTransfers: Function;
   };
+  getWishlist: Function;
+};
+
+type SaveToWishlistProps = {
+  saveToWishlist: Function;
+};
+
+type RemoveFromWishlistProps = {
+  getWishlist: Function;
 };
 
 const initialState: TokenProps = {
@@ -40,6 +50,7 @@ const initialState: TokenProps = {
     token_id: "",
     token_uri: "",
     transfers: [],
+    isInWishlist: false,
   },
   hasError: false,
   isLoading: false,
@@ -48,9 +59,29 @@ const initialState: TokenProps = {
 export const getTokenData = createAsyncThunk("token/GET_TOKEN", async (data: GetNFTProps) => {
   const transfers = await data.token.getTokenAddressTransfers({ address: data.address });
   const response = await data.token.getTokenIdMetadata({ address: data.address, token_id: data.token_id });
+  const wishlist = await data.getWishlist();
   response.transfers = transfers.result;
+  response.isInWishlist = wishlist.find((token: any) => token.get("token_id") === response.token_id);
   return response;
 });
+
+export const saveTokenInWishlist = createAsyncThunk(
+  "token/SAVE_TO_WISHLIST",
+  async (data: SaveToWishlistProps, thunkAPI) => {
+    const state = thunkAPI.getState() as StoreType;
+    data.saveToWishlist(state.token.data);
+  },
+);
+
+export const removeTokenFromWishlist = createAsyncThunk(
+  "token/REMOVE_FROM_WISHLIST",
+  async (data: RemoveFromWishlistProps, thunkAPI) => {
+    const state = thunkAPI.getState() as StoreType;
+    const wishlist = await data.getWishlist();
+    const token = wishlist.find((token: any) => token.get("token_id") === state.token.data.token_id);
+    token.destroy();
+  },
+);
 
 const tokenSlice = createSlice({
   name: "token",
@@ -73,6 +104,30 @@ const tokenSlice = createSlice({
       state.isLoading = true;
     });
     builder.addCase(getTokenData.rejected, (state) => {
+      state.isLoading = false;
+      state.hasError = true;
+    });
+    builder.addCase(saveTokenInWishlist.fulfilled, (state) => {
+      state.data.isInWishlist = true;
+      state.isLoading = false;
+      state.hasError = false;
+    });
+    builder.addCase(saveTokenInWishlist.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(saveTokenInWishlist.rejected, (state) => {
+      state.isLoading = false;
+      state.hasError = true;
+    });
+    builder.addCase(removeTokenFromWishlist.fulfilled, (state) => {
+      state.data.isInWishlist = false;
+      state.isLoading = false;
+      state.hasError = false;
+    });
+    builder.addCase(removeTokenFromWishlist.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(removeTokenFromWishlist.rejected, (state) => {
       state.isLoading = false;
       state.hasError = true;
     });

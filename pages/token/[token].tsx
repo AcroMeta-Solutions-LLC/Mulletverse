@@ -1,16 +1,22 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { Fragment, useEffect } from "react";
-import { useMoralis } from "react-moralis";
+import { useMoralis, useNewMoralisObject, useMoralisQuery } from "react-moralis";
 import { useSelector, useDispatch } from "react-redux";
 import { Skeleton, Tag } from "web3uikit";
 import ErrorBanner from "../../components/ErrorBanner/ErrorBanner";
 import { AppDispatch } from "../../config/store";
-import { clearStore, getTokenData } from "../../config/tokenSlice";
+import { clearStore, getTokenData, removeTokenFromWishlist, saveTokenInWishlist } from "../../config/tokenSlice";
 import { getDisplayName } from "../../helpers/getDisplayName";
 import { getImageURL } from "../../helpers/getTokenImage";
-import { FiHeart, FiClipboard, FiCreditCard } from "react-icons/fi";
+import { FiHeart, FiClipboard, FiCreditCard, FiTrash2 } from "react-icons/fi";
 import StoreType from "../../types/StoreType";
+import Collapsable from "../../components/Collapsable/Collapsable";
+import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { lineChartMockData } from "../../helpers/mocks";
+import Carousel from "../../components/Carousel/Carousel";
+import NFTCard from "../../components/NFTCard/NFTCard";
+import { parseDatetime } from "../../helpers/parseDatetime";
 import {
   Wrapper,
   Main,
@@ -33,12 +39,6 @@ import {
   OwnedBy,
   Table,
 } from "../../styles/TokenStyled";
-import Collapsable from "../../components/Collapsable/Collapsable";
-import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { lineChartMockData } from "../../helpers/mocks";
-import Carousel from "../../components/Carousel/Carousel";
-import NFTCard from "../../components/NFTCard/NFTCard";
-import { parseDatetime } from "../../helpers/parseDatetime";
 
 const Token: NextPage = () => {
   const { isInitialized, Moralis } = useMoralis();
@@ -48,21 +48,20 @@ const Token: NextPage = () => {
   const tokenId: string = Array.isArray(query.id) ? query.id[0] : query.id || "";
   const { data, isLoading, hasError } = useSelector((store: StoreType) => store.token);
   const { nfts: collection } = useSelector((store: StoreType) => store.landing);
+  const { save: saveToWishlist } = useNewMoralisObject("Wishlist");
+  const { fetch: getWishlist } = useMoralisQuery("Wishlist");
 
   useEffect(() => {
     if (isInitialized && tokenId) {
-      dispatch(getTokenData({ token: Moralis.Web3API.token, address: token, token_id: tokenId }));
+      dispatch(getTokenData({ token: Moralis.Web3API.token, address: token, token_id: tokenId, getWishlist }));
     }
-    return () => {
-      dispatch(clearStore());
-    };
-  }, [Moralis.Web3API.token, Moralis.Web3API.account, dispatch, isInitialized, token, tokenId]);
+  }, [Moralis, getWishlist, dispatch, isInitialized, token, tokenId]);
 
   const renderLoader = () => (
     <Main>
       <Wrapper>
         <LoadingWrapper>
-          <Skeleton theme="image" width="300px" height="400px" />
+          <Skeleton theme="image" width="300px" height="430px" />
           <SkeletonColumn>
             <Skeleton theme="text" width="400px" />
             <Skeleton theme="subtitle" width="300px" />
@@ -71,6 +70,14 @@ const Token: NextPage = () => {
       </Wrapper>
     </Main>
   );
+
+  const toggleWishlist = () => {
+    if (data.isInWishlist) {
+      dispatch(removeTokenFromWishlist({ getWishlist }));
+    } else {
+      dispatch(saveTokenInWishlist({ saveToWishlist }));
+    }
+  };
 
   return isLoading ? (
     renderLoader()
@@ -84,9 +91,9 @@ const Token: NextPage = () => {
               <a rel="noopener noreferrer" target="_blank" href={getImageURL(data.metadata?.image || "#")}>
                 <TokenImage src={getImageURL(data.metadata?.image || "#")} />
               </a>
-              <ButtonOutline>
-                <FiHeart size={24} />
-                <span>Add to Wishlist</span>
+              <ButtonOutline onClick={toggleWishlist}>
+                {data.isInWishlist ? <FiTrash2 size={24} /> : <FiHeart size={24} />}
+                <span>{data.isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}</span>
               </ButtonOutline>
             </LeftColumn>
             <RightColumn>

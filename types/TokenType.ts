@@ -23,6 +23,7 @@ export type TokenType = {
   token_id: string;
   token_uri: string;
   transfers?: TransferType[];
+  isInWishlist?: boolean;
 };
 
 export default TokenType;

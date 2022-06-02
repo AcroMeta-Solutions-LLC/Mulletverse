@@ -20,7 +20,7 @@ export const Section = styled.section`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: 0 20px;
+  padding: 40px 20px;
 `;
 
 export const Title = styled.h2`
@@ -71,4 +71,11 @@ export const ChartArea = styled.div`
   @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
     width: 100%;
   }
+`;
+
+export const EmptyWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 `;

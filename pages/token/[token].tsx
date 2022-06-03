@@ -6,14 +6,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { Skeleton, Tag } from "web3uikit";
 import ErrorBanner from "../../components/ErrorBanner/ErrorBanner";
 import { AppDispatch } from "../../config/store";
-import { clearStore, getTokenData, removeTokenFromWishlist, saveTokenInWishlist } from "../../config/tokenSlice";
+import { getTokenData, removeTokenFromWishlist, saveTokenInWishlist } from "../../config/tokenSlice";
 import { getDisplayName } from "../../helpers/getDisplayName";
 import { getImageURL } from "../../helpers/getTokenImage";
 import { FiHeart, FiClipboard, FiCreditCard, FiTrash2 } from "react-icons/fi";
 import StoreType from "../../types/StoreType";
 import Collapsable from "../../components/Collapsable/Collapsable";
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { lineChartMockData } from "../../helpers/mocks";
 import Carousel from "../../components/Carousel/Carousel";
 import NFTCard from "../../components/NFTCard/NFTCard";
 import { parseDatetime } from "../../helpers/parseDatetime";
@@ -39,6 +38,7 @@ import {
   OwnedBy,
   Table,
 } from "../../styles/TokenStyled";
+import { getEthValue } from "../../helpers/getEthValue";
 
 const Token: NextPage = () => {
   const { isInitialized, Moralis } = useMoralis();
@@ -57,16 +57,19 @@ const Token: NextPage = () => {
     }
   }, [Moralis, getWishlist, dispatch, isInitialized, token, tokenId]);
 
-  const renderLoader = () => (
+  const renderLoaderOrError = () => (
     <Main>
       <Wrapper>
-        <LoadingWrapper>
-          <Skeleton theme="image" width="300px" height="430px" />
-          <SkeletonColumn>
-            <Skeleton theme="text" width="400px" />
-            <Skeleton theme="subtitle" width="300px" />
-          </SkeletonColumn>
-        </LoadingWrapper>
+        {hasError && <ErrorBanner hasError={hasError} />}
+        {isLoading && (
+          <LoadingWrapper>
+            <Skeleton theme="image" width="300px" height="430px" />
+            <SkeletonColumn>
+              <Skeleton theme="text" width="400px" />
+              <Skeleton theme="subtitle" width="300px" />
+            </SkeletonColumn>
+          </LoadingWrapper>
+        )}
       </Wrapper>
     </Main>
   );
@@ -79,12 +82,11 @@ const Token: NextPage = () => {
     }
   };
 
-  return isLoading ? (
-    renderLoader()
+  return isLoading || hasError ? (
+    renderLoaderOrError()
   ) : (
     <Main>
       <Wrapper>
-        <ErrorBanner hasError={hasError} />
         <Fragment>
           <Container>
             <LeftColumn>
@@ -141,13 +143,13 @@ const Token: NextPage = () => {
           <ChartContainer>
             <Subtitle>Price History</Subtitle>
             <ResponsiveContainer>
-              <LineChart width={500} height={300} data={lineChartMockData}>
+              <LineChart width={500} height={300} data={data.transfers?.map((t) => ({ price: getEthValue(t.value) }))}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Line dataKey="pv" stroke="#8884d8" />
+                <Line dataKey="price" stroke="#8884d8" />
               </LineChart>
             </ResponsiveContainer>
           </ChartContainer>
@@ -181,7 +183,7 @@ const Token: NextPage = () => {
                 <tbody>
                   {data.transfers?.map((transfer, i) => (
                     <tr key={i}>
-                      <td>{`${transfer.value[0]},${transfer.value.slice(1, 3)}`}</td>
+                      <td>{getEthValue(transfer.value)}</td>
                       <td>{getDisplayName(transfer.from_address)}</td>
                       <td>{getDisplayName(transfer.to_address)}</td>
                       <td>{parseDatetime(transfer.block_timestamp)}</td>

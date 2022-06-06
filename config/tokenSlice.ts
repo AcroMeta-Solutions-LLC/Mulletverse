@@ -11,6 +11,7 @@ export type TokenProps = {
 type GetNFTProps = {
   address: string;
   token_id: string;
+  chain: string;
   token: {
     getTokenIdMetadata: Function;
     getTokenAddressTransfers: Function;
@@ -57,8 +58,12 @@ const initialState: TokenProps = {
 };
 
 export const getTokenData = createAsyncThunk("token/GET_TOKEN", async (data: GetNFTProps) => {
-  const transfers = await data.token.getTokenAddressTransfers({ address: data.address });
-  const response = await data.token.getTokenIdMetadata({ address: data.address, token_id: data.token_id });
+  const transfers = await data.token.getTokenAddressTransfers({ chain: data.chain, address: data.address });
+  const response = await data.token.getTokenIdMetadata({
+    chain: data.chain,
+    address: data.address,
+    token_id: data.token_id,
+  });
   const wishlist = await data.getWishlist();
   response.transfers = transfers.result;
   response.isInWishlist = wishlist.find((token: any) => token.get("token_id") === response.token_id);

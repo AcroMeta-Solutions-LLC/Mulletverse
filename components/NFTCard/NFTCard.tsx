@@ -8,7 +8,7 @@ type NFTBuyCardType = { data: NFTType };
 
 function NFTCard({ data }: NFTBuyCardType) {
   const { isAuthenticated, authenticate } = useMoralis();
-  const tokenURL = `/token/${data.address}?id=${data.tokenId}`;
+  const tokenURL = `/token/${data.address}?id=${data.tokenId}&chain=${data.chain || "eth"}`;
 
   const buy = (): void => {
     if (!isAuthenticated) authenticate();

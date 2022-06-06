@@ -1,11 +1,12 @@
 import styled from "styled-components";
 import { SCREEN } from "../constants/screen";
 import { TYPOGRAPHY } from "../constants/typography";
+import ThemeType from "../types/themeType";
 
 export const Main = styled.main`
   padding: 70px 0 50px 0;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   min-height: calc(100vh - 72px);
 
   @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
@@ -32,4 +33,13 @@ export const Title = styled.h1`
   font-weight: ${TYPOGRAPHY.WEIGHT.HEADLINE_1};
   padding: 0 24px;
   align-self: center;
+`;
+
+export const Filters = styled.header`
+  background-color: ${({ theme }: { theme: ThemeType }) => theme.BACKGROUND};
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  border-bottom: 2px solid ${({ theme }: { theme: ThemeType }) => theme.BORDER};
 `;

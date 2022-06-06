@@ -1,18 +1,22 @@
 import type { NextPage } from "next";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
+import { Select } from "web3uikit";
 import EmptyState from "../../components/EmptyState/EmptyState";
 import ErrorBanner from "../../components/ErrorBanner/ErrorBanner";
 import NFTGrid from "../../components/NFTGrid/NFTGrid";
 import { clearStore, getCollectionNFTs } from "../../config/portfolioSlice";
 import { AppDispatch } from "../../config/store";
-import { Main, Container, Title, GridSection } from "../../styles/CollectionStyled";
+import { CHAINS } from "../../constants/chains";
+import { Main, Container, Title, GridSection, Filters } from "../../styles/CollectionStyled";
+import { ChainType } from "../../types/ChainType";
 import StoreType from "../../types/StoreType";
 
 const YourCollection: NextPage = () => {
   const { isInitialized, Moralis } = useMoralis();
+  const [chain, setChain] = useState<ChainType>("eth");
   const dispatch = useDispatch<AppDispatch>();
   const PAGE_SIZE = 20;
   const { data, isLoading, total, nextCursor, previousCursor, page, hasError } = useSelector(
@@ -20,16 +24,17 @@ const YourCollection: NextPage = () => {
   );
 
   useEffect(() => {
-    if (isInitialized) dispatch(getCollectionNFTs({ account: Moralis.Web3API.account, limit: PAGE_SIZE }));
+    if (isInitialized) dispatch(getCollectionNFTs({ chain, account: Moralis.Web3API.account, limit: PAGE_SIZE }));
     return () => {
       dispatch(clearStore());
     };
-  }, [isInitialized, Moralis.Web3API.account, dispatch]);
+  }, [isInitialized, Moralis.Web3API.account, dispatch, chain]);
 
   const onPreviousPage = () => {
     dispatch(
       getCollectionNFTs({
         account: Moralis.Web3API.account,
+        chain,
         limit: PAGE_SIZE,
         cursor: previousCursor[previousCursor.length - 2],
       }),
@@ -37,11 +42,19 @@ const YourCollection: NextPage = () => {
   };
 
   const onNextPage = () => {
-    dispatch(getCollectionNFTs({ account: Moralis.Web3API.account, limit: PAGE_SIZE, cursor: nextCursor }));
+    dispatch(getCollectionNFTs({ chain, account: Moralis.Web3API.account, limit: PAGE_SIZE, cursor: nextCursor }));
   };
 
   return (
     <Main>
+      <Filters>
+        <Select
+          defaultOptionIndex={0}
+          onChange={({ id }) => setChain(id as ChainType)}
+          options={CHAINS}
+          prefixText="Chain:"
+        />
+      </Filters>
       <Container>
         <Title>Your Collection</Title>
         <EmptyState isEmpty={data.length === 0 && !hasError && !isLoading} />

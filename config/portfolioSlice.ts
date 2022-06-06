@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Chain } from "web3uikit";
+import { ChainType } from "../types/ChainType";
 import NFTType from "../types/NFTType";
-import TokenType from "../types/TokenType";
 
 export type PortfolioProps = {
   dashboard: {
@@ -32,6 +32,7 @@ export type PortfolioProps = {
 type GetNFTProps = {
   cursor?: string | null;
   limit: number;
+  chain: string;
   account: { getNFTs: Function };
 };
 
@@ -53,10 +54,10 @@ const initialState: PortfolioProps = {
   wishlist: { data: [], hasError: false, isLoading: false },
 };
 
-const getNFTList = (list: NFTResponse[]): NFTType[] =>
+const getNFTList = (list: NFTResponse[], chain: ChainType = "eth"): NFTType[] =>
   list?.map((data: NFTResponse) => ({
     address: data.token_address,
-    chain: data.chain,
+    chain,
     tokenId: data.token_id,
     fetchMetadata: false,
     name: data.name,
@@ -79,10 +80,9 @@ export const getDashboardNFTs = createAsyncThunk("portfolio/GET_DASHBOARD_NFT", 
 });
 
 export const getCollectionNFTs = createAsyncThunk("portfolio/GET_COLLECTION_NFT", async (data: GetNFTProps) => {
-  const chain = "eth";
   const limit = data.limit;
-  const response = await data.account.getNFTs({ chain, limit, cursor: data.cursor });
-  const nftList: NFTType[] = getNFTList(response.result);
+  const response = await data.account.getNFTs({ chain: data.chain, limit, cursor: data.cursor });
+  const nftList: NFTType[] = getNFTList(response.result, data.chain as ChainType);
   return {
     data: nftList,
     previousCursor: data.cursor,

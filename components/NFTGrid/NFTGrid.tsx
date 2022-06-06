@@ -53,7 +53,7 @@ function NFTGrid(props: NFTGridType) {
           </CardWrapper>
         ))}
       </Grid>
-      {props.data.length > 0 && (
+      {props.total > props.size && (
         <div>
           <PageButton onClick={hasPreviousPage() ? onPreviousPage : () => {}}>
             <FiChevronLeft color={hasPreviousPage() ? COLORS.DARK : COLORS.GREY} size={24} />

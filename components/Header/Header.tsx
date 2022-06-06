@@ -85,9 +85,6 @@ function Header() {
         <Tab onClick={() => redirectTo("/leaderboard")} isLandingPage={isLandingPage} isOpen={isMenuOpen}>
           Leaderboard
         </Tab>
-        <Tab isLandingPage={isLandingPage} isOpen={isMenuOpen}>
-          Create
-        </Tab>
         {!isAuthenticated && (
           <Tab onClick={openAuthModal} isLandingPage={isLandingPage} isOpen={isMenuOpen}>
             Sign In
@@ -99,9 +96,11 @@ function Header() {
               <UserWrapper isOpen={isMenuOpen}>
                 <Blockie seed={user?.get("ethAddress")} scale={3} />
                 <UserAddress isLandingPage={isLandingPage}>{getDisplayName(user?.get("ethAddress"))}</UserAddress>
+                <FiChevronDown color={isLandingPage ? COLORS.CLEAR : COLORS.DARK} />
               </UserWrapper>
             </DropdownButton>
             <DropdownArea position="right" isLandingPage={isLandingPage} isOpen={isUserMenuOpen}>
+              <DropdownItem onClick={() => redirectTo("/")}>Create</DropdownItem>
               <DropdownItem onClick={logout}>Logout</DropdownItem>
             </DropdownArea>
           </Dropdown>

@@ -42,7 +42,7 @@ export const Search = styled.div<HeaderType>`
   border-radius: 5px;
   padding: 10px;
   width: 80%;
-  max-width: 350px;
+  max-width: 400px;
   display: flex;
   flex-direction: row;
   background-color: rgba(0, 0, 0, 0.1);

@@ -41,11 +41,12 @@ import {
 import { getEthValue } from "../../helpers/getEthValue";
 
 const Token: NextPage = () => {
-  const { isInitialized, Moralis } = useMoralis();
+  const { isInitialized, Moralis, user } = useMoralis();
   const { query } = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const token: string = Array.isArray(query.token) ? query.token[0] : query.token || "";
   const tokenId: string = Array.isArray(query.id) ? query.id[0] : query.id || "";
+  const chain: string = Array.isArray(query.chain) ? query.chain[0] : query.chain || "eth";
   const { data, isLoading, hasError } = useSelector((store: StoreType) => store.token);
   const { nfts: collection } = useSelector((store: StoreType) => store.landing);
   const { save: saveToWishlist } = useNewMoralisObject("Wishlist");
@@ -53,9 +54,9 @@ const Token: NextPage = () => {
 
   useEffect(() => {
     if (isInitialized && tokenId) {
-      dispatch(getTokenData({ token: Moralis.Web3API.token, address: token, token_id: tokenId, getWishlist }));
+      dispatch(getTokenData({ token: Moralis.Web3API.token, address: token, token_id: tokenId, chain, getWishlist }));
     }
-  }, [Moralis, getWishlist, dispatch, isInitialized, token, tokenId]);
+  }, [Moralis, getWishlist, dispatch, isInitialized, token, tokenId, chain]);
 
   const renderLoaderOrError = () => (
     <Main>
@@ -101,7 +102,9 @@ const Token: NextPage = () => {
             <RightColumn>
               <Title>{data.metadata.name}</Title>
               <Subtitle>{getDisplayName(token)}</Subtitle>
-              <OwnedBy>Owned by: {getDisplayName(data.owner_of)}</OwnedBy>
+              <OwnedBy>
+                Owned by: {data.owner_of === user?.get("ethAddress") ? "You" : getDisplayName(data.owner_of)}
+              </OwnedBy>
               <ButtonRow>
                 <Button>
                   <FiCreditCard size={24} />

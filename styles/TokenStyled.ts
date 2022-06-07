@@ -111,7 +111,8 @@ export const Button = styled.button`
   background-color: ${({ theme }: { theme: ThemeType }) => theme.PRIMARY};
   color: ${({ theme }: { theme: ThemeType }) => theme.BACKGROUND};
   border: 2px solid ${({ theme }: { theme: ThemeType }) => theme.PRIMARY};
-  padding: 15px;
+  padding: 0 15px;
+  height: 50px;
   border-radius: 7px;
   cursor: pointer;
   min-width: 110px;
@@ -130,7 +131,8 @@ export const ButtonOutline = styled.button`
   background-color: transparent;
   color: ${({ theme }: { theme: ThemeType }) => theme.PRIMARY};
   border: 2px solid ${({ theme }: { theme: ThemeType }) => theme.PRIMARY};
-  padding: 15px;
+  padding: 0 15px;
+  height: 50px;
   border-radius: 7px;
   cursor: pointer;
   min-width: 110px;
@@ -147,6 +149,12 @@ export const ButtonRow = styled.div`
   flex-direction: row;
   margin: 10px 0;
   gap: 15px;
+`;
+
+export const SeeMoreButton = styled(Button)`
+  width: 200px;
+  margin-top: 20px;
+  align-self: center;
 `;
 
 export const Detail = styled.div`
@@ -190,4 +198,10 @@ export const OwnedBy = styled.span`
 export const Table = styled.table`
   width: 100%;
   text-align: left;
+`;
+
+export const TokenHeader = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
 `;

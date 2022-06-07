@@ -118,7 +118,7 @@ const NFTDashboard: NextPage = () => {
           </Carousel>
           <EmptyWrapper>
             <EmptyState
-              message="Nothing to see here!"
+              message="No items to display"
               isEmpty={wishlist.length === 0 && !hasErrorWishlist && !isWishlistLoading}
             />
           </EmptyWrapper>

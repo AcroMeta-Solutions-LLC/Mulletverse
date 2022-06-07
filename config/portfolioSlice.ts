@@ -1,6 +1,6 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Chain } from "web3uikit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ChainType } from "../types/ChainType";
+import { NFTResponse } from "../types/NFTResponse";
 import NFTType from "../types/NFTType";
 
 export type PortfolioProps = {
@@ -21,6 +21,7 @@ export type PortfolioProps = {
     previousCursor: string[];
     nextCursor?: string;
     page: number;
+    chain: ChainType;
   };
   wishlist: {
     data: NFTType[];
@@ -40,17 +41,18 @@ type FetchWishlistProps = {
   getWishlist: Function;
 };
 
-type NFTResponse = {
-  token_address: string;
-  chain: Chain;
-  token_id: string;
-  name: string;
-  metadata: string;
-};
-
 const initialState: PortfolioProps = {
   dashboard: { data: [], hasError: false, isLoading: false, total: 0, nextCursor: "", previousCursor: [""], page: 0 },
-  collection: { data: [], hasError: false, isLoading: false, total: 0, nextCursor: "", previousCursor: [""], page: 0 },
+  collection: {
+    data: [],
+    hasError: false,
+    isLoading: false,
+    total: 0,
+    nextCursor: "",
+    previousCursor: [""],
+    page: 0,
+    chain: "eth",
+  },
   wishlist: { data: [], hasError: false, isLoading: false },
 };
 
@@ -98,6 +100,7 @@ export const getWishlistNFTs = createAsyncThunk("portfolio/GET_WISHLIST_NFT", as
     address: token.get("token_address"),
     name: token.get("name"),
     tokenId: token.get("token_id"),
+    chain: token.get("chain"),
     metadata: {
       name: token.get("metadata").name,
       image: token.get("metadata").image,
@@ -137,6 +140,9 @@ const portfolioSlice = createSlice({
       state.collection.page = 0;
       state.collection.total = 0;
       state.collection.hasError = false;
+    },
+    setCollectionChain(state: PortfolioProps, action: PayloadAction<ChainType>) {
+      state.collection.chain = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -193,6 +199,6 @@ const portfolioSlice = createSlice({
   },
 });
 
-export const { clearStore } = portfolioSlice.actions;
+export const { clearStore, setCollectionChain } = portfolioSlice.actions;
 
 export default portfolioSlice.reducer;

@@ -127,7 +127,7 @@ export const DropdownArea = styled.ul<DropdownAreaType>`
   display: ${(props) => (props.isOpen ? "flex" : "none")};
   flex-direction: column;
   width: 200px;
-  top: 55px;
+  top: 54px;
   left: ${(props) => (props.position === "left" ? "-15px" : "unset")};
   right: ${(props) => (props.position === "right" ? "-15px" : "unset")};
   list-style-type: none;

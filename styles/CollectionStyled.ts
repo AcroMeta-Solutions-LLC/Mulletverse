@@ -18,6 +18,7 @@ export const Container = styled.div`
   max-width: ${SCREEN.DESKTOP};
   display: flex;
   flex-direction: column;
+  align-self: center;
 `;
 
 export const GridSection = styled.section`

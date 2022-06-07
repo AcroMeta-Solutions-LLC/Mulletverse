@@ -7,7 +7,7 @@ function EmptyState({ isEmpty, message }: ErrorBannerPropType) {
   return isEmpty ? (
     <EmptyWrapper>
       <Illustration logo="lazyNft" width={200} height={190} />
-      <EmptyMessage>{message ? message : "Nothing here!"}</EmptyMessage>
+      <EmptyMessage>{message ? message : "No items to display"}</EmptyMessage>
     </EmptyWrapper>
   ) : (
     <></>

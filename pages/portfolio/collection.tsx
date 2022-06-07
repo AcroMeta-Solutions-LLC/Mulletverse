@@ -7,7 +7,7 @@ import { Select } from "web3uikit";
 import EmptyState from "../../components/EmptyState/EmptyState";
 import ErrorBanner from "../../components/ErrorBanner/ErrorBanner";
 import NFTGrid from "../../components/NFTGrid/NFTGrid";
-import { clearStore, getCollectionNFTs } from "../../config/portfolioSlice";
+import { clearStore, getCollectionNFTs, setCollectionChain } from "../../config/portfolioSlice";
 import { AppDispatch } from "../../config/store";
 import { CHAINS } from "../../constants/chains";
 import { Main, Container, Title, GridSection, Filters } from "../../styles/CollectionStyled";
@@ -16,10 +16,9 @@ import StoreType from "../../types/StoreType";
 
 const YourCollection: NextPage = () => {
   const { isInitialized, Moralis } = useMoralis();
-  const [chain, setChain] = useState<ChainType>("eth");
   const dispatch = useDispatch<AppDispatch>();
   const PAGE_SIZE = 20;
-  const { data, isLoading, total, nextCursor, previousCursor, page, hasError } = useSelector(
+  const { data, isLoading, total, nextCursor, previousCursor, page, hasError, chain } = useSelector(
     (store: StoreType) => store.portfolio.collection,
   );
 
@@ -50,9 +49,10 @@ const YourCollection: NextPage = () => {
       <Filters>
         <Select
           defaultOptionIndex={0}
-          onChange={({ id }) => setChain(id as ChainType)}
+          onChange={({ id }) => dispatch(setCollectionChain(id as ChainType))}
           options={CHAINS}
           prefixText="Chain:"
+          value={chain}
         />
       </Filters>
       <Container>

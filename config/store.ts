@@ -9,9 +9,9 @@ import tokenReducer from "./tokenSlice";
 
 export const rootReducer = combineReducers({
   marketplace: marketplaceReducer,
-  portfolio: portfolioReducer,
   token: tokenReducer,
   landing: persistReducer({ key: "landing", storage }, landingReducer),
+  portfolio: persistReducer({ key: "portfolio", storage }, portfolioReducer),
 });
 
 const store = configureStore({

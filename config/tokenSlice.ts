@@ -1,9 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { NFTResponse } from "../types/NFTResponse";
+import NFTType from "../types/NFTType";
 import StoreType from "../types/StoreType";
 import TokenType from "../types/TokenType";
 
 export type TokenProps = {
   data: TokenType;
+  collection: NFTType[];
   isLoading: boolean;
   hasError: boolean;
 };
@@ -15,6 +18,7 @@ type GetNFTProps = {
   token: {
     getTokenIdMetadata: Function;
     getTokenAddressTransfers: Function;
+    getAllTokenIds: Function;
   };
   getWishlist: Function;
 };
@@ -53,6 +57,7 @@ const initialState: TokenProps = {
     transfers: [],
     isInWishlist: false,
   },
+  collection: [],
   hasError: false,
   isLoading: false,
 };
@@ -66,8 +71,17 @@ export const getTokenData = createAsyncThunk("token/GET_TOKEN", async (data: Get
   });
   const wishlist = await data.getWishlist();
   response.transfers = transfers.result;
-  response.isInWishlist = wishlist.find((token: any) => token.get("token_id") === response.token_id);
-  return response;
+  response.isInWishlist = !!wishlist.find((token: any) => token.get("token_id") === response.token_id);
+  response.chain = data.chain;
+  const { result } = await data.token.getAllTokenIds({ chain: data.chain, address: response.token_address, limit: 10 });
+  const collection: NFTType[] = result.map((token: NFTResponse) => ({
+    address: token.token_address,
+    chain: data.chain,
+    name: token.name,
+    tokenId: token.token_id,
+    metadata: JSON.parse(token.metadata),
+  }));
+  return { tokenData: response, collection };
 });
 
 export const saveTokenInWishlist = createAsyncThunk(
@@ -100,8 +114,9 @@ const tokenSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(getTokenData.fulfilled, (state, action) => {
-      state.data = action.payload;
-      state.data.metadata = JSON.parse(action.payload.metadata);
+      state.data = action.payload.tokenData;
+      state.data.metadata = JSON.parse(action.payload.tokenData.metadata);
+      state.collection = action.payload.collection;
       state.isLoading = false;
       state.hasError = false;
     });

@@ -6,12 +6,16 @@ import TokenType from "../types/TokenType";
 
 export type TokenProps = {
   data: TokenType;
-  collection: NFTType[];
+  collection: {
+    data: NFTType[];
+    isLoading: boolean;
+    hasError: boolean;
+  };
   isLoading: boolean;
   hasError: boolean;
 };
 
-type GetNFTProps = {
+type GetTokenProps = {
   address: string;
   token_id: string;
   chain: string;
@@ -21,6 +25,14 @@ type GetNFTProps = {
     getAllTokenIds: Function;
   };
   getWishlist: Function;
+};
+
+type GetCollectionProps = {
+  address: string;
+  chain: string;
+  token: {
+    getAllTokenIds: Function;
+  };
 };
 
 type SaveToWishlistProps = {
@@ -57,12 +69,16 @@ const initialState: TokenProps = {
     transfers: [],
     isInWishlist: false,
   },
-  collection: [],
+  collection: {
+    data: [],
+    isLoading: false,
+    hasError: false,
+  },
   hasError: false,
   isLoading: false,
 };
 
-export const getTokenData = createAsyncThunk("token/GET_TOKEN", async (data: GetNFTProps) => {
+export const getTokenData = createAsyncThunk("token/GET_TOKEN", async (data: GetTokenProps) => {
   const transfers = await data.token.getTokenAddressTransfers({ chain: data.chain, address: data.address });
   const response = await data.token.getTokenIdMetadata({
     chain: data.chain,
@@ -73,7 +89,11 @@ export const getTokenData = createAsyncThunk("token/GET_TOKEN", async (data: Get
   response.transfers = transfers.result;
   response.isInWishlist = !!wishlist.find((token: any) => token.get("token_id") === response.token_id);
   response.chain = data.chain;
-  const { result } = await data.token.getAllTokenIds({ chain: data.chain, address: response.token_address, limit: 10 });
+  return response;
+});
+
+export const getCollection = createAsyncThunk("token/GET_COLLECTION", async (data: GetCollectionProps) => {
+  const { result } = await data.token.getAllTokenIds({ chain: data.chain, address: data.address, limit: 10 });
   const collection: NFTType[] = result.map((token: NFTResponse) => ({
     address: token.token_address,
     chain: data.chain,
@@ -81,7 +101,7 @@ export const getTokenData = createAsyncThunk("token/GET_TOKEN", async (data: Get
     tokenId: token.token_id,
     metadata: JSON.parse(token.metadata),
   }));
-  return { tokenData: response, collection };
+  return collection;
 });
 
 export const saveTokenInWishlist = createAsyncThunk(
@@ -114,9 +134,8 @@ const tokenSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(getTokenData.fulfilled, (state, action) => {
-      state.data = action.payload.tokenData;
-      state.data.metadata = JSON.parse(action.payload.tokenData.metadata);
-      state.collection = action.payload.collection;
+      state.data = action.payload;
+      state.data.metadata = JSON.parse(action.payload.metadata);
       state.isLoading = false;
       state.hasError = false;
     });
@@ -126,6 +145,18 @@ const tokenSlice = createSlice({
     builder.addCase(getTokenData.rejected, (state) => {
       state.isLoading = false;
       state.hasError = true;
+    });
+    builder.addCase(getCollection.fulfilled, (state, action) => {
+      state.collection.data = action.payload;
+      state.collection.isLoading = false;
+      state.collection.hasError = false;
+    });
+    builder.addCase(getCollection.pending, (state) => {
+      state.collection.isLoading = true;
+    });
+    builder.addCase(getCollection.rejected, (state) => {
+      state.collection.isLoading = false;
+      state.collection.hasError = true;
     });
     builder.addCase(saveTokenInWishlist.fulfilled, (state) => {
       state.data.isInWishlist = true;

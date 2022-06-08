@@ -1,16 +1,16 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import { Fragment, useEffect } from "react";
+import { useEffect } from "react";
 import { useMoralis, useNewMoralisObject, useMoralisQuery } from "react-moralis";
 import { useSelector, useDispatch } from "react-redux";
-import { Icon, Skeleton, Tag } from "web3uikit";
+import { Icon, Skeleton, Tag, useNotification } from "web3uikit";
 import ErrorBanner from "../../components/ErrorBanner/ErrorBanner";
 import { AppDispatch } from "../../config/store";
-import { getTokenData, removeTokenFromWishlist, saveTokenInWishlist } from "../../config/tokenSlice";
+import { getTokenData, getCollection, removeTokenFromWishlist, saveTokenInWishlist } from "../../config/tokenSlice";
 import { getDisplayName } from "../../helpers/getDisplayName";
 import { getImageURL } from "../../helpers/getTokenImage";
-import { FiClipboard, FiCreditCard } from "react-icons/fi";
-import { FaRegHeart, FaHeart } from "react-icons/fa";
+import { FiTag } from "react-icons/fi";
+import { FaRegHeart, FaHeart, FaWallet } from "react-icons/fa";
 import StoreType from "../../types/StoreType";
 import Collapsable from "../../components/Collapsable/Collapsable";
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
@@ -53,10 +53,12 @@ const Token: NextPage = () => {
   const { data, isLoading, hasError, collection } = useSelector((store: StoreType) => store.token);
   const { save: saveToWishlist } = useNewMoralisObject("Wishlist");
   const { fetch: getWishlist } = useMoralisQuery("Wishlist");
+  const alert = useNotification();
 
   useEffect(() => {
     if (isInitialized && tokenId) {
       dispatch(getTokenData({ token: Moralis.Web3API.token, address: token, token_id: tokenId, chain, getWishlist }));
+      dispatch(getCollection({ token: Moralis.Web3API.token, address: token, chain }));
     }
   }, [Moralis, getWishlist, dispatch, isInitialized, token, tokenId, chain]);
 
@@ -80,8 +82,10 @@ const Token: NextPage = () => {
   const toggleWishlist = () => {
     if (data.isInWishlist) {
       dispatch(removeTokenFromWishlist({ getWishlist }));
+      alert({ type: "info", title: "Removed from the Wishlist", message: "", position: "topR" });
     } else {
       dispatch(saveTokenInWishlist({ saveToWishlist }));
+      alert({ type: "info", title: "Added to the Wishlist", message: "", position: "topR" });
     }
   };
 
@@ -103,19 +107,19 @@ const Token: NextPage = () => {
           <RightColumn>
             <Title>{data.metadata.name}</Title>
             <TokenHeader>
-              <Subtitle>{getDisplayName(token)}</Subtitle>
-              <Icon size={24} svg={chain as any} />
+              <span>{getDisplayName(token)}</span>
+              <Icon size={20} svg={chain as any} />
             </TokenHeader>
             <OwnedBy>
               Owned by: {data.owner_of === user?.get("ethAddress") ? "You" : getDisplayName(data.owner_of)}
             </OwnedBy>
             <ButtonRow>
               <Button>
-                <FiCreditCard size={24} />
+                <FaWallet size={24} />
                 <span>Buy now</span>
               </Button>
               <ButtonOutline>
-                <FiClipboard size={24} />
+                <FiTag size={24} />
                 <span>Make offer</span>
               </ButtonOutline>
             </ButtonRow>
@@ -200,9 +204,9 @@ const Token: NextPage = () => {
             </Table>
           </Collapsable>
         </InfoContainer>
-        <Collapsable isOpen={collection.length > 0} title="More from Collection">
-          <Carousel size={collection.length}>
-            {collection.map((nft) => (
+        <Collapsable isOpen={collection.data.length > 0} title="More from Collection">
+          <Carousel size={collection.data.length} isLoading={collection.isLoading}>
+            {collection.data.map((nft) => (
               <NFTCard data={nft} key={nft.tokenId} />
             ))}
           </Carousel>

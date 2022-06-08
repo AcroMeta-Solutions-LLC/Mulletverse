@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { SCREEN } from "../../constants/screen";
+import { TYPOGRAPHY } from "../../constants/typography";
 import ThemeType from "../../types/themeType";
 
 export const NFTWrapper = styled.div`
@@ -8,9 +9,9 @@ export const NFTWrapper = styled.div`
   flex-direction: column;
   justify-content: space-between;
   border: 1px solid ${({ theme }: { theme: ThemeType }) => theme.BORDER};
-  width: 230px;
-  min-width: 230px;
-  height: 330px;
+  width: 260px;
+  min-width: 260px;
+  height: 380px;
   cursor: pointer;
   transition: all ease 0.3s;
 
@@ -47,24 +48,34 @@ export const Content = styled.div`
   border-top: 1px solid ${({ theme }: { theme: ThemeType }) => theme.BORDER};
   border-bottom: 1px solid ${({ theme }: { theme: ThemeType }) => theme.BORDER};
   padding: 10px;
+  display: flex;
+  flex-direction: column;
 `;
 
 export const Title = styled.span`
   color: ${({ theme }: { theme: ThemeType }) => theme.TITLE};
+  font-size: ${TYPOGRAPHY.SIZE.CAPTION};
 `;
 
-export const ButtonBuy = styled.button`
-  background-color: ${({ theme }: { theme: ThemeType }) => theme.PRIMARY};
-  color: ${({ theme }: { theme: ThemeType }) => theme.BACKGROUND};
-  border: none;
-  align-self: flex-end;
-  width: 100%;
-  padding: 10px 0;
+export const Actions = styled.div`
+  background-color: ${({ theme }: { theme: ThemeType }) => theme.NAVIGATION};
+  color: ${({ theme }: { theme: ThemeType }) => theme.PRIMARY};
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 10px;
   border-radius: 0 0 5px 5px;
-  cursor: pointer;
   font-weight: 600;
 
   @media only screen and (max-width: ${SCREEN.MOBILE}) {
     border-radius: 0;
   }
+`;
+
+export const Buy = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 `;

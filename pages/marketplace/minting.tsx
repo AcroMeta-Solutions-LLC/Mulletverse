@@ -67,7 +67,7 @@ const Marketplace: NextPage = () => {
               onPrevious={onPreviousPage}
               size={PAGE_SIZE}
               total={total}
-              data={data}
+              data={data.filter((nft) => nft.metadata)}
               isLoading={isLoading}
               page={page}
             />

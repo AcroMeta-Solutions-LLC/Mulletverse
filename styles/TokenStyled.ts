@@ -34,8 +34,8 @@ export const Title = styled.h1`
 `;
 
 export const Subtitle = styled.h2`
-  font-size: ${TYPOGRAPHY.SIZE.HEADLINE_2};
-  font-weight: ${TYPOGRAPHY.WEIGHT.HEADLINE_2};
+  font-size: ${TYPOGRAPHY.SIZE.HEADLINE_4};
+  font-weight: ${TYPOGRAPHY.WEIGHT.HEADLINE_4};
   margin: 0;
 `;
 
@@ -98,7 +98,7 @@ export const TokenImage = styled.div`
   background-repeat: no-repeat;
   background-size: cover;
   width: 300px;
-  height: 430px;
+  height: 425px;
   border-radius: 10px;
   margin-bottom: 15px;
   border: 1px solid ${({ theme }: { theme: ThemeType }) => theme.BORDER};
@@ -182,12 +182,9 @@ export const ChartContainer = styled.section`
 
 export const InfoContainer = styled.section`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: 20px;
   margin: 20px 0;
-  @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
-    flex-direction: column;
-  }
 `;
 
 export const OwnedBy = styled.span`
@@ -204,4 +201,8 @@ export const TokenHeader = styled.div`
   display: flex;
   flex-direction: row;
   gap: 10px;
+  background-color: ${({ theme }: { theme: ThemeType }) => theme.BACKGROUND};
+  width: max-content;
+  padding: 5px 20px;
+  border-radius: 20px;
 `;

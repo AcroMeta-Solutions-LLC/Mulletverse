@@ -1,10 +1,26 @@
 import type { NextPage } from "next";
-import { Section, Main, Title } from "../styles/LeaderboardStyled";
+import { Section, Main, Title, CollectionImage } from "../styles/LeaderboardStyled";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import COLORS from "../constants/colors";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { LeaderboardType } from "../types/LeaderboardType";
 
 const Leaderboard: NextPage = () => {
+  const [leaderboardData, setLeaderboardData] = useState<LeaderboardType[]>([]);
+
+  useEffect(() => {
+    axios
+      .get("https://api.cryptoslam.io/v1/collections/top-100?timeRange=all")
+      .then(({ data }: { data: LeaderboardType[] }) => {
+        setLeaderboardData(data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
   return (
     <Main>
       <Section>
@@ -24,17 +40,19 @@ const Leaderboard: NextPage = () => {
             </Tr>
           </Thead>
           <Tbody>
-            {[...Array(10)].map((_, i) => (
+            {leaderboardData.map((item, i) => (
               <Tr key={i}>
-                <Td>Tablescon</Td>
-                <Td>9 April 2019</Td>
-                <Td>East Annex</Td>
-                <Td>Tablescon</Td>
-                <Td>9 April 2019</Td>
-                <Td>East Annex</Td>
-                <Td>9 April 2019</Td>
-                <Td>Tablescon</Td>
-                <Td>Tablescon</Td>
+                <Td>
+                  <CollectionImage src={item.iconUrl} />
+                </Td>
+                <Td>{item.contractName}</Td>
+                <Td>0</Td>
+                <Td>0</Td>
+                <Td>0</Td>
+                <Td>0</Td>
+                <Td>0</Td>
+                <Td>{item.owners}</Td>
+                <Td>0</Td>
               </Tr>
             ))}
           </Tbody>

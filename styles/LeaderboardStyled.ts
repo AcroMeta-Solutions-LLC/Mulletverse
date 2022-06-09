@@ -28,3 +28,8 @@ export const Title = styled.h2`
   align-self: center;
   margin: 45px 0;
 `;
+
+export const CollectionImage = styled.img`
+  width: 50px;
+  height: 50px;
+`;

@@ -3,10 +3,16 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useMoralis, useNewMoralisObject, useMoralisQuery } from "react-moralis";
 import { useSelector, useDispatch } from "react-redux";
-import { Icon, Skeleton, Tag, useNotification } from "web3uikit";
+import { Icon, Loading, Skeleton, Tag, useNotification } from "web3uikit";
 import ErrorBanner from "../../components/ErrorBanner/ErrorBanner";
 import { AppDispatch } from "../../config/store";
-import { getTokenData, getCollection, removeTokenFromWishlist, saveTokenInWishlist } from "../../config/tokenSlice";
+import {
+  getTokenData,
+  getCollection,
+  removeTokenFromWishlist,
+  saveTokenInWishlist,
+  getOwners,
+} from "../../config/tokenSlice";
 import { getDisplayName } from "../../helpers/getDisplayName";
 import { getImageURL } from "../../helpers/getTokenImage";
 import { FiTag } from "react-icons/fi";
@@ -41,7 +47,10 @@ import {
   Table,
   TokenHeader,
   SeeMoreButton,
+  TitleWrapper,
 } from "../../styles/TokenStyled";
+import Link from "next/link";
+import COLORS from "../../constants/colors";
 
 const Token: NextPage = () => {
   const { isInitialized, Moralis, user } = useMoralis();
@@ -50,7 +59,7 @@ const Token: NextPage = () => {
   const token: string = Array.isArray(query.token) ? query.token[0] : query.token || "";
   const tokenId: string = Array.isArray(query.id) ? query.id[0] : query.id || "";
   const chain: string = Array.isArray(query.chain) ? query.chain[0] : query.chain || "eth";
-  const { data, isLoading, hasError, collection } = useSelector((store: StoreType) => store.token);
+  const { data, isLoading, hasError, collection, owners } = useSelector((store: StoreType) => store.token);
   const { save: saveToWishlist } = useNewMoralisObject("Wishlist");
   const { fetch: getWishlist } = useMoralisQuery("Wishlist");
   const alert = useNotification();
@@ -58,7 +67,8 @@ const Token: NextPage = () => {
   useEffect(() => {
     if (isInitialized && tokenId) {
       dispatch(getTokenData({ token: Moralis.Web3API.token, address: token, token_id: tokenId, chain, getWishlist }));
-      dispatch(getCollection({ token: Moralis.Web3API.token, address: token, chain }));
+      // dispatch(getCollection({ token: Moralis.Web3API.token, address: token, chain }));
+      dispatch(getOwners({ token: Moralis.Web3API.token, address: token, chain, token_id: tokenId }));
     }
   }, [Moralis, getWishlist, dispatch, isInitialized, token, tokenId, chain]);
 
@@ -68,11 +78,7 @@ const Token: NextPage = () => {
         {hasError && <ErrorBanner hasError={hasError} />}
         {isLoading && (
           <LoadingWrapper>
-            <Skeleton theme="image" width="300px" height="430px" />
-            <SkeletonColumn>
-              <Skeleton theme="text" width="400px" />
-              <Skeleton theme="subtitle" width="300px" />
-            </SkeletonColumn>
+            <Loading spinnerColor={COLORS.PURPLE.DARK} />
           </LoadingWrapper>
         )}
       </Wrapper>
@@ -105,14 +111,19 @@ const Token: NextPage = () => {
             </ButtonOutline>
           </LeftColumn>
           <RightColumn>
-            <Title>{data.metadata.name}</Title>
-            <TokenHeader>
-              <span>{getDisplayName(token)}</span>
-              <Icon size={20} svg={chain as any} />
-            </TokenHeader>
-            <OwnedBy>
-              Owned by: {data.owner_of === user?.get("ethAddress") ? "You" : getDisplayName(data.owner_of)}
-            </OwnedBy>
+            <TitleWrapper>
+              <Title>{data.metadata.name}</Title>
+              <TokenHeader>
+                <span>{getDisplayName(token)}</span>
+                <Icon size={20} svg={chain as any} />
+              </TokenHeader>
+            </TitleWrapper>
+            <span>
+              Owned by:{" "}
+              <Link href={`/artist/${data.owner_of}`}>
+                <OwnedBy>{data.owner_of === user?.get("ethAddress") ? "You" : getDisplayName(data.owner_of)}</OwnedBy>
+              </Link>
+            </span>
             <ButtonRow>
               <Button>
                 <FaWallet size={24} />
@@ -211,7 +222,11 @@ const Token: NextPage = () => {
             ))}
           </Carousel>
         </Collapsable>
-        <SeeMoreButton>See More</SeeMoreButton>
+        {owners.length > 0 && (
+          <Link href={`/artist/${owners[owners.length - 1].owner_of}`}>
+            <SeeMoreButton>See More</SeeMoreButton>
+          </Link>
+        )}
       </Wrapper>
     </Main>
   );

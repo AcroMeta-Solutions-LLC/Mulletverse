@@ -14,29 +14,28 @@ export const Main = styled.main`
   }
 `;
 
-export const Section = styled.section`
-  max-width: ${SCREEN.DESKTOP};
+export const Wrapper = styled.div`
+  max-width: ${SCREEN.TABLET_BIG};
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: 0 20px;
+  padding: 50px 20px 0 20px;
+
+  @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
+    padding-top: 20px;
+  }
 `;
 
-export const Title = styled.h2`
+export const Title = styled.h1`
   font-size: ${TYPOGRAPHY.SIZE.HEADLINE_1};
   font-weight: ${TYPOGRAPHY.WEIGHT.HEADLINE_1};
-  align-self: center;
-  margin: 45px 0;
-`;
-
-export const CollectionImage = styled.img`
-  width: 50px;
-  height: 50px;
+  margin: 0;
 `;
 
 export const LoadingWrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 250px);
 `;

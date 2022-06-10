@@ -43,11 +43,8 @@ export const LoadingWrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-
-  @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
-    flex-direction: column;
-    align-items: center;
-  }
+  align-items: center;
+  min-height: calc(100vh - 250px);
 `;
 
 export const SkeletonColumn = styled.div`
@@ -98,7 +95,7 @@ export const TokenImage = styled.div`
   background-repeat: no-repeat;
   background-size: cover;
   width: 300px;
-  height: 425px;
+  height: 380px;
   border-radius: 10px;
   margin-bottom: 15px;
   border: 1px solid ${({ theme }: { theme: ThemeType }) => theme.BORDER};
@@ -187,9 +184,10 @@ export const InfoContainer = styled.section`
   margin: 20px 0;
 `;
 
-export const OwnedBy = styled.span`
+export const OwnedBy = styled.a`
   color: ${({ theme }: { theme: ThemeType }) => theme.TITLE};
   font-weight: ${TYPOGRAPHY.WEIGHT.SUBTITLE_1};
+  cursor: pointer;
 `;
 
 export const Table = styled.table`
@@ -205,4 +203,13 @@ export const TokenHeader = styled.div`
   width: max-content;
   padding: 5px 20px;
   border-radius: 20px;
+  max-height: 35px;
+`;
+
+export const TitleWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
 `;

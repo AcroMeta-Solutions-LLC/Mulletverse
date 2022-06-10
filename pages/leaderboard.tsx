@@ -1,27 +1,41 @@
 import type { NextPage } from "next";
-import { Section, Main, Title, CollectionImage } from "../styles/LeaderboardStyled";
+import { Section, Main, Title, CollectionImage, LoadingWrapper } from "../styles/LeaderboardStyled";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import COLORS from "../constants/colors";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { LeaderboardType } from "../types/LeaderboardType";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../config/store";
+import StoreType from "../types/StoreType";
+import { useSelector } from "react-redux";
+import { getLeaderboard } from "../config/leaderboardSlice";
+import ErrorBanner from "../components/ErrorBanner/ErrorBanner";
+import { Loading } from "web3uikit";
 
 const Leaderboard: NextPage = () => {
-  const [leaderboardData, setLeaderboardData] = useState<LeaderboardType[]>([]);
+  const dispatch = useDispatch<AppDispatch>();
+  const { data, isLoading, hasError } = useSelector((store: StoreType) => store.leaderboard);
 
   useEffect(() => {
-    axios
-      .get("https://api.cryptoslam.io/v1/collections/top-100?timeRange=all")
-      .then(({ data }: { data: LeaderboardType[] }) => {
-        setLeaderboardData(data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+    dispatch(getLeaderboard());
+  }, [dispatch]);
 
-  return (
+  const renderLoaderOrError = () => (
+    <Main>
+      <Section>
+        {hasError && <ErrorBanner hasError={hasError} />}
+        {isLoading && (
+          <LoadingWrapper>
+            <Loading spinnerColor={COLORS.PURPLE.DARK} />
+          </LoadingWrapper>
+        )}
+      </Section>
+    </Main>
+  );
+
+  return isLoading || hasError ? (
+    renderLoaderOrError()
+  ) : (
     <Main>
       <Section>
         <Title>Leaderboard</Title>
@@ -40,7 +54,7 @@ const Leaderboard: NextPage = () => {
             </Tr>
           </Thead>
           <Tbody>
-            {leaderboardData.map((item, i) => (
+            {data.map((item, i) => (
               <Tr key={i}>
                 <Td>
                   <CollectionImage src={item.iconUrl} />

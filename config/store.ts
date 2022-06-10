@@ -6,10 +6,12 @@ import marketplaceReducer from "./marketplaceSlice";
 import portfolioReducer from "./portfolioSlice";
 import landingReducer from "./landingSlice";
 import tokenReducer from "./tokenSlice";
+import leaderboardReducer from "./leaderboardSlice";
 
 export const rootReducer = combineReducers({
   marketplace: marketplaceReducer,
   token: tokenReducer,
+  leaderboard: leaderboardReducer,
   landing: persistReducer({ key: "landing", storage }, landingReducer),
   portfolio: persistReducer({ key: "portfolio", storage }, portfolioReducer),
 });

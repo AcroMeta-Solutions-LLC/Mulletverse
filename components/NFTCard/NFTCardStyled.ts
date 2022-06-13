@@ -44,7 +44,7 @@ export const Image = styled.div`
 
 export const Content = styled.div`
   height: 90px;
-  background-color: ${({ theme }: { theme: ThemeType }) => theme.NAVIGATION};
+  background-color: ${({ theme }: { theme: ThemeType }) => theme.CARD};
   border-top: 1px solid ${({ theme }: { theme: ThemeType }) => theme.BORDER};
   border-bottom: 1px solid ${({ theme }: { theme: ThemeType }) => theme.BORDER};
   padding: 10px;
@@ -57,8 +57,12 @@ export const Title = styled.span`
   font-size: ${TYPOGRAPHY.SIZE.CAPTION};
 `;
 
+export const Collection = styled.span`
+  color: ${({ theme }: { theme: ThemeType }) => theme.TEXT};
+`;
+
 export const Actions = styled.div`
-  background-color: ${({ theme }: { theme: ThemeType }) => theme.NAVIGATION};
+  background-color: ${({ theme }: { theme: ThemeType }) => theme.CARD};
   color: ${({ theme }: { theme: ThemeType }) => theme.PRIMARY};
   display: flex;
   flex-direction: row;

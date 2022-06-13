@@ -6,6 +6,7 @@ export type ThemeType = {
   TITLE: string;
   BORDER: string;
   INPUT: string;
+  CARD: string;
 };
 
 export default ThemeType;

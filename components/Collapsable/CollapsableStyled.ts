@@ -5,7 +5,7 @@ import ThemeType from "../../types/themeType";
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
-  border: 1px solid ${({ theme }: { theme: ThemeType }) => theme.BORDER};
+  border: 2px solid ${({ theme }: { theme: ThemeType }) => theme.BORDER};
   border-radius: 10px;
   width: 100%;
   height: max-content;
@@ -19,6 +19,7 @@ type HeaderType = {
 export const Header = styled.div<HeaderType>`
   padding: 15px;
   background-color: ${({ theme }) => theme.NAVIGATION};
+  color: ${({ theme }) => theme.TITLE};
   font-size: ${TYPOGRAPHY.SIZE.SUBTITLE_2};
   font-weight: ${TYPOGRAPHY.WEIGHT.SUBTITLE_2};
   display: flex;
@@ -39,4 +40,5 @@ export const Content = styled.div`
   gap: 10px;
   word-break: break-all;
   min-height: 80px;
+  color: ${({ theme }: { theme: ThemeType }) => theme.TITLE};
 `;

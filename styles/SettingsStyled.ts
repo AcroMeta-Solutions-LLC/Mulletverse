@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { SCREEN } from "../constants/screen";
 import { TYPOGRAPHY } from "../constants/typography";
+import ThemeType from "../types/themeType";
 
 export const Main = styled.main`
   padding: 50px 0;
@@ -29,5 +30,6 @@ export const Wrapper = styled.div`
 export const Title = styled.h1`
   font-size: ${TYPOGRAPHY.SIZE.HEADLINE_1};
   font-weight: ${TYPOGRAPHY.WEIGHT.HEADLINE_1};
-  margin: 0;
+  margin: 0 0 20px 0;
+  color: ${({ theme }: { theme: ThemeType }) => theme.TITLE};
 `;

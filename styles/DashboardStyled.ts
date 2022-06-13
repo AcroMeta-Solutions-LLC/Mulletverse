@@ -28,6 +28,7 @@ export const Title = styled.h2`
   font-weight: ${TYPOGRAPHY.WEIGHT.HEADLINE_1};
   align-self: center;
   margin: 45px 0;
+  color: ${({ theme }: { theme: ThemeType }) => theme.TITLE};
 `;
 
 export const IncomeTracker = styled.div`

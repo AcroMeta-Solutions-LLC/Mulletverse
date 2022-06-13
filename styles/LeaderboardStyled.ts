@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { SCREEN } from "../constants/screen";
 import { TYPOGRAPHY } from "../constants/typography";
+import ThemeType from "../types/themeType";
 
 export const Main = styled.main`
   padding: 50px 0;
@@ -27,6 +28,7 @@ export const Title = styled.h2`
   font-weight: ${TYPOGRAPHY.WEIGHT.HEADLINE_1};
   align-self: center;
   margin: 45px 0;
+  color: ${({ theme }: { theme: ThemeType }) => theme.TITLE};
 `;
 
 export const CollectionImage = styled.img`

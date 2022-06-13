@@ -33,6 +33,7 @@ const NFTDashboard: NextPage = () => {
   const { isInitialized } = useMoralis();
   const dispatch = useDispatch<AppDispatch>();
   const { fetch: getWishlist } = useMoralisQuery("Wishlist");
+  const { isDarkMode } = useSelector((store: StoreType) => store.theme);
   const {
     data: wishlist,
     isLoading: isWishlistLoading,
@@ -54,7 +55,7 @@ const NFTDashboard: NextPage = () => {
         <Title>NFT Dashboard</Title>
         <Table>
           <Thead>
-            <Tr style={{ backgroundColor: COLORS.PURPLE.DARK, color: COLORS.WHITE }}>
+            <Tr style={{ backgroundColor: COLORS.PURPLE, color: COLORS.WHITE }}>
               <Th></Th>
               <Th>Collection</Th>
               <Th>Floor Price</Th>
@@ -65,7 +66,7 @@ const NFTDashboard: NextPage = () => {
               <Th>Total Holdings</Th>
             </Tr>
           </Thead>
-          <Tbody>
+          <Tbody style={{ color: isDarkMode ? COLORS.WHITE : COLORS.GREY_800 }}>
             {[...Array(8)].map((_, i) => (
               <Tr key={i}>
                 <Td>Tablescon</Td>

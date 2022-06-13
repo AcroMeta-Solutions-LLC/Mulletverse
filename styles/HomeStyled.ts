@@ -73,6 +73,7 @@ export const AboutTitle = styled.h1`
   font-size: ${TYPOGRAPHY.SIZE.HEADLINE_1};
   font-weight: ${TYPOGRAPHY.WEIGHT.HEADLINE_1};
   margin: 0;
+  color: ${({ theme }: { theme: ThemeType }) => theme.TITLE};
 `;
 
 export const FeaturedTitle = styled.h1`

@@ -24,6 +24,19 @@ function NFTCard({ data }: NFTBuyCardType) {
     }
   };
 
+  const getIconName = () => {
+    switch (data.chain) {
+      case "matic":
+        return "matic";
+      case "bscIcon":
+        return "bnb";
+      case "bnb":
+        return "bnb";
+      default:
+        return "eth";
+    }
+  };
+
   return (
     <NFTWrapper>
       <Link href={tokenURL}>
@@ -36,7 +49,7 @@ function NFTCard({ data }: NFTBuyCardType) {
         </Content>
       </Link>
       <Actions>
-        <Icon size={20} svg={data.chain || ("eth" as any)} fill={isDarkMode ? COLORS.CLEAR : COLORS.GREY_800} />
+        <Icon size={20} svg={getIconName()} fill={isDarkMode ? COLORS.CLEAR : COLORS.GREY_800} />
         <Buy>
           <span>Buy</span>
           <IoWalletOutline size={20} />

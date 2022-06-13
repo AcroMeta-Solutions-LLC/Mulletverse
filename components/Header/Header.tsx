@@ -21,6 +21,8 @@ import {
   DropdownButton,
   DropdownItem,
 } from "./HeaderStyled";
+import StoreType from "../../types/StoreType";
+import { useSelector } from "react-redux";
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -33,6 +35,7 @@ function Header() {
   const portfolioDropdownRef = useRef<HTMLDivElement>(null);
   const userDropdownRef = useRef<HTMLDivElement>(null);
   const isLandingPage = pathname === "/";
+  const { isDarkMode } = useSelector((store: StoreType) => store.theme);
 
   const openAuthModal = () => {
     setIsConnectModalOpen(true);
@@ -45,6 +48,16 @@ function Header() {
     push({ pathname: route });
   };
 
+  const getFontColor = (): string => {
+    if (isLandingPage) {
+      return COLORS.CLEAR;
+    } else if (isDarkMode) {
+      return COLORS.CLEAR;
+    } else {
+      return COLORS.GREY_800;
+    }
+  };
+
   useClickOutside(containerRef, () => setIsMenuOpen(false));
   useClickOutside(portfolioDropdownRef, () => setIsPortfolioOpen(false));
   useClickOutside(userDropdownRef, () => setIsUserMenuOpen(false));
@@ -52,11 +65,7 @@ function Header() {
   return (
     <Fragment>
       <Container isOpen={isMenuOpen} isLandingPage={isLandingPage} ref={containerRef}>
-        <MenuIcon
-          color={isLandingPage ? COLORS.CLEAR : COLORS.DARK}
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          size={25}
-        />
+        <MenuIcon color={getFontColor()} onClick={() => setIsMenuOpen(!isMenuOpen)} size={25} />
         {!isAuthenticated && (
           <Tab onClick={() => redirectTo("/")} isLandingPage={isLandingPage} isOpen={isMenuOpen}>
             Home
@@ -66,7 +75,7 @@ function Header() {
           <Dropdown isLandingPage={isLandingPage} isOpen={isMenuOpen} ref={portfolioDropdownRef}>
             <DropdownButton onClick={() => setIsPortfolioOpen(!isPortfolioOpen)}>
               <DropdownLabel isLandingPage={isLandingPage}>Portfolio</DropdownLabel>
-              <FiChevronDown color={isLandingPage ? COLORS.CLEAR : COLORS.DARK} />
+              <FiChevronDown color={getFontColor()} />
             </DropdownButton>
             <DropdownArea position="left" isLandingPage={isLandingPage} isOpen={isPortfolioOpen}>
               <DropdownItem onClick={() => redirectTo("/portfolio/dashboard")}>NFT Dashboard</DropdownItem>
@@ -79,7 +88,7 @@ function Header() {
           Marketplace
         </Tab>
         <Search isOpen={isMenuOpen}>
-          <SearchIcon color={isLandingPage ? COLORS.CLEAR : COLORS.DARK} />
+          <SearchIcon color={getFontColor()} />
           <Input isLandingPage={isLandingPage} placeholder="Search items, collections, and accounts" />
         </Search>
         <Tab onClick={() => redirectTo("/leaderboard")} isLandingPage={isLandingPage} isOpen={isMenuOpen}>
@@ -96,7 +105,7 @@ function Header() {
               <UserWrapper isOpen={isMenuOpen}>
                 <Blockie seed={user?.get("ethAddress")} scale={3} />
                 <UserAddress isLandingPage={isLandingPage}>{getDisplayName(user?.get("ethAddress"))}</UserAddress>
-                <FiChevronDown color={isLandingPage ? COLORS.CLEAR : COLORS.DARK} />
+                <FiChevronDown color={getFontColor()} />
               </UserWrapper>
             </DropdownButton>
             <DropdownArea position="right" isLandingPage={isLandingPage} isOpen={isUserMenuOpen}>

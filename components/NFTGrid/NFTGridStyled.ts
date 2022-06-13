@@ -25,9 +25,9 @@ export const CardWrapper = styled.div`
 
 export const LoadingWrapper = styled.div`
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
-  padding: 0 25px;
+  padding: 45px;
   width: 100%;
   flex-wrap: wrap;
 
@@ -44,4 +44,8 @@ export const PageButton = styled.button`
   border-radius: 5px;
   cursor: pointer;
   margin: 0 10px;
+`;
+
+export const PageNumber = styled.span`
+  color: ${({ theme }: { theme: ThemeType }) => theme.TEXT};
 `;

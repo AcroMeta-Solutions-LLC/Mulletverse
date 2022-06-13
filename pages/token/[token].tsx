@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useMoralis, useNewMoralisObject, useMoralisQuery } from "react-moralis";
 import { useSelector, useDispatch } from "react-redux";
-import { Icon, Loading, Skeleton, Tag, useNotification } from "web3uikit";
+import { Icon, Loading, Tag, useNotification } from "web3uikit";
 import ErrorBanner from "../../components/ErrorBanner/ErrorBanner";
 import { AppDispatch } from "../../config/store";
 import {
@@ -29,7 +29,6 @@ import {
   Main,
   Title,
   LoadingWrapper,
-  SkeletonColumn,
   Container,
   TokenImage,
   LeftColumn,
@@ -48,6 +47,7 @@ import {
   TokenHeader,
   SeeMoreButton,
   TitleWrapper,
+  OwnedByLabel,
 } from "../../styles/TokenStyled";
 import Link from "next/link";
 import COLORS from "../../constants/colors";
@@ -78,7 +78,7 @@ const Token: NextPage = () => {
         {hasError && <ErrorBanner hasError={hasError} />}
         {isLoading && (
           <LoadingWrapper>
-            <Loading spinnerColor={COLORS.PURPLE.DARK} />
+            <Loading spinnerColor={COLORS.PURPLE} />
           </LoadingWrapper>
         )}
       </Wrapper>
@@ -119,7 +119,7 @@ const Token: NextPage = () => {
               </TokenHeader>
             </TitleWrapper>
             <span>
-              Owned by:{" "}
+              <OwnedByLabel>Owned by: </OwnedByLabel>
               <Link href={`/artist/${data.owner_of}`}>
                 <OwnedBy>{data.owner_of === user?.get("ethAddress") ? "You" : getDisplayName(data.owner_of)}</OwnedBy>
               </Link>

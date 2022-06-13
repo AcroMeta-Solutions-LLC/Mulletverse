@@ -12,12 +12,13 @@ import { PersistGate } from "redux-persist/integration/react";
 import store, { persistor } from "../config/store";
 import { Provider } from "react-redux";
 import { NotificationProvider } from "web3uikit";
+import ConnectedTheme from "../components/ConnectedTheme/ConnectedTheme";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor}>
-        <ThemeProvider theme={THEME.LIGHT}>
+        <ConnectedTheme>
           <MoralisProvider
             appId={process.env.NEXT_PUBLIC_APP_ID || ""}
             serverUrl={process.env.NEXT_PUBLIC_SERVER_URL || ""}
@@ -35,7 +36,7 @@ function MyApp({ Component, pageProps }: AppProps) {
               <Footer />
             </NotificationProvider>
           </MoralisProvider>
-        </ThemeProvider>
+        </ConnectedTheme>
       </PersistGate>
     </Provider>
   );

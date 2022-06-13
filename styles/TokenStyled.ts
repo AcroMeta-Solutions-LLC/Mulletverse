@@ -31,12 +31,14 @@ export const Title = styled.h1`
   font-size: ${TYPOGRAPHY.SIZE.HEADLINE_1};
   font-weight: ${TYPOGRAPHY.WEIGHT.HEADLINE_1};
   margin: 0;
+  color: ${({ theme }: { theme: ThemeType }) => theme.TITLE};
 `;
 
 export const Subtitle = styled.h2`
   font-size: ${TYPOGRAPHY.SIZE.HEADLINE_4};
   font-weight: ${TYPOGRAPHY.WEIGHT.HEADLINE_4};
   margin: 0;
+  color: ${({ theme }: { theme: ThemeType }) => theme.TITLE};
 `;
 
 export const LoadingWrapper = styled.div`
@@ -45,19 +47,6 @@ export const LoadingWrapper = styled.div`
   justify-content: center;
   align-items: center;
   min-height: calc(100vh - 250px);
-`;
-
-export const SkeletonColumn = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-left: 20px;
-  height: 50px;
-  justify-content: space-between;
-
-  @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
-    margin: 10px 0;
-    height: 35px;
-  }
 `;
 
 export const Container = styled.section`
@@ -190,6 +179,10 @@ export const OwnedBy = styled.a`
   cursor: pointer;
 `;
 
+export const OwnedByLabel = styled.span`
+  color: ${({ theme }: { theme: ThemeType }) => theme.TEXT};
+`;
+
 export const Table = styled.table`
   width: 100%;
   text-align: left;
@@ -199,11 +192,12 @@ export const TokenHeader = styled.div`
   display: flex;
   flex-direction: row;
   gap: 10px;
-  background-color: ${({ theme }: { theme: ThemeType }) => theme.BACKGROUND};
+  background-color: ${({ theme }: { theme: ThemeType }) => theme.CARD};
   width: max-content;
   padding: 5px 20px;
   border-radius: 20px;
   max-height: 35px;
+  color: ${({ theme }: { theme: ThemeType }) => theme.TITLE};
 `;
 
 export const TitleWrapper = styled.div`

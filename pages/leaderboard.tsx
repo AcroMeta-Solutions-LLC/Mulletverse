@@ -14,6 +14,7 @@ import { Loading } from "web3uikit";
 
 const Leaderboard: NextPage = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const { isDarkMode } = useSelector((store: StoreType) => store.theme);
   const { data, isLoading, hasError } = useSelector((store: StoreType) => store.leaderboard);
 
   useEffect(() => {
@@ -26,7 +27,7 @@ const Leaderboard: NextPage = () => {
         {hasError && <ErrorBanner hasError={hasError} />}
         {isLoading && (
           <LoadingWrapper>
-            <Loading spinnerColor={COLORS.PURPLE.DARK} />
+            <Loading spinnerColor={COLORS.PURPLE} />
           </LoadingWrapper>
         )}
       </Section>
@@ -41,7 +42,7 @@ const Leaderboard: NextPage = () => {
         <Title>Leaderboard</Title>
         <Table>
           <Thead>
-            <Tr style={{ backgroundColor: COLORS.PURPLE.DARK, color: COLORS.WHITE }}>
+            <Tr style={{ backgroundColor: COLORS.PURPLE, color: COLORS.WHITE }}>
               <Th></Th>
               <Th>Collection</Th>
               <Th>Upvotes</Th>
@@ -53,7 +54,7 @@ const Leaderboard: NextPage = () => {
               <Th>Items</Th>
             </Tr>
           </Thead>
-          <Tbody>
+          <Tbody style={{ color: isDarkMode ? COLORS.WHITE : COLORS.GREY_800 }}>
             {data.map((item, i) => (
               <Tr key={i}>
                 <Td>

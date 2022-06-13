@@ -1,9 +1,11 @@
-import { Skeleton } from "web3uikit";
+import { Loading } from "web3uikit";
 import NFTType from "../../types/NFTType";
 import NFTCard from "../NFTCard/NFTCard";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
-import { CardWrapper, Container, Grid, LoadingWrapper, PageButton } from "./NFTGridStyled";
+import { CardWrapper, Container, Grid, LoadingWrapper, PageButton, PageNumber } from "./NFTGridStyled";
 import COLORS from "../../constants/colors";
+import { useSelector } from "react-redux";
+import StoreType from "../../types/StoreType";
 
 type NFTGridType = {
   data: NFTType[];
@@ -16,6 +18,8 @@ type NFTGridType = {
 };
 
 function NFTGrid(props: NFTGridType) {
+  const { isDarkMode } = useSelector((store: StoreType) => store.theme);
+
   const hasPreviousPage = () => {
     return props.page > 0;
   };
@@ -34,16 +38,12 @@ function NFTGrid(props: NFTGridType) {
     props.onNext();
   };
 
-  const renderLoading = () => {
-    return [...Array(props.size)].map((_, i) => (
-      <CardWrapper key={i}>
-        <Skeleton theme="image" height="300px" width="250px"></Skeleton>
-      </CardWrapper>
-    ));
-  };
+  const color = isDarkMode ? COLORS.GREY_200 : COLORS.GREY_300;
 
   return props.isLoading ? (
-    <LoadingWrapper>{renderLoading()}</LoadingWrapper>
+    <LoadingWrapper>
+      <Loading spinnerColor={COLORS.PURPLE} />
+    </LoadingWrapper>
   ) : (
     <Container>
       <Grid>
@@ -56,11 +56,13 @@ function NFTGrid(props: NFTGridType) {
       {props.total > props.size && (
         <div>
           <PageButton onClick={hasPreviousPage() ? onPreviousPage : () => {}}>
-            <FiChevronLeft color={hasPreviousPage() ? COLORS.DARK : COLORS.GREY} size={24} />
+            <FiChevronLeft color={hasPreviousPage() ? color : "transparent"} size={24} />
           </PageButton>
-          {props.page + 1}...{Math.floor(props.total / props.size) + 1}
+          <PageNumber>
+            {props.page + 1}...{Math.floor(props.total / props.size) + 1}
+          </PageNumber>
           <PageButton onClick={hasNextPage() ? onNextPage : () => {}}>
-            <FiChevronRight color={hasNextPage() ? COLORS.DARK : COLORS.GREY} size={24} />
+            <FiChevronRight color={hasNextPage() ? color : "transparent"} size={24} />
           </PageButton>
         </div>
       )}

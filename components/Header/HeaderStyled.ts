@@ -80,7 +80,7 @@ export const MenuIcon = styled(FiMenu)`
 
 export const Tab = styled.a<HeaderType>`
   padding: 20px 10px;
-  color: ${(props) => (props.isLandingPage ? COLORS.CLEAR : props.theme?.TEXT)};
+  color: ${(props) => (props.isLandingPage ? COLORS.CLEAR : props.theme?.TITLE)};
   cursor: pointer;
   &:hover {
     font-weight: 600;
@@ -94,7 +94,7 @@ export const Tab = styled.a<HeaderType>`
 export const Dropdown = styled.div<HeaderType>`
   position: relative;
   padding: 20px 5px;
-  color: ${(props) => (props.isLandingPage ? COLORS.CLEAR : props.theme?.TEXT)};
+  color: ${(props) => (props.isLandingPage ? COLORS.CLEAR : props.theme?.TITLE)};
   @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
     display: ${(props) => (props.isOpen ? "relative" : "none")};
   }
@@ -102,7 +102,7 @@ export const Dropdown = styled.div<HeaderType>`
 
 export const DropdownLabel = styled.span<HeaderType>`
   margin-right: 10px;
-  color: ${(props) => (props.isLandingPage ? COLORS.CLEAR : props.theme?.TEXT)};
+  color: ${(props) => (props.isLandingPage ? COLORS.CLEAR : props.theme?.TITLE)};
 `;
 
 export const DropdownButton = styled.button`

@@ -28,6 +28,7 @@ export const Title = styled.h1`
   font-weight: ${TYPOGRAPHY.WEIGHT.HEADLINE_1};
   padding: 0 24px;
   align-self: center;
+  color: ${({ theme }: { theme: ThemeType }) => theme.TITLE};
 `;
 
 export const SwapArea = styled.div`
@@ -50,7 +51,7 @@ export const Swap = styled.form`
   display: flex;
   flex-direction: column;
   flex: 1;
-  background-color: ${({ theme }: { theme: ThemeType }) => theme.NAVIGATION};
+  background-color: ${({ theme }: { theme: ThemeType }) => theme.CARD};
   border: 1px solid ${({ theme }: { theme: ThemeType }) => theme.BORDER};
   border-radius: 10px;
   max-width: 330px;
@@ -66,12 +67,13 @@ export const Header = styled.div`
   justify-content: center;
   padding: 20px;
   border-bottom: 1px solid ${({ theme }: { theme: ThemeType }) => theme.BORDER};
+  color: ${({ theme }: { theme: ThemeType }) => theme.TITLE};
 `;
 
 export const Submit = styled.input.attrs({ type: "submit", value: "Swap" })`
   background-color: ${({ theme }: { theme: ThemeType }) => theme.PRIMARY};
   border: none;
-  color: ${({ theme }: { theme: ThemeType }) => theme.NAVIGATION};
+  color: ${({ theme }: { theme: ThemeType }) => theme.TITLE};
   margin: 20px;
   padding: 10px;
   border-radius: 7px;
@@ -90,11 +92,12 @@ export const Input = styled.input.attrs({ type: "number" })`
   color: ${({ theme }: { theme: ThemeType }) => theme.TEXT};
   margin: 20px;
   border-radius: 7px;
+  color: ${({ theme }: { theme: ThemeType }) => theme.TEXT};
 `;
 
 export const ChevronDown = styled(FiChevronDown).attrs({
   size: 24,
-  color: COLORS.PURPLE.DARK,
+  color: COLORS.PURPLE,
 })`
   align-self: center;
 `;

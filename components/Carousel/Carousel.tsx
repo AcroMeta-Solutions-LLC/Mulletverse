@@ -42,7 +42,7 @@ function Carousel({ children, size, isLoading }: CarouselPropType) {
 
   return isLoading ? (
     <Loader>
-      <Loading spinnerColor={COLORS.PURPLE.DARK} />
+      <Loading spinnerColor={COLORS.PURPLE} />
     </Loader>
   ) : (
     <SliderWrapper>

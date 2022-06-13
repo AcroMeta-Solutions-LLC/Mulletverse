@@ -52,6 +52,7 @@ export const Title = styled.h1`
   font-weight: ${TYPOGRAPHY.WEIGHT.HEADLINE_1};
   padding: 0 24px;
   align-self: center;
+  color: ${({ theme }: { theme: ThemeType }) => theme.TITLE};
 `;
 
 export const GridSection = styled.section`

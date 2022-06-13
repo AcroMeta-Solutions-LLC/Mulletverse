@@ -19,6 +19,7 @@ import {
   DataLabel,
   Data,
   EmptyWrapper,
+  BuyAndSellWrapper,
 } from "../../styles/DashboardStyled";
 import StoreType from "../../types/StoreType";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
@@ -86,8 +87,8 @@ const NFTDashboard: NextPage = () => {
           <DataArea>
             <DataLabel>TOTAL SPENT</DataLabel>
             <Data hasColor={false}>$400.00</Data>
-            <DataLabel>ACTUAL COLLECTION</DataLabel>
-            <Data hasColor>$450.00</Data>
+            <DataLabel>ESTIMATED VALUE</DataLabel>
+            <Data hasColor={false}>$450.00</Data>
           </DataArea>
           <ChartArea>
             <ResponsiveContainer>
@@ -123,6 +124,11 @@ const NFTDashboard: NextPage = () => {
             />
           </EmptyWrapper>
         </Collapsable>
+        <BuyAndSellWrapper>
+          <Collapsable isOpen title="Buy and sell history">
+            {}
+          </Collapsable>
+        </BuyAndSellWrapper>
       </Section>
     </Main>
   );

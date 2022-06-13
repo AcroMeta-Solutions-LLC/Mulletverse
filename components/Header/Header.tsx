@@ -101,6 +101,7 @@ function Header() {
             </DropdownButton>
             <DropdownArea position="right" isLandingPage={isLandingPage} isOpen={isUserMenuOpen}>
               <DropdownItem onClick={() => redirectTo("/")}>Create</DropdownItem>
+              <DropdownItem onClick={() => redirectTo("/settings")}>Settings</DropdownItem>
               <DropdownItem onClick={logout}>Logout</DropdownItem>
             </DropdownArea>
           </Dropdown>

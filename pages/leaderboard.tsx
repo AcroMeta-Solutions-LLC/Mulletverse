@@ -48,7 +48,7 @@ const Leaderboard: NextPage = () => {
               <Th>Floor Price</Th>
               <Th>Volume</Th>
               <Th>24h %</Th>
-              <Th>7h %</Th>
+              <Th>7d %</Th>
               <Th>Owned</Th>
               <Th>Items</Th>
             </Tr>

@@ -79,3 +79,7 @@ export const EmptyWrapper = styled.div`
   align-items: center;
   width: 100%;
 `;
+
+export const BuyAndSellWrapper = styled.div`
+  margin-top: 20px;
+`;

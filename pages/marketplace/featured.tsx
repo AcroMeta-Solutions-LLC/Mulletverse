@@ -53,9 +53,6 @@ const Marketplace: NextPage = () => {
           <Link href="/marketplace/featured">
             <Tab isActive={pathname === "/marketplace/featured"}>Featured Artists</Tab>
           </Link>
-          <Link href="/marketplace/minting">
-            <Tab isActive={pathname === "/marketplace/minting"}>Minting Market</Tab>
-          </Link>
         </TabRow>
         <Wrapper>
           <Title>Featured Artists</Title>

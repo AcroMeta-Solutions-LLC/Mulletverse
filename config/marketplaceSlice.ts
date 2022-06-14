@@ -92,21 +92,6 @@ export const getFeaturedNFTs = createAsyncThunk("marketplace/GET_FEATURED", asyn
   };
 });
 
-export const getMintingNFTs = createAsyncThunk("marketplace/GET_MINTING", async (data: GetNFTProps) => {
-  const address = "0x63914BB0F0D017efe8A72a0b29D9B2A5f138f95d";
-  const chain = "eth";
-  const limit = data.limit;
-  const response = await data.account.getNFTs({ address, chain, limit, cursor: data.cursor });
-  const nftList: NFTType[] = getNFTList(response.result);
-  return {
-    data: nftList,
-    previousCursor: data.cursor,
-    nextCursor: response.cursor,
-    total: response.total,
-    page: response.page,
-  };
-});
-
 const setPreviousCursor = (cursorList: string[], newCursor: string | null | undefined): string[] => {
   if (newCursor === null || newCursor === undefined) return cursorList;
   let cursors = [...cursorList];
@@ -175,22 +160,6 @@ const marketplaceSlice = createSlice({
     builder.addCase(getFeaturedNFTs.rejected, (state) => {
       state.featured.isLoading = false;
       state.featured.hasError = true;
-    });
-    builder.addCase(getMintingNFTs.fulfilled, (state, action) => {
-      state.minting.data = action.payload.data;
-      state.minting.isLoading = false;
-      state.minting.hasError = false;
-      state.minting.nextCursor = action.payload?.nextCursor || "";
-      state.minting.total = action.payload.total;
-      state.minting.page = action.payload.page;
-      state.minting.previousCursor = setPreviousCursor(state.minting.previousCursor, action.payload?.previousCursor);
-    });
-    builder.addCase(getMintingNFTs.pending, (state) => {
-      state.minting.isLoading = true;
-    });
-    builder.addCase(getMintingNFTs.rejected, (state) => {
-      state.minting.isLoading = false;
-      state.minting.hasError = true;
     });
   },
 });

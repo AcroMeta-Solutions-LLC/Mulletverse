@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useRef } from "react";
+import React, { Fragment, useState, useRef, FormEvent } from "react";
 import { useMoralis } from "react-moralis";
 import { Blockie, WalletModal } from "web3uikit";
 import { FiChevronDown } from "react-icons/fi";
@@ -23,12 +23,14 @@ import {
 } from "./HeaderStyled";
 import StoreType from "../../types/StoreType";
 import { useSelector } from "react-redux";
+import { ParsedUrlQueryInput } from "querystring";
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isPortfolioOpen, setIsPortfolioOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isConnectModalOpen, setIsConnectModalOpen] = useState(false);
+  const [search, setSearch] = useState("");
   const { isAuthenticated, user, logout } = useMoralis();
   const { pathname, push } = useRouter();
   const containerRef = useRef<HTMLElement>(null);
@@ -42,10 +44,10 @@ function Header() {
     setIsMenuOpen(false);
   };
 
-  const redirectTo = (route: string): void => {
+  const redirectTo = (route: string, query: ParsedUrlQueryInput = {}): void => {
     setIsPortfolioOpen(false);
     setIsMenuOpen(false);
-    push({ pathname: route });
+    push({ pathname: route, query: query });
   };
 
   const getFontColor = (): string => {
@@ -56,6 +58,13 @@ function Header() {
     } else {
       return COLORS.GREY_800;
     }
+  };
+
+  const submitSearch = (e: FormEvent): void => {
+    e.preventDefault();
+    if (!search.trim()) return;
+    redirectTo(`/search`, { value: search });
+    setSearch("");
   };
 
   useClickOutside(containerRef, () => setIsMenuOpen(false));
@@ -87,9 +96,14 @@ function Header() {
         <Tab onClick={() => redirectTo("/marketplace")} isLandingPage={isLandingPage} isOpen={isMenuOpen}>
           Marketplace
         </Tab>
-        <Search isOpen={isMenuOpen}>
+        <Search isOpen={isMenuOpen} onSubmit={submitSearch}>
           <SearchIcon color={getFontColor()} />
-          <Input isLandingPage={isLandingPage} placeholder="Search items, collections, and accounts" />
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            isLandingPage={isLandingPage}
+            placeholder="Search items, collections, and accounts"
+          />
         </Search>
         <Tab onClick={() => redirectTo("/leaderboard")} isLandingPage={isLandingPage} isOpen={isMenuOpen}>
           Leaderboard

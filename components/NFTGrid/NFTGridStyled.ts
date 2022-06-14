@@ -13,10 +13,8 @@ export const Grid = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  width: 100%;
-  justify-content: center;
   align-items: center;
-  gap: 20px;
+  gap: 18px;
 `;
 
 export const CardWrapper = styled.div`

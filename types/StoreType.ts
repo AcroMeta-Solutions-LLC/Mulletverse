@@ -2,6 +2,7 @@ import { LandingProps } from "../config/landingSlice";
 import { LeaderboardProps } from "../config/leaderboardSlice";
 import { MarketplaceProps } from "../config/marketplaceSlice";
 import { PortfolioProps } from "../config/portfolioSlice";
+import { SearchProps } from "../config/searchSlice";
 import { ThemeProps } from "../config/themeSlice";
 import { TokenProps } from "../config/tokenSlice";
 
@@ -12,6 +13,7 @@ export type StoreType = {
   landing: LandingProps;
   leaderboard: LeaderboardProps;
   theme: ThemeProps;
+  search: SearchProps;
 };
 
 export default StoreType;

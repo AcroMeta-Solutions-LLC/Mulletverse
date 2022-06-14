@@ -8,11 +8,13 @@ import landingReducer from "./landingSlice";
 import tokenReducer from "./tokenSlice";
 import leaderboardReducer from "./leaderboardSlice";
 import themeReducer from "./themeSlice";
+import searchReducer from "./searchSlice";
 
 export const rootReducer = combineReducers({
   marketplace: marketplaceReducer,
   token: tokenReducer,
   leaderboard: leaderboardReducer,
+  search: searchReducer,
   theme: persistReducer({ key: "theme", storage }, themeReducer),
   landing: persistReducer({ key: "landing", storage }, landingReducer),
   portfolio: persistReducer({ key: "portfolio", storage }, portfolioReducer),

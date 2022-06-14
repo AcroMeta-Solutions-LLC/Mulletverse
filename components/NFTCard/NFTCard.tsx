@@ -8,6 +8,7 @@ import { Actions, Buy, Collection, Content, Image, NFTWrapper, Title } from "./N
 import { useSelector } from "react-redux";
 import StoreType from "../../types/StoreType";
 import COLORS from "../../constants/colors";
+import { getCryptoIconName } from "../../helpers/getCryptoIcon";
 
 type NFTBuyCardType = { data: NFTType };
 
@@ -24,19 +25,6 @@ function NFTCard({ data }: NFTBuyCardType) {
     }
   };
 
-  const getIconName = () => {
-    switch (data.chain) {
-      case "matic":
-        return "matic";
-      case "bscIcon":
-        return "bnb";
-      case "bnb":
-        return "bnb";
-      default:
-        return "eth";
-    }
-  };
-
   return (
     <NFTWrapper>
       <Link href={tokenURL}>
@@ -49,7 +37,11 @@ function NFTCard({ data }: NFTBuyCardType) {
         </Content>
       </Link>
       <Actions>
-        <Icon size={20} svg={getIconName()} fill={isDarkMode ? COLORS.CLEAR : COLORS.GREY_800} />
+        <Icon
+          size={20}
+          svg={getCryptoIconName(data.chain || "") as any}
+          fill={isDarkMode ? COLORS.CLEAR : COLORS.GREY_800}
+        />
         <Buy>
           <span>Buy</span>
           <IoWalletOutline size={20} />

@@ -51,6 +51,7 @@ import {
 } from "../../styles/TokenStyled";
 import Link from "next/link";
 import COLORS from "../../constants/colors";
+import { getCryptoIconName } from "../../helpers/getCryptoIcon";
 
 const Token: NextPage = () => {
   const { isInitialized, Moralis, user } = useMoralis();
@@ -115,7 +116,7 @@ const Token: NextPage = () => {
               <Title>{data.metadata.name}</Title>
               <TokenHeader>
                 <span>{getDisplayName(token)}</span>
-                <Icon size={20} svg={chain as any} />
+                <Icon size={20} svg={getCryptoIconName(chain || "") as any} />
               </TokenHeader>
             </TitleWrapper>
             <span>

@@ -38,7 +38,7 @@ export const Container = styled.header<HeaderType>`
   }
 `;
 
-export const Search = styled.div<HeaderType>`
+export const Search = styled.form<HeaderType>`
   border-radius: 5px;
   padding: 10px;
   width: 80%;

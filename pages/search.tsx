@@ -1,28 +1,43 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
+import { useTheme } from "styled-components";
 import { Icon, Select } from "web3uikit";
 import NFTGrid from "../components/NFTGrid/NFTGrid";
 import { searchNFTs } from "../config/searchSlice";
 import { AppDispatch } from "../config/store";
 import { CHAINS } from "../constants/chains";
-import COLORS from "../constants/colors";
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { ChainType } from "../types/ChainType";
+import StoreType from "../types/StoreType";
+import { Collections as CollectionsMock } from "../helpers/mocks";
+import CollectionCard from "../components/CollectionCard/CollectionCard";
 import {
+  Chevron,
+  Collections,
+  CollectionTitleWrapper,
   ContentWrapper,
+  FilterApply,
   FilterArea,
   FilterButton,
+  FilterCheckbox,
+  FilterInput,
+  FilterLabel,
+  FilterPriceRow,
+  FilterRow,
   Filters,
+  FilterSelect,
+  FilterTitle,
+  FilterWrapper,
   Main,
   SearchingFor,
   SearchingWrapper,
   Title,
   Wrapper,
 } from "../styles/SearchStyled";
-import { ChainType } from "../types/ChainType";
-import StoreType from "../types/StoreType";
 
 const Search: NextPage = () => {
   const { isInitialized, Moralis } = useMoralis();
@@ -30,6 +45,7 @@ const Search: NextPage = () => {
   const [chain, setChain] = useState<ChainType>("eth");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const { query } = useRouter();
+  const theme: any = useTheme();
   const searchValue: string = Array.isArray(query.value) ? query.value[0] : query.value || "";
   const PAGE_SIZE = 100;
   const { data, isLoading, total, nextCursor, previousCursor, page, hasError } = useSelector(
@@ -47,12 +63,16 @@ const Search: NextPage = () => {
 
   const onPreviousPage = () => {};
 
+  const applyFilter = (e: FormEvent) => {
+    e.preventDefault();
+  };
+
   return (
     <Main>
       <Filters>
         <SearchingWrapper>
           <FilterButton onClick={() => setIsFilterOpen(!isFilterOpen)}>
-            <Icon size={28} svg="list" fill={COLORS.BLACK} />
+            <Icon size={28} svg="list" fill={theme.TITLE} />
           </FilterButton>
           <SearchingFor>Searching for {`"${searchValue}"`}</SearchingFor>
         </SearchingWrapper>
@@ -65,9 +85,56 @@ const Search: NextPage = () => {
         />
       </Filters>
       <Wrapper>
-        <FilterArea isFilterOpen={isFilterOpen}>{isFilterOpen && <span>filters</span>}</FilterArea>
+        <FilterArea isFilterOpen={isFilterOpen}>
+          {isFilterOpen && (
+            <FilterWrapper onSubmit={applyFilter}>
+              <FilterTitle>Status</FilterTitle>
+              <FilterRow>
+                <FilterLabel>Buy now</FilterLabel>
+                <FilterCheckbox type="checkbox" />
+              </FilterRow>
+              <FilterRow>
+                <FilterLabel>On auction</FilterLabel>
+                <FilterCheckbox type="checkbox" />
+              </FilterRow>
+
+              <FilterTitle>Price</FilterTitle>
+              <FilterPriceRow>
+                <FilterSelect>
+                  <option>USD</option>
+                  <option>ETH</option>
+                  <option>MATIC</option>
+                  <option>BNB</option>
+                </FilterSelect>
+                <FilterInput type="text" placeholder="Min" />
+                <FilterLabel>to</FilterLabel>
+                <FilterInput type="text" placeholder="Max" />
+              </FilterPriceRow>
+              <FilterApply type="submit" value="Apply" />
+              <FilterSelect>
+                <option>Low to high</option>
+                <option>High to low</option>
+              </FilterSelect>
+            </FilterWrapper>
+          )}
+        </FilterArea>
         <ContentWrapper>
-          <Title>Collection results</Title>
+          <CollectionTitleWrapper>
+            <Title>Collection results</Title>
+            <div>
+              <Chevron>
+                <FiChevronLeft size={28} />
+              </Chevron>
+              <Chevron>
+                <FiChevronRight size={28} />
+              </Chevron>
+            </div>
+          </CollectionTitleWrapper>
+          <Collections>
+            {CollectionsMock.slice(0, 2).map((collection) => (
+              <CollectionCard key={collection.address} collection={collection} />
+            ))}
+          </Collections>
           <Title>{total} items</Title>
           <NFTGrid
             onNext={onNextPage}

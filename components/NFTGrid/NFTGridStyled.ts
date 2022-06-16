@@ -19,6 +19,11 @@ export const Grid = styled.div`
 
 export const CardWrapper = styled.div`
   margin-bottom: 20px;
+
+  @media only screen and (max-width: ${SCREEN.MOBILE}) {
+    margin-bottom: 0;
+    width: 100%;
+  }
 `;
 
 export const LoadingWrapper = styled.div`

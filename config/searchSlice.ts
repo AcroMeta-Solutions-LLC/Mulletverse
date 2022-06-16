@@ -49,7 +49,7 @@ const getNFTList = (list: NFTResponse[], chain: ChainType): NFTType[] =>
   })) || [];
 
 export const searchNFTs = createAsyncThunk("search/SEARCH_NFT", async (data: SearchNFTsProps) => {
-  const response = await data.token.searchNFTs(data.options);
+  const response = await data.token.searchNFTs({ ...data.options, cursor: data.cursor });
   const nftList: NFTType[] = getNFTList(response.result, data.options.chain);
   return {
     data: nftList,

@@ -3,13 +3,17 @@ import { SCREEN } from "../../constants/screen";
 import { TYPOGRAPHY } from "../../constants/typography";
 import ThemeType from "../../types/themeType";
 
-export const NFTWrapper = styled.div`
+type NFTWrapperType = {
+  width?: string;
+};
+
+export const NFTWrapper = styled.div<NFTWrapperType>`
   border-radius: 5px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   border: 1px solid ${({ theme }: { theme: ThemeType }) => theme.BORDER};
-  width: 260px;
+  width: ${({ width }) => (width ? width : "260px")};
   min-width: 260px;
   height: 380px;
   cursor: pointer;

@@ -4,7 +4,8 @@ import { TYPOGRAPHY } from "../../constants/typography";
 import { getImageURL } from "../../helpers/getTokenImage";
 import ThemeType from "../../types/themeType";
 
-export const Container = styled.div`
+type ContainerType = { width?: string };
+export const Container = styled.div<ContainerType>`
   display: flex;
   border: 1px solid ${({ theme }: { theme: ThemeType }) => theme.BORDER};
   padding: 15px 25px;
@@ -14,7 +15,7 @@ export const Container = styled.div`
   justify-content: space-between;
   cursor: pointer;
   transition: all ease 0.3s;
-  max-width: 675px;
+  max-width: ${({ width }) => (width ? width : "675px")};
   &:hover {
     box-shadow: rgb(4 17 29 / 25%) 0px 0px 8px 0px;
     margin-top: -3px;

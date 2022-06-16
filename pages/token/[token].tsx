@@ -121,7 +121,7 @@ const Token: NextPage = () => {
             </TitleWrapper>
             <span>
               <OwnedByLabel>Owned by: </OwnedByLabel>
-              <Link href={`/artist/${data.owner_of}`}>
+              <Link href={`/profile/${data.owner_of}`}>
                 <OwnedBy>{data.owner_of === user?.get("ethAddress") ? "You" : getDisplayName(data.owner_of)}</OwnedBy>
               </Link>
             </span>
@@ -224,7 +224,7 @@ const Token: NextPage = () => {
           </Carousel>
         </Collapsable>
         {owners.length > 0 && (
-          <Link href={`/artist/${owners[owners.length - 1].owner_of}`}>
+          <Link href={`/profile/${owners[owners.length - 1].owner_of}`}>
             <SeeMoreButton>See More</SeeMoreButton>
           </Link>
         )}

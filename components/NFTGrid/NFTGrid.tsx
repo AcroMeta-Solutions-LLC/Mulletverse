@@ -47,8 +47,8 @@ function NFTGrid(props: NFTGridType) {
   ) : (
     <Container>
       <Grid>
-        {props.data.map((nft) => (
-          <CardWrapper key={nft.tokenId}>
+        {props.data.map((nft, i) => (
+          <CardWrapper key={i}>
             <NFTCard data={nft} />
           </CardWrapper>
         ))}

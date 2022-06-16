@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { SCREEN } from "../../constants/screen";
 import { TYPOGRAPHY } from "../../constants/typography";
 import { getImageURL } from "../../helpers/getTokenImage";
 import ThemeType from "../../types/themeType";
@@ -10,6 +11,7 @@ export const Container = styled.div`
   border-radius: 10px;
   width: 100%;
   flex-direction: column;
+  justify-content: space-between;
   cursor: pointer;
   transition: all ease 0.3s;
   max-width: 675px;
@@ -38,6 +40,9 @@ export const Title = styled.h2`
   font-size: ${TYPOGRAPHY.SIZE.HEADLINE_3};
   color: ${({ theme }: { theme: ThemeType }) => theme.TITLE};
   margin-left: 20px;
+  @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
+    font-size: ${TYPOGRAPHY.SIZE.BODY_1};
+  }
 `;
 
 export const DataRow = styled.div`

@@ -11,12 +11,17 @@ export const Main = styled.main`
 
   @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
     min-height: calc(100vh - 110px);
+    padding-top: 60px;
   }
 `;
 
 export const Wrapper = styled.div`
   display: flex;
   flex-direction: row;
+
+  @media only screen and (max-width: ${SCREEN.TABLET_BIG}) {
+    flex-direction: column;
+  }
 
   @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
     padding-top: 20px;
@@ -28,15 +33,26 @@ export const Title = styled.h1`
   font-weight: ${TYPOGRAPHY.WEIGHT.HEADLINE_1};
   margin: 20px 20px 20px 0;
   color: ${({ theme }: { theme: ThemeType }) => theme.TITLE};
+
+  @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
+    font-size: ${TYPOGRAPHY.SIZE.HEADLINE_4};
+  }
 `;
 
-export const Filters = styled.header`
+export const Header = styled.header`
   background-color: ${({ theme }: { theme: ThemeType }) => theme.CARD};
   padding: 15px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   border-bottom: 2px solid ${({ theme }: { theme: ThemeType }) => theme.BORDER};
+  flex-direction: row;
+
+  @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-start;
+  }
 `;
 
 export const FilterButton = styled.button`
@@ -54,6 +70,11 @@ export const FilterArea = styled.div<FilterType>`
   min-width: ${({ isFilterOpen }) => (isFilterOpen ? "270px" : "0")};
   margin-right: ${({ isFilterOpen }) => (isFilterOpen ? "15px" : "0")};
   transition: all ease 0.3s;
+
+  @media only screen and (max-width: ${SCREEN.TABLET_BIG}) {
+    width: 100%;
+    border: none;
+  }
 `;
 
 export const ContentWrapper = styled.div`
@@ -65,6 +86,10 @@ export const Collections = styled.div`
   display: flex;
   flex-direction: row;
   gap: 20px;
+
+  @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
+    flex-direction: column;
+  }
 `;
 
 export const SearchingFor = styled.span`
@@ -113,7 +138,7 @@ export const FilterTitle = styled.h2`
 
 export const FilterInput = styled.input`
   color: ${({ theme }: { theme: ThemeType }) => theme.TEXT};
-  width: 70px;
+  width: 100%;
   padding: 10px;
   border-radius: 5px;
   border: 1px solid ${({ theme }: { theme: ThemeType }) => theme.BORDER};
@@ -124,6 +149,7 @@ export const FilterPriceRow = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  gap: 10px;
 `;
 
 export const FilterApply = styled.input`

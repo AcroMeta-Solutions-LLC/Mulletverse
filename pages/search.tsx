@@ -28,7 +28,7 @@ import {
   FilterLabel,
   FilterPriceRow,
   FilterRow,
-  Filters,
+  Header,
   FilterSelect,
   FilterTitle,
   FilterWrapper,
@@ -38,6 +38,7 @@ import {
   Title,
   Wrapper,
 } from "../styles/SearchStyled";
+import ErrorBanner from "../components/ErrorBanner/ErrorBanner";
 
 const Search: NextPage = () => {
   const { isInitialized, Moralis } = useMoralis();
@@ -59,9 +60,15 @@ const Search: NextPage = () => {
     }
   }, [isInitialized, searchValue, chain, dispatch, Moralis]);
 
-  const onNextPage = () => {};
+  const onPreviousPage = () => {
+    const options = { q: searchValue, chain, filter: "name", limit: PAGE_SIZE };
+    dispatch(searchNFTs({ token: Moralis.Web3API.token, options, cursor: previousCursor[previousCursor.length - 2] }));
+  };
 
-  const onPreviousPage = () => {};
+  const onNextPage = () => {
+    const options = { q: searchValue, chain, filter: "name", limit: PAGE_SIZE };
+    dispatch(searchNFTs({ token: Moralis.Web3API.token, options, cursor: nextCursor }));
+  };
 
   const applyFilter = (e: FormEvent) => {
     e.preventDefault();
@@ -69,7 +76,7 @@ const Search: NextPage = () => {
 
   return (
     <Main>
-      <Filters>
+      <Header>
         <SearchingWrapper>
           <FilterButton onClick={() => setIsFilterOpen(!isFilterOpen)}>
             <Icon size={28} svg="list" fill={theme.TITLE} />
@@ -83,7 +90,7 @@ const Search: NextPage = () => {
           prefixText="Chain:"
           value={chain}
         />
-      </Filters>
+      </Header>
       <Wrapper>
         <FilterArea isFilterOpen={isFilterOpen}>
           {isFilterOpen && (
@@ -97,7 +104,6 @@ const Search: NextPage = () => {
                 <FilterLabel>On auction</FilterLabel>
                 <FilterCheckbox type="checkbox" />
               </FilterRow>
-
               <FilterTitle>Price</FilterTitle>
               <FilterPriceRow>
                 <FilterSelect>
@@ -119,6 +125,7 @@ const Search: NextPage = () => {
           )}
         </FilterArea>
         <ContentWrapper>
+          <ErrorBanner hasError={hasError} />
           <CollectionTitleWrapper>
             <Title>Collection results</Title>
             <div>

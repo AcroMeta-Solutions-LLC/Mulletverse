@@ -56,9 +56,5 @@ export const Title = styled.h1`
 `;
 
 export const GridSection = styled.section`
-  padding: 0 25px;
-
-  @media only screen and (max-width: ${SCREEN.MOBILE}) {
-    padding: 0;
-  }
+  padding: 0 20px;
 `;

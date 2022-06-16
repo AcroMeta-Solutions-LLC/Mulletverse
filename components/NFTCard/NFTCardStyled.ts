@@ -25,8 +25,7 @@ export const NFTWrapper = styled.div`
   }
 
   @media only screen and (max-width: ${SCREEN.MOBILE}) {
-    border-radius: 0;
-    width: 100vw;
+    width: 100%;
     min-width: unset;
   }
 `;

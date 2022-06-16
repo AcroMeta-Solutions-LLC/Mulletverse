@@ -26,11 +26,12 @@ type CollectionCardPropType = {
       imageURL: string;
     }[];
   };
+  width?: string;
 };
 
-function CollectionCard({ collection }: CollectionCardPropType) {
+function CollectionCard({ collection, width }: CollectionCardPropType) {
   return (
-    <Container>
+    <Container width={width}>
       <TitleWrapper>
         <Image alt="collection-image" src={getImageURL(collection.imageURL)} />
         <Title>{collection.name}</Title>

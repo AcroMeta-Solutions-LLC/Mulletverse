@@ -10,9 +10,9 @@ import StoreType from "../../types/StoreType";
 import COLORS from "../../constants/colors";
 import { getCryptoIconName } from "../../helpers/getCryptoIcon";
 
-type NFTBuyCardType = { data: NFTType };
+type NFTBuyCardType = { data: NFTType; width?: string };
 
-function NFTCard({ data }: NFTBuyCardType) {
+function NFTCard({ data, width }: NFTBuyCardType) {
   const { isAuthenticated, authenticate } = useMoralis();
   const tokenURL = `/token/${data.address}?id=${data.tokenId}&chain=${data.chain || "eth"}`;
   const { isDarkMode } = useSelector((store: StoreType) => store.theme);
@@ -26,7 +26,7 @@ function NFTCard({ data }: NFTBuyCardType) {
   };
 
   return (
-    <NFTWrapper>
+    <NFTWrapper width={width}>
       <Link href={tokenURL}>
         <Image alt="foo" src={getImageURL(data.metadata?.image)} />
       </Link>

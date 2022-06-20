@@ -21,13 +21,17 @@ import {
   TitleSection,
   CollectionsTab,
   CreatedTab,
+  CreatedTabContent,
 } from "../../styles/ProfileStyled";
 import { Loading, Select } from "web3uikit";
 import { Collections } from "../../helpers/mocks";
 import CollectionCard from "../../components/CollectionCard/CollectionCard";
-import { clearStore, getCreatedNFT } from "../../config/profileSlice";
+import { clearStore, getCreatedNFT, setProfileChain } from "../../config/profileSlice";
 import NFTCard from "../../components/NFTCard/NFTCard";
 import COLORS from "../../constants/colors";
+import { CHAINS } from "../../constants/chains";
+import { ChainType } from "../../types/ChainType";
+import EmptyState from "../../components/EmptyState/EmptyState";
 
 type TabType = { id: number; label: string };
 
@@ -49,7 +53,7 @@ const Artist: NextPage = () => {
   const { query } = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const address: string = Array.isArray(query.address) ? query.address[0] : query.address || "";
-  const { data, isLoading, hasError, createdNFT } = useSelector((store: StoreType) => store.profile);
+  const { data, isLoading, hasError, createdNFT, chain } = useSelector((store: StoreType) => store.profile);
   const [sortOrder, setSortOrder] = useState(sortOptions[0].id);
   const [activeTab, setActiveTab] = useState(tabs[0]);
 
@@ -68,12 +72,12 @@ const Artist: NextPage = () => {
 
   useEffect(() => {
     if (isInitialized && address) {
-      dispatch(getCreatedNFT({ account: Moralis.Web3API.account, chain: "eth", address }));
+      dispatch(getCreatedNFT({ account: Moralis.Web3API.account, chain, address }));
     }
     return () => {
       dispatch(clearStore());
     };
-  }, [isInitialized, Moralis, dispatch, address]);
+  }, [isInitialized, Moralis, dispatch, address, chain]);
 
   return isLoading || hasError ? (
     renderLoaderOrError()
@@ -91,27 +95,39 @@ const Artist: NextPage = () => {
             </Description>
           </TitleWrapper>
         </TitleSection>
-        <Controls>
-          <TabRow>
-            <TabButton onClick={() => setActiveTab(tabs[0])}>{tabs[0].label}</TabButton>
-            <TabButton onClick={() => setActiveTab(tabs[1])}>{tabs[1].label}</TabButton>
-            <TabButton onClick={() => setActiveTab(tabs[2])}>{tabs[2].label}</TabButton>
-          </TabRow>
-          <Select
-            defaultOptionIndex={0}
-            onChange={({ id }) => setSortOrder(id as string)}
-            options={sortOptions}
-            prefixText="Sort by:&nbsp;"
-            value={sortOrder}
-            width="300px"
-          />
-        </Controls>
+        <TabRow>
+          <TabButton onClick={() => setActiveTab(tabs[0])}>{tabs[0].label}</TabButton>
+          <TabButton onClick={() => setActiveTab(tabs[1])}>{tabs[1].label}</TabButton>
+          <TabButton onClick={() => setActiveTab(tabs[2])}>{tabs[2].label}</TabButton>
+        </TabRow>
         <section>
           {activeTab.id === tabs[0].id && (
             <CreatedTab>
-              {createdNFT.map((nft, i) => (
-                <NFTCard key={i} data={nft} width="300px" />
-              ))}
+              <Controls>
+                <Select
+                  defaultOptionIndex={0}
+                  onChange={({ id }) => dispatch(setProfileChain(id as ChainType))}
+                  options={CHAINS}
+                  prefixText="Chain:"
+                  value={chain}
+                />
+                <Select
+                  defaultOptionIndex={0}
+                  onChange={({ id }) => setSortOrder(id as string)}
+                  options={sortOptions}
+                  prefixText="Sort by:&nbsp;"
+                  value={sortOrder}
+                  width="300px"
+                />
+              </Controls>
+              <EmptyState isEmpty={createdNFT.filter((nft) => nft.metadata).length === 0 && !hasError && !isLoading} />
+              <CreatedTabContent>
+                {createdNFT
+                  .filter((nft) => nft.metadata)
+                  .map((nft, i) => (
+                    <NFTCard key={i} data={nft} width="300px" />
+                  ))}
+              </CreatedTabContent>
             </CreatedTab>
           )}
           {activeTab.id === tabs[1].id && (

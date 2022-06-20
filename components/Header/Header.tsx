@@ -20,6 +20,9 @@ import {
   DropdownArea,
   DropdownButton,
   DropdownItem,
+  Logo,
+  LogoDrawerWrapper,
+  MarketplaceTab,
 } from "./HeaderStyled";
 import StoreType from "../../types/StoreType";
 import { useSelector } from "react-redux";
@@ -27,14 +30,14 @@ import { ParsedUrlQueryInput } from "querystring";
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isPortfolioOpen, setIsPortfolioOpen] = useState(false);
+  const [isMarketplaceOpen, setIsMarketplaceOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isConnectModalOpen, setIsConnectModalOpen] = useState(false);
   const [search, setSearch] = useState("");
   const { isAuthenticated, user, logout } = useMoralis();
   const { pathname, push } = useRouter();
   const containerRef = useRef<HTMLElement>(null);
-  const portfolioDropdownRef = useRef<HTMLDivElement>(null);
+  const marketplaceDropdownRef = useRef<HTMLDivElement>(null);
   const userDropdownRef = useRef<HTMLDivElement>(null);
   const isLandingPage = pathname === "/";
   const { isDarkMode } = useSelector((store: StoreType) => store.theme);
@@ -45,7 +48,7 @@ function Header() {
   };
 
   const redirectTo = (route: string, query: ParsedUrlQueryInput = {}): void => {
-    setIsPortfolioOpen(false);
+    setIsMarketplaceOpen(false);
     setIsMenuOpen(false);
     push({ pathname: route, query: query });
   };
@@ -68,33 +71,35 @@ function Header() {
   };
 
   useClickOutside(containerRef, () => setIsMenuOpen(false));
-  useClickOutside(portfolioDropdownRef, () => setIsPortfolioOpen(false));
+  useClickOutside(marketplaceDropdownRef, () => setIsMarketplaceOpen(false));
   useClickOutside(userDropdownRef, () => setIsUserMenuOpen(false));
 
   return (
     <Fragment>
       <Container isOpen={isMenuOpen} isLandingPage={isLandingPage} ref={containerRef}>
-        <MenuIcon color={getFontColor()} onClick={() => setIsMenuOpen(!isMenuOpen)} size={25} />
+        <LogoDrawerWrapper>
+          <Logo onClick={() => redirectTo("/")} />
+          <MenuIcon color={getFontColor()} onClick={() => setIsMenuOpen(!isMenuOpen)} size={25} />
+        </LogoDrawerWrapper>
         {!isAuthenticated && (
-          <Tab onClick={() => redirectTo("/")} isLandingPage={isLandingPage} isOpen={isMenuOpen}>
-            Home
-          </Tab>
+          <MarketplaceTab onClick={() => redirectTo("/marketplace")} isLandingPage={isLandingPage} isOpen={isMenuOpen}>
+            Marketplace
+          </MarketplaceTab>
         )}
         {isAuthenticated && (
-          <Dropdown isLandingPage={isLandingPage} isOpen={isMenuOpen} ref={portfolioDropdownRef}>
-            <DropdownButton onClick={() => setIsPortfolioOpen(!isPortfolioOpen)}>
-              <DropdownLabel isLandingPage={isLandingPage}>Portfolio</DropdownLabel>
+          <Dropdown isLandingPage={isLandingPage} isOpen={isMenuOpen} ref={marketplaceDropdownRef}>
+            <DropdownButton onClick={() => setIsMarketplaceOpen(!isMarketplaceOpen)}>
+              <DropdownLabel isLandingPage={isLandingPage}>Marketplace</DropdownLabel>
               <FiChevronDown color={getFontColor()} />
             </DropdownButton>
-            <DropdownArea position="left" isLandingPage={isLandingPage} isOpen={isPortfolioOpen}>
-              <DropdownItem onClick={() => redirectTo("/portfolio/dashboard")}>NFT Dashboard</DropdownItem>
-              <DropdownItem onClick={() => redirectTo("/portfolio/collection")}>Your Collection</DropdownItem>
-              <DropdownItem onClick={() => redirectTo("/portfolio/mulletswap")}>MulletSwap</DropdownItem>
+            <DropdownArea position="left" isLandingPage={isLandingPage} isOpen={isMarketplaceOpen}>
+              <DropdownItem onClick={() => redirectTo("/marketplace")}>Marketplace</DropdownItem>
+              <DropdownItem onClick={() => redirectTo("/marketplace/mulletswap")}>MulletSwap</DropdownItem>
             </DropdownArea>
           </Dropdown>
         )}
-        <Tab onClick={() => redirectTo("/marketplace")} isLandingPage={isLandingPage} isOpen={isMenuOpen}>
-          Marketplace
+        <Tab onClick={() => redirectTo("/leaderboard")} isLandingPage={isLandingPage} isOpen={isMenuOpen}>
+          Leaderboard
         </Tab>
         <Search isOpen={isMenuOpen} onSubmit={submitSearch}>
           <SearchIcon color={getFontColor()} />
@@ -105,8 +110,15 @@ function Header() {
             placeholder="Search items, collections, and accounts"
           />
         </Search>
-        <Tab onClick={() => redirectTo("/leaderboard")} isLandingPage={isLandingPage} isOpen={isMenuOpen}>
-          Leaderboard
+        <Tab onClick={() => redirectTo("/")} isLandingPage={isLandingPage} isOpen={isMenuOpen}>
+          Create
+        </Tab>
+        <Tab
+          onClick={() => redirectTo(`/profile/${user?.get("ethAddress")}`)}
+          isLandingPage={isLandingPage}
+          isOpen={isMenuOpen}
+        >
+          Profile
         </Tab>
         {!isAuthenticated && (
           <Tab onClick={openAuthModal} isLandingPage={isLandingPage} isOpen={isMenuOpen}>
@@ -123,8 +135,8 @@ function Header() {
               </UserWrapper>
             </DropdownButton>
             <DropdownArea position="right" isLandingPage={isLandingPage} isOpen={isUserMenuOpen}>
-              <DropdownItem onClick={() => redirectTo("/")}>Create</DropdownItem>
               <DropdownItem onClick={() => redirectTo("/settings")}>Settings</DropdownItem>
+              <DropdownItem onClick={() => redirectTo("/")}>Account</DropdownItem>
               <DropdownItem onClick={logout}>Logout</DropdownItem>
             </DropdownArea>
           </Dropdown>

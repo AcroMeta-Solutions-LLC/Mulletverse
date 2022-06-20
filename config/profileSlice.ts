@@ -9,12 +9,23 @@ export type ProfileProps = {
   hasError: boolean;
   createdNFT: NFTType[];
   chain: ChainType;
+  collection: {
+    data: NFTType[];
+    isLoading: boolean;
+    hasError: boolean;
+    total: number;
+    previousCursor: string[];
+    nextCursor?: string;
+    page: number;
+  };
 };
 
 type GetNFTProps = {
   chain: string;
   account: { getNFTs: Function };
   address: string;
+  cursor?: string | null;
+  limit?: number;
 };
 
 const initialState: ProfileProps = {
@@ -23,6 +34,15 @@ const initialState: ProfileProps = {
   isLoading: false,
   createdNFT: [],
   chain: "eth",
+  collection: {
+    data: [],
+    hasError: false,
+    isLoading: false,
+    total: 0,
+    nextCursor: "",
+    previousCursor: [""],
+    page: 0,
+  },
 };
 
 const getNFTList = (list: NFTResponse[], chain: ChainType = "eth"): NFTType[] =>
@@ -35,14 +55,38 @@ const getNFTList = (list: NFTResponse[], chain: ChainType = "eth"): NFTType[] =>
     metadata: JSON.parse(data.metadata),
   })) || [];
 
+const setPreviousCursor = (cursorList: string[], newCursor: string | null | undefined): string[] => {
+  if (newCursor === null || newCursor === undefined) return cursorList;
+  let cursors = [...cursorList];
+  if (cursors[cursors.length - 2] === newCursor) {
+    cursors.splice(-1);
+  } else {
+    cursors = [...cursors, newCursor];
+  }
+  return cursors;
+};
+
 export const getProfile = createAsyncThunk("profile/GET_PROFILE", async () => {
   return {};
 });
 
-export const getCreatedNFT = createAsyncThunk("portfolio/GET_CREATED_NFT", async (data: GetNFTProps) => {
+export const getCreatedNFT = createAsyncThunk("profile/GET_CREATED_NFT", async (data: GetNFTProps) => {
   const response = await data.account.getNFTs({ chain: data.chain, address: data.address });
   const nftList: NFTType[] = getNFTList(response.result, data.chain as ChainType);
   return nftList;
+});
+
+export const getCollectionNFTs = createAsyncThunk("profile/GET_COLLECTION_NFT", async (data: GetNFTProps) => {
+  const limit = data.limit;
+  const response = await data.account.getNFTs({ chain: data.chain, limit, cursor: data.cursor });
+  const nftList: NFTType[] = getNFTList(response.result, data.chain as ChainType);
+  return {
+    data: nftList,
+    previousCursor: data.cursor,
+    nextCursor: response.cursor,
+    total: response.total,
+    page: response.page,
+  };
 });
 
 const profileSlice = createSlice({
@@ -83,6 +127,25 @@ const profileSlice = createSlice({
     builder.addCase(getCreatedNFT.rejected, (state) => {
       state.isLoading = false;
       state.hasError = true;
+    });
+    builder.addCase(getCollectionNFTs.fulfilled, (state, action) => {
+      state.collection.data = action.payload.data;
+      state.collection.isLoading = false;
+      state.collection.hasError = false;
+      state.collection.nextCursor = action.payload?.nextCursor || "";
+      state.collection.total = action.payload.total;
+      state.collection.page = action.payload.page;
+      state.collection.previousCursor = setPreviousCursor(
+        state.collection.previousCursor,
+        action.payload?.previousCursor,
+      );
+    });
+    builder.addCase(getCollectionNFTs.pending, (state) => {
+      state.collection.isLoading = true;
+    });
+    builder.addCase(getCollectionNFTs.rejected, (state) => {
+      state.collection.isLoading = false;
+      state.collection.hasError = true;
     });
   },
 });

@@ -44,16 +44,16 @@ const Artist: NextPage = () => {
     { id: "HighToLow", label: "High to low Floor Price" },
   ];
   const tabs: TabType[] = [
-    { id: 0, label: "Created" },
+    { id: 0, label: "NFT Portfolio" },
     { id: 1, label: "Collection" },
-    { id: 2, label: "Dashboard" },
+    { id: 2, label: "Created" },
   ];
 
   const { isInitialized, Moralis } = useMoralis();
   const { query } = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const address: string = Array.isArray(query.address) ? query.address[0] : query.address || "";
-  const { data, isLoading, hasError, createdNFT, chain } = useSelector((store: StoreType) => store.profile);
+  const { collection, isLoading, hasError, createdNFT, chain } = useSelector((store: StoreType) => store.profile);
   const [sortOrder, setSortOrder] = useState(sortOptions[0].id);
   const [activeTab, setActiveTab] = useState(tabs[0]);
 

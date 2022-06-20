@@ -61,7 +61,6 @@ export const Controls = styled.div`
   display: flex;
   flex-direction: row;
   gap: 20px;
-  justify-content: flex-end;
   margin-bottom: 20px;
 
   @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {

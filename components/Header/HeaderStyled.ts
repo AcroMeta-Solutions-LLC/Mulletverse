@@ -3,6 +3,7 @@ import { ELEVATION } from "../../constants/elevation";
 import { FiSearch, FiMenu } from "react-icons/fi";
 import COLORS from "../../constants/colors";
 import { SCREEN } from "../../constants/screen";
+import Image from "next/image";
 
 type HeaderType = {
   isLandingPage?: boolean;
@@ -31,6 +32,7 @@ export const Container = styled.header<HeaderType>`
   justify-content: space-between;
   align-items: center;
   @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
+    padding: 0 16px;
     flex-direction: column;
     align-items: flex-start;
     background-color: ${(props) => (props.isLandingPage ? "rgba(0, 0, 0, 0.8)" : props.theme?.NAVIGATION)};
@@ -70,7 +72,6 @@ export const SearchIcon = styled(FiSearch)`
 `;
 
 export const MenuIcon = styled(FiMenu)`
-  align-self: flex-end;
   cursor: pointer;
   display: none;
   @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
@@ -91,10 +92,19 @@ export const Tab = styled.a<HeaderType>`
   }
 `;
 
+export const MarketplaceTab = styled(Tab)`
+  background-color: ${({ theme, isLandingPage }) => (isLandingPage ? theme.PRIMARY : "transparent")};
+  border-radius: 10px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+`;
+
 export const Dropdown = styled.div<HeaderType>`
   position: relative;
   padding: 20px 5px;
   color: ${(props) => (props.isLandingPage ? COLORS.CLEAR : props.theme?.TITLE)};
+
   @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
     display: ${(props) => (props.isOpen ? "relative" : "none")};
   }
@@ -127,10 +137,14 @@ export const DropdownArea = styled.ul<DropdownAreaType>`
   display: ${(props) => (props.isOpen ? "flex" : "none")};
   flex-direction: column;
   width: 200px;
-  top: 54px;
+  top: 53px;
   left: ${(props) => (props.position === "left" ? "-15px" : "unset")};
   right: ${(props) => (props.position === "right" ? "-15px" : "unset")};
   list-style-type: none;
+
+  ${Dropdown}:hover & {
+    display: flex;
+  }
 
   @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
     position: relative;
@@ -168,4 +182,23 @@ export const UserWrapper = styled.div`
 export const UserAddress = styled.span<HeaderType>`
   color: ${(props) => (props.isLandingPage ? COLORS.CLEAR : props.theme?.TEXT)};
   margin: 0 10px;
+`;
+
+export const Logo = styled(Image).attrs({
+  alt: "logo",
+  width: 60,
+  height: 60,
+  src: "/assets/logo.png",
+})<HeaderType>`
+  cursor: pointer;
+`;
+
+export const LogoDrawerWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
+    width: 100%;
+  }
 `;

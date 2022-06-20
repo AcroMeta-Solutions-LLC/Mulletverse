@@ -52,7 +52,7 @@ const NFTDashboard: NextPage = () => {
   return (
     <Main>
       <Section>
-        <Title>NFT Dashboard</Title>
+        <Title>NFT Portfolio</Title>
         <Table>
           <Thead>
             <Tr style={{ backgroundColor: COLORS.PURPLE, color: COLORS.WHITE }}>

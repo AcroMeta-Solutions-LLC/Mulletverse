@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ChainType } from "../types/ChainType";
 import { NFTResponse } from "../types/NFTResponse";
 import NFTType from "../types/NFTType";
@@ -8,6 +8,7 @@ export type ProfileProps = {
   isLoading: boolean;
   hasError: boolean;
   createdNFT: NFTType[];
+  chain: ChainType;
 };
 
 type GetNFTProps = {
@@ -21,6 +22,7 @@ const initialState: ProfileProps = {
   hasError: false,
   isLoading: false,
   createdNFT: [],
+  chain: "eth",
 };
 
 const getNFTList = (list: NFTResponse[], chain: ChainType = "eth"): NFTType[] =>
@@ -53,6 +55,9 @@ const profileSlice = createSlice({
       state.isLoading = false;
       state.createdNFT = [];
     },
+    setProfileChain(state: ProfileProps, action: PayloadAction<ChainType>) {
+      state.chain = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getProfile.fulfilled, (state, action) => {
@@ -82,6 +87,6 @@ const profileSlice = createSlice({
   },
 });
 
-export const { clearStore } = profileSlice.actions;
+export const { clearStore, setProfileChain } = profileSlice.actions;
 
 export default profileSlice.reducer;

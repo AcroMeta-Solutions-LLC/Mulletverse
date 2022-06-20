@@ -45,6 +45,7 @@ export const LoadingWrapper = styled.div`
 export const TabRow = styled.div`
   display: flex;
   gap: 20px;
+  margin: 20px 0;
 `;
 
 export const TabButton = styled.button`
@@ -60,8 +61,7 @@ export const Controls = styled.div`
   display: flex;
   flex-direction: row;
   gap: 20px;
-  justify-content: space-between;
-  align-items: flex-end;
+  justify-content: flex-end;
   margin-bottom: 20px;
 
   @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
@@ -108,6 +108,11 @@ export const CollectionsTab = styled.div`
 `;
 
 export const CreatedTab = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const CreatedTabContent = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;

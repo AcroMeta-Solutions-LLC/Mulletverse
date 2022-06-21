@@ -18,10 +18,6 @@ export const Container = styled.div<ContainerType>`
   max-width: ${({ width }) => (width ? width : "675px")};
   &:hover {
     box-shadow: rgb(4 17 29 / 25%) 0px 0px 8px 0px;
-    margin-top: -3px;
-  }
-  &:active {
-    margin-top: 0px;
   }
 `;
 

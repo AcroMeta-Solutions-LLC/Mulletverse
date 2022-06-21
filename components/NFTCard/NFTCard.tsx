@@ -10,18 +10,18 @@ import StoreType from "../../types/StoreType";
 import COLORS from "../../constants/colors";
 import { getCryptoIconName } from "../../helpers/getCryptoIcon";
 
-type NFTBuyCardType = { data: NFTType; width?: string };
+type NFTBuyCardType = { data: NFTType; width?: string; action?: "Buy" | "Sell" };
 
-function NFTCard({ data, width }: NFTBuyCardType) {
+function NFTCard({ data, width, action }: NFTBuyCardType) {
   const { isAuthenticated, authenticate } = useMoralis();
   const tokenURL = `/token/${data.address}?id=${data.tokenId}&chain=${data.chain || "eth"}`;
   const { isDarkMode } = useSelector((store: StoreType) => store.theme);
 
-  const buy = (): void => {
+  const buyOrSell = (): void => {
     if (!isAuthenticated) {
       authenticate();
     } else {
-      console.log("buy");
+      console.log(action);
     }
   };
 
@@ -42,8 +42,8 @@ function NFTCard({ data, width }: NFTBuyCardType) {
           svg={getCryptoIconName(data.chain || "") as any}
           fill={isDarkMode ? COLORS.CLEAR : COLORS.GREY_800}
         />
-        <Buy>
-          <span>Buy</span>
+        <Buy onClick={buyOrSell}>
+          <span>{action || "Buy"}</span>
           <IoWalletOutline size={20} />
         </Buy>
       </Actions>

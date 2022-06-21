@@ -2,11 +2,12 @@ import styled from "styled-components";
 import { SCREEN } from "../../constants/screen";
 import ThemeType from "../../types/themeType";
 
-export const Container = styled.div`
+type ContainerTypeProps = { align?: string };
+export const Container = styled.div<ContainerTypeProps>`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: ${({ align }) => align || "center"};
 `;
 
 export const Grid = styled.div`

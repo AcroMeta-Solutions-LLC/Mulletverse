@@ -15,6 +15,8 @@ type NFTGridType = {
   onPrevious: Function;
   total: number;
   page: number;
+  align?: "center" | "flex-start";
+  action?: "Buy" | "Sell";
 };
 
 function NFTGrid(props: NFTGridType) {
@@ -45,11 +47,11 @@ function NFTGrid(props: NFTGridType) {
       <Loading spinnerColor={COLORS.PURPLE} />
     </LoadingWrapper>
   ) : (
-    <Container>
+    <Container align={props.align}>
       <Grid>
         {props.data.map((nft, i) => (
           <CardWrapper key={i}>
-            <NFTCard data={nft} />
+            <NFTCard data={nft} action={props.action} />
           </CardWrapper>
         ))}
       </Grid>

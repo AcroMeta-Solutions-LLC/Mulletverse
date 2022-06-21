@@ -93,6 +93,7 @@ export const TitleSection = styled.section`
   display: flex;
   flex-direction: row;
   gap: 20px;
+  margin-bottom: 20px;
 
   @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
     flex-direction: column;
@@ -100,13 +101,6 @@ export const TitleSection = styled.section`
 `;
 
 export const CollectionsTab = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 20px;
-`;
-
-export const CreatedTab = styled.div`
   display: flex;
   flex-direction: column;
 `;

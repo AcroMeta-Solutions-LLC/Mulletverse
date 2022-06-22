@@ -14,7 +14,7 @@ import {
 
 const Mulletswap: NextPage = () => {
   return (
-    <Main>
+    <Main style={{ backgroundColor: "#FFFFFF" }}>
       <Container>
         {/* <Title>Mulletswap</Title> */}
         {/* <SwapArea>
@@ -37,6 +37,7 @@ const Mulletswap: NextPage = () => {
             <Submit />
           </Swap>
         </SwapArea> */}
+
         <iframe
           height="100%"
           width="100%"

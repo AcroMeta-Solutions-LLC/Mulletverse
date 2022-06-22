@@ -81,3 +81,11 @@ export const Buy = styled.div`
   justify-content: center;
   gap: 10px;
 `;
+
+export const ChainThumbsUp = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+`;

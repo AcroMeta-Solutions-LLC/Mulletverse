@@ -76,7 +76,7 @@ export const getCreatedNFT = createAsyncThunk("profile/GET_CREATED_NFT", async (
 
 export const getCollectionNFTs = createAsyncThunk("profile/GET_COLLECTION_NFT", async (data: GetNFTProps) => {
   const limit = data.limit;
-  const response = await data.account.getNFTs({ chain: data.chain, limit, cursor: data.cursor });
+  const response = await data.account.getNFTs({ chain: data.chain, limit, cursor: data.cursor, address: data.address });
   const nftList: NFTType[] = getNFTList(response.result, data.chain as ChainType);
   return {
     data: nftList,

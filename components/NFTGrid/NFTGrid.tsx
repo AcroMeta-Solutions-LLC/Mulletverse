@@ -6,6 +6,9 @@ import { CardWrapper, Container, Grid, LoadingWrapper, PageButton, PageNumber } 
 import COLORS from "../../constants/colors";
 import { useSelector } from "react-redux";
 import StoreType from "../../types/StoreType";
+import { useMoralisQuery } from "react-moralis";
+import { useEffect, useState } from "react";
+import { LikeType } from "../../types/LikesType";
 
 type NFTGridType = {
   data: NFTType[];
@@ -21,6 +24,12 @@ type NFTGridType = {
 
 function NFTGrid(props: NFTGridType) {
   const { isDarkMode } = useSelector((store: StoreType) => store.theme);
+  const { fetch: getLikes } = useMoralisQuery("Likes");
+  const [likes, setLikes] = useState<LikeType[]>([]);
+
+  useEffect(() => {
+    getLikes().then((res) => setLikes(res as any));
+  }, [getLikes]);
 
   const hasPreviousPage = () => {
     return props.page > 0;
@@ -40,6 +49,13 @@ function NFTGrid(props: NFTGridType) {
     props.onNext();
   };
 
+  const hasLike = (nft: NFTType): boolean => {
+    return !!likes.find(
+      (like) =>
+        nft.address === like.get("address") && nft.chain === like.get("chain") && nft.tokenId === like.get("tokenId"),
+    );
+  };
+
   const color = isDarkMode ? COLORS.GREY_200 : COLORS.GREY_300;
 
   return props.isLoading ? (
@@ -51,7 +67,7 @@ function NFTGrid(props: NFTGridType) {
       <Grid>
         {props.data.map((nft, i) => (
           <CardWrapper key={i}>
-            <NFTCard data={nft} action={props.action} />
+            <NFTCard data={nft} action={props.action} hasLike={hasLike(nft)} />
           </CardWrapper>
         ))}
       </Grid>

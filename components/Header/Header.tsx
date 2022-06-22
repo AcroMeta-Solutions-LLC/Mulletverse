@@ -89,8 +89,10 @@ function Header() {
         {isAuthenticated && (
           <Dropdown isLandingPage={isLandingPage} isOpen={isMenuOpen} ref={marketplaceDropdownRef}>
             <DropdownButton onClick={() => setIsMarketplaceOpen(!isMarketplaceOpen)}>
-              <DropdownLabel isLandingPage={isLandingPage}>Marketplace</DropdownLabel>
-              <FiChevronDown color={getFontColor()} />
+              <MarketplaceTab isLandingPage={isLandingPage} isOpen={isMenuOpen}>
+                <DropdownLabel isLandingPage={isLandingPage}>Marketplace</DropdownLabel>
+                <FiChevronDown color={getFontColor()} />
+              </MarketplaceTab>
             </DropdownButton>
             <DropdownArea position="left" isLandingPage={isLandingPage} isOpen={isMarketplaceOpen}>
               <DropdownItem onClick={() => redirectTo("/marketplace")}>Marketplace</DropdownItem>

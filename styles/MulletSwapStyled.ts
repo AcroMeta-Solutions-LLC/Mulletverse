@@ -6,7 +6,7 @@ import { FiChevronDown } from "react-icons/fi";
 import COLORS from "../constants/colors";
 
 export const Main = styled.main`
-  padding: 70px 0 50px 0;
+  padding: 80px 0 0 0; //70px 0 50px 0
   display: flex;
   justify-content: center;
   min-height: calc(100vh - 72px);
@@ -17,7 +17,7 @@ export const Main = styled.main`
 `;
 
 export const Container = styled.section`
-  max-width: ${SCREEN.DESKTOP};
+  /* max-width: ${SCREEN.DESKTOP}; */
   display: flex;
   flex-direction: column;
   width: 100%;

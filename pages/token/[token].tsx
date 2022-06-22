@@ -1,18 +1,12 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useMoralis, useNewMoralisObject, useMoralisQuery } from "react-moralis";
 import { useSelector, useDispatch } from "react-redux";
 import { Icon, Loading, Tag, useNotification } from "web3uikit";
 import ErrorBanner from "../../components/ErrorBanner/ErrorBanner";
 import { AppDispatch } from "../../config/store";
-import {
-  getTokenData,
-  getCollection,
-  removeTokenFromWishlist,
-  saveTokenInWishlist,
-  getOwners,
-} from "../../config/tokenSlice";
+import { getTokenData, removeTokenFromWishlist, saveTokenInWishlist, getOwners } from "../../config/tokenSlice";
 import { getDisplayName } from "../../helpers/getDisplayName";
 import { getImageURL } from "../../helpers/getTokenImage";
 import { FiTag } from "react-icons/fi";
@@ -65,10 +59,11 @@ const Token: NextPage = () => {
   const { fetch: getWishlist } = useMoralisQuery("Wishlist");
   const alert = useNotification();
 
+  const isUserOwner: boolean = useMemo(() => data.owner_of === user?.get("ethAddress"), [data, user]);
+
   useEffect(() => {
     if (isInitialized && tokenId) {
       dispatch(getTokenData({ token: Moralis.Web3API.token, address: token, token_id: tokenId, chain, getWishlist }));
-      // dispatch(getCollection({ token: Moralis.Web3API.token, address: token, chain }));
       dispatch(getOwners({ token: Moralis.Web3API.token, address: token, chain, token_id: tokenId }));
     }
   }, [Moralis, getWishlist, dispatch, isInitialized, token, tokenId, chain]);
@@ -122,19 +117,32 @@ const Token: NextPage = () => {
             <span>
               <OwnedByLabel>Owned by: </OwnedByLabel>
               <Link href={`/profile/${data.owner_of}`}>
-                <OwnedBy>{data.owner_of === user?.get("ethAddress") ? "You" : getDisplayName(data.owner_of)}</OwnedBy>
+                <OwnedBy>{isUserOwner ? "You" : getDisplayName(data.owner_of)}</OwnedBy>
               </Link>
             </span>
-            <ButtonRow>
-              <Button>
-                <FaWallet size={24} />
-                <span>Buy now</span>
-              </Button>
-              <ButtonOutline>
-                <FiTag size={24} />
-                <span>Make offer</span>
-              </ButtonOutline>
-            </ButtonRow>
+            {!isUserOwner && (
+              <ButtonRow>
+                <Button>
+                  <FaWallet size={24} />
+                  <span>Buy now</span>
+                </Button>
+                <ButtonOutline>
+                  <FiTag size={24} />
+                  <span>Make offer</span>
+                </ButtonOutline>
+              </ButtonRow>
+            )}
+            {isUserOwner && (
+              <ButtonRow>
+                <Button>
+                  <FaWallet size={24} />
+                  <span>Sell</span>
+                </Button>
+                <ButtonOutline>
+                  <span>Transfer</span>
+                </ButtonOutline>
+              </ButtonRow>
+            )}
             <Collapsable isOpen={!!data.metadata?.description} title="Description">
               {data.metadata.description}
             </Collapsable>

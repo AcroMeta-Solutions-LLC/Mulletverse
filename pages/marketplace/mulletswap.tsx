@@ -16,8 +16,8 @@ const Mulletswap: NextPage = () => {
   return (
     <Main>
       <Container>
-        <Title>Mulletswap</Title>
-        <SwapArea>
+        {/* <Title>Mulletswap</Title> */}
+        {/* <SwapArea>
           <Swap>
             <Header>MulletSwap</Header>
             <InputWrapper>
@@ -36,7 +36,15 @@ const Mulletswap: NextPage = () => {
             </InputWrapper>
             <Submit />
           </Swap>
-        </SwapArea>
+        </SwapArea> */}
+        <iframe
+          height="100%"
+          width="100%"
+          src="https://transferto.xyz/embed"
+          title="Mulletswap"
+          frameBorder="0"
+          allowFullScreen
+        ></iframe>
       </Container>
     </Main>
   );

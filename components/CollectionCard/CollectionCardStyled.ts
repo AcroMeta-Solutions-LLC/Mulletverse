@@ -87,3 +87,10 @@ export const NFT = styled.div<NFTType>`
   justify-content: center;
   align-items: center;
 `;
+
+export const Footer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  padding-top: 15px;
+`;

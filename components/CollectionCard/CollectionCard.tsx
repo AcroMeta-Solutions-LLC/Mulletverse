@@ -1,4 +1,6 @@
 import { getImageURL } from "../../helpers/getTokenImage";
+import { IoThumbsUpSharp, IoThumbsUpOutline } from "react-icons/io5";
+import { useState } from "react";
 import {
   Container,
   Data,
@@ -10,6 +12,7 @@ import {
   DataLabel,
   NFT,
   NFTRow,
+  Footer,
 } from "./CollectionCardStyled";
 
 type CollectionCardPropType = {
@@ -27,9 +30,12 @@ type CollectionCardPropType = {
     }[];
   };
   width?: string;
+  hasLike?: boolean;
 };
 
 function CollectionCard({ collection, width }: CollectionCardPropType) {
+  const [isLiked, setIsLiked] = useState(false);
+
   return (
     <Container width={width}>
       <TitleWrapper>
@@ -62,6 +68,10 @@ function CollectionCard({ collection, width }: CollectionCardPropType) {
           {collection.items.length > 4 && `+ ${collection.items.length}`}
         </NFT>
       </NFTRow>
+      <Footer>
+        {isLiked && <IoThumbsUpSharp size={20} onClick={() => setIsLiked(false)} />}
+        {!isLiked && <IoThumbsUpOutline size={20} onClick={() => setIsLiked(true)} />}
+      </Footer>
     </Container>
   );
 }

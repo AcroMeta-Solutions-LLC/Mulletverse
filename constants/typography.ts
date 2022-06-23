@@ -13,7 +13,7 @@ export const TYPOGRAPHY = {
   },
   WEIGHT: {
     HEADLINE_1: 600,
-    HEADLINE_2: 400,
+    HEADLINE_2: 500,
     HEADLINE_3: 400,
     HEADLINE_4: 400,
     SUBTITLE_1: 600,

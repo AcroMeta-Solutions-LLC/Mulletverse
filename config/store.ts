@@ -16,7 +16,7 @@ export const rootReducer = combineReducers({
   token: tokenReducer,
   leaderboard: leaderboardReducer,
   search: searchReducer,
-  profile: profileReducer,
+  profile: persistReducer({ key: "profile", storage }, profileReducer),
   theme: persistReducer({ key: "theme", storage }, themeReducer),
   landing: persistReducer({ key: "landing", storage }, landingReducer),
   portfolio: persistReducer({ key: "portfolio", storage }, portfolioReducer),

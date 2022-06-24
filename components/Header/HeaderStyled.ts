@@ -202,3 +202,14 @@ export const LogoDrawerWrapper = styled.div`
     width: 100%;
   }
 `;
+
+export const ProfilePicture = styled.div`
+  background-color: ${({ theme }) => theme.PRIMARY};
+  width: 34px;
+  min-width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+`;

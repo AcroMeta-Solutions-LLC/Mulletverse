@@ -9,6 +9,7 @@ export type ProfileProps = {
   hasError: boolean;
   createdNFT: NFTType[];
   chain: ChainType;
+  imageUrl: string;
   collection: {
     data: NFTType[];
     isLoading: boolean;
@@ -34,6 +35,7 @@ const initialState: ProfileProps = {
   isLoading: false,
   createdNFT: [],
   chain: "eth",
+  imageUrl: "",
   collection: {
     data: [],
     hasError: false,
@@ -100,6 +102,9 @@ const profileSlice = createSlice({
     setProfileChain(state: ProfileProps, action: PayloadAction<ChainType>) {
       state.chain = action.payload;
     },
+    setImageUrl(state: ProfileProps, action: PayloadAction<string>) {
+      state.imageUrl = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getProfile.fulfilled, (state, action) => {
@@ -148,6 +153,6 @@ const profileSlice = createSlice({
   },
 });
 
-export const { clearStore, setProfileChain } = profileSlice.actions;
+export const { clearStore, setProfileChain, setImageUrl } = profileSlice.actions;
 
 export default profileSlice.reducer;

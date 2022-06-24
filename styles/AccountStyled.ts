@@ -27,16 +27,15 @@ export const Wrapper = styled.div`
   }
 `;
 
+export const Form = styled.form`
+  max-width: 440px;
+`;
+
 export const Title = styled.h1`
   font-size: ${TYPOGRAPHY.SIZE.HEADLINE_1};
   font-weight: ${TYPOGRAPHY.WEIGHT.HEADLINE_1};
   margin: 0 0 20px 0;
   color: ${({ theme }: { theme: ThemeType }) => theme.TITLE};
-`;
-
-export const Required = styled.span`
-  color: red;
-  margin-left: 2px;
 `;
 
 export const Label = styled.label`
@@ -165,4 +164,53 @@ export const RemoveImageButton = styled.button`
   &:hover {
     border-bottom: 1px dotted black;
   }
+`;
+
+export const WalletAddress = styled.span`
+  overflow-x: auto;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
+export const InterestsLabels = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 15px;
+`;
+
+export const InterestsWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 35px;
+`;
+
+type InterestPropType = { isSelected?: boolean };
+export const Interest = styled.button<InterestPropType>`
+  background-color: ${({ theme }: { theme: ThemeType }) => theme.CARD};
+  color: ${({ theme }: { theme: ThemeType }) => theme.TEXT};
+  padding: 10px;
+  border: 2px solid ${({ theme, isSelected }) => (isSelected ? theme.PRIMARY : theme.BORDER)};
+  cursor: pointer;
+  border-radius: 5px;
+  &:hover {
+    border: 2px solid ${({ theme }: { theme: ThemeType }) => theme.PRIMARY};
+  }
+`;
+
+export const SearchWrapper = styled(InputIconWrapper)`
+  margin-bottom: 20px;
+`;
+
+export const LoadingWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 `;

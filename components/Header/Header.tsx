@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useRef, FormEvent } from "react";
+import React, { Fragment, useState, useRef, FormEvent, useEffect } from "react";
 import { useMoralis } from "react-moralis";
 import { Blockie, WalletModal } from "web3uikit";
 import { FiChevronDown } from "react-icons/fi";
@@ -23,10 +23,13 @@ import {
   Logo,
   LogoDrawerWrapper,
   MarketplaceTab,
+  ProfilePicture,
 } from "./HeaderStyled";
 import StoreType from "../../types/StoreType";
 import { useSelector } from "react-redux";
 import { ParsedUrlQueryInput } from "querystring";
+import { useDispatch } from "react-redux";
+import { setImageUrl } from "../../config/profileSlice";
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -34,13 +37,20 @@ function Header() {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isConnectModalOpen, setIsConnectModalOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const { isAuthenticated, user, logout } = useMoralis();
+  const { isAuthenticated, user, logout: moralisLogout, Moralis } = useMoralis();
   const { pathname, push } = useRouter();
   const containerRef = useRef<HTMLElement>(null);
   const marketplaceDropdownRef = useRef<HTMLDivElement>(null);
   const userDropdownRef = useRef<HTMLDivElement>(null);
   const isLandingPage = pathname === "/";
   const { isDarkMode } = useSelector((store: StoreType) => store.theme);
+  const { imageUrl } = useSelector((store: StoreType) => store.profile);
+  const dispatch = useDispatch();
+
+  const logout = () => {
+    moralisLogout();
+    dispatch(setImageUrl(""));
+  };
 
   const openAuthModal = () => {
     setIsConnectModalOpen(true);
@@ -73,6 +83,19 @@ function Header() {
   useClickOutside(containerRef, () => setIsMenuOpen(false));
   useClickOutside(marketplaceDropdownRef, () => setIsMarketplaceOpen(false));
   useClickOutside(userDropdownRef, () => setIsUserMenuOpen(false));
+
+  useEffect(() => {
+    if (!user) return;
+    const fetchAccount = async (): Promise<void> => {
+      const accounts = new Moralis.Query("Accounts");
+      const query = accounts.equalTo("walletAddress", user?.get("ethAddress"));
+      const response = await query.find();
+      if (response.length > 0) {
+        dispatch(setImageUrl(response[0].get("imageUrl")));
+      }
+    };
+    fetchAccount();
+  }, [user, Moralis, dispatch]);
 
   return (
     <Fragment>
@@ -131,7 +154,11 @@ function Header() {
           <Dropdown isLandingPage={isLandingPage} isOpen={isMenuOpen} ref={userDropdownRef}>
             <DropdownButton onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}>
               <UserWrapper isOpen={isMenuOpen}>
-                <Blockie seed={user?.get("ethAddress")} scale={3} />
+                {imageUrl ? (
+                  <ProfilePicture style={{ backgroundImage: `url(${imageUrl})` }} />
+                ) : (
+                  <Blockie seed={user?.get("ethAddress")} scale={3} />
+                )}
                 <UserAddress isLandingPage={isLandingPage}>{getDisplayName(user?.get("ethAddress"))}</UserAddress>
                 <FiChevronDown color={getFontColor()} />
               </UserWrapper>

@@ -73,6 +73,7 @@ export const Controls = styled.div`
 export const Description = styled.p`
   font-size: ${TYPOGRAPHY.SIZE.BODY_1};
   color: ${({ theme }: { theme: ThemeType }) => theme.TEXT};
+  margin: 5px 0;
 `;
 
 export const ProfileImage = styled.div`
@@ -82,6 +83,9 @@ export const ProfileImage = styled.div`
   background-color: ${({ theme }: { theme: ThemeType }) => theme.NAVIGATION};
   border: 1px solid ${({ theme }: { theme: ThemeType }) => theme.BORDER};
   border-radius: 10px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 `;
 
 export const TitleWrapper = styled.div`

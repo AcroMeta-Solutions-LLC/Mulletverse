@@ -10,12 +10,14 @@ import leaderboardReducer from "./leaderboardSlice";
 import themeReducer from "./themeSlice";
 import searchReducer from "./searchSlice";
 import profileReducer from "./profileSlice";
+import accountReducer from "./accountSlice";
 
 export const rootReducer = combineReducers({
   marketplace: marketplaceReducer,
   token: tokenReducer,
   leaderboard: leaderboardReducer,
   search: searchReducer,
+  account: persistReducer({ key: "account", storage }, accountReducer),
   profile: persistReducer({ key: "profile", storage }, profileReducer),
   theme: persistReducer({ key: "theme", storage }, themeReducer),
   landing: persistReducer({ key: "landing", storage }, landingReducer),

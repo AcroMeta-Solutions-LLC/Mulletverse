@@ -2,14 +2,17 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ChainType } from "../types/ChainType";
 import { NFTResponse } from "../types/NFTResponse";
 import NFTType from "../types/NFTType";
+import Moralis from "moralis";
 
 export type ProfileProps = {
-  data: Object;
   isLoading: boolean;
   hasError: boolean;
   createdNFT: NFTType[];
   chain: ChainType;
   imageUrl: string;
+  username: string;
+  bio: string;
+  email: string;
   collection: {
     data: NFTType[];
     isLoading: boolean;
@@ -30,12 +33,14 @@ type GetNFTProps = {
 };
 
 const initialState: ProfileProps = {
-  data: {},
   hasError: false,
   isLoading: false,
   createdNFT: [],
   chain: "eth",
   imageUrl: "",
+  username: "",
+  bio: "",
+  email: "",
   collection: {
     data: [],
     hasError: false,
@@ -68,8 +73,24 @@ const setPreviousCursor = (cursorList: string[], newCursor: string | null | unde
   return cursors;
 };
 
-export const getProfile = createAsyncThunk("profile/GET_PROFILE", async () => {
-  return {};
+type GetProfileReturnType = {
+  username: string
+  email: string
+  imageUrl: string
+  bio: string
+}
+
+export const getProfile = createAsyncThunk("profile/GET_PROFILE", async (address: string): Promise<GetProfileReturnType> => {
+  const accounts = new Moralis.Query("Accounts");
+  const query = accounts.equalTo("walletAddress", address);
+  const response = await query.find();
+  const profile = response[0];
+  return {
+    bio: profile?.get("bio"),
+    username: profile?.get("username"),
+    imageUrl: profile?.get("imageUrl"),
+    email: profile?.get("email"),
+  };
 });
 
 export const getCreatedNFT = createAsyncThunk("profile/GET_CREATED_NFT", async (data: GetNFTProps) => {
@@ -94,7 +115,10 @@ const profileSlice = createSlice({
   initialState,
   reducers: {
     clearStore(state: ProfileProps) {
-      state.data = {};
+      state.bio = "";
+      state.imageUrl = "";
+      state.email = "";
+      state.username = "";
       state.hasError = false;
       state.isLoading = false;
       state.createdNFT = [];
@@ -108,7 +132,11 @@ const profileSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(getProfile.fulfilled, (state, action) => {
-      state.data = action.payload;
+      state.bio = action.payload.bio;
+      state.imageUrl = action.payload.imageUrl;
+      state.email = action.payload.email;
+      state.username = action.payload.username;
+
       state.isLoading = false;
       state.hasError = false;
     });

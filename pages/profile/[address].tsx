@@ -10,7 +10,7 @@ import { getDisplayName } from "../../helpers/getDisplayName";
 import { Loading, Select } from "web3uikit";
 import { Collections } from "../../helpers/mocks";
 import CollectionCard from "../../components/CollectionCard/CollectionCard";
-import { clearStore, getCollectionNFTs, setProfileChain } from "../../config/profileSlice";
+import { clearStore, getCollectionNFTs, getProfile, setProfileChain } from "../../config/profileSlice";
 import COLORS from "../../constants/colors";
 import { CHAINS } from "../../constants/chains";
 import { ChainType } from "../../types/ChainType";
@@ -54,7 +54,9 @@ const Artist: NextPage = () => {
   const { query } = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const address: string = Array.isArray(query.address) ? query.address[0] : query.address || "";
-  const { collection, isLoading, hasError, chain } = useSelector((store: StoreType) => store.profile);
+  const { collection, isLoading, hasError, chain, bio, email, imageUrl, username } = useSelector(
+    (store: StoreType) => store.profile,
+  );
   const [sortOrder, setSortOrder] = useState(sortOptions[0].id);
   const [activeTab, setActiveTab] = useState(tabs[0]);
   const collectionLimit = 100;
@@ -75,6 +77,7 @@ const Artist: NextPage = () => {
   useEffect(() => {
     if (isInitialized && address) {
       dispatch(getCollectionNFTs({ account: Moralis.Web3API.account, chain, address, limit: collectionLimit }));
+      dispatch(getProfile(address));
     }
     return () => {
       dispatch(clearStore());
@@ -99,14 +102,11 @@ const Artist: NextPage = () => {
     <Main>
       <Wrapper>
         <TitleSection>
-          <ProfileImage />
+          <ProfileImage style={{ backgroundImage: `url(${imageUrl || "/assets/major-mullet.png"})` }} />
           <TitleWrapper>
-            <Title>{getDisplayName(address)}</Title>
-            <Description>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pellentesque mollis sem, a aliquet eros
-              tempus vitae. Proin odio justo, pulvinar non congue ut, pretium bibendum purus. Ut vel neque ex. Nam
-              egestas nibh in nisl faucibus vehicula.
-            </Description>
+            <Title>{username || getDisplayName(address)}</Title>
+            <Description>{email}</Description>
+            <Description>{bio}</Description>
           </TitleWrapper>
         </TitleSection>
         <TabRow>
@@ -115,7 +115,7 @@ const Artist: NextPage = () => {
           <TabButton onClick={() => setActiveTab(tabs[2])}>{tabs[2].label}</TabButton>
         </TabRow>
         <section>
-          {activeTab.id === tabs[0].id && <Dashboard />}
+          {activeTab.id === tabs[0].id && <Dashboard address={address} />}
           {activeTab.id === tabs[1].id && (
             <CollectionsTab>
               <Controls>

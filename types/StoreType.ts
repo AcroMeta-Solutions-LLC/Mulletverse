@@ -1,3 +1,4 @@
+import { AccountProps } from "../config/accountSlice";
 import { LandingProps } from "../config/landingSlice";
 import { LeaderboardProps } from "../config/leaderboardSlice";
 import { MarketplaceProps } from "../config/marketplaceSlice";
@@ -16,6 +17,7 @@ export type StoreType = {
   theme: ThemeProps;
   search: SearchProps;
   profile: ProfileProps;
+  account: AccountProps;
 };
 
 export default StoreType;

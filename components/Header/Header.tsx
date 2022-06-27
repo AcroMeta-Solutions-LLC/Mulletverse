@@ -29,7 +29,8 @@ import StoreType from "../../types/StoreType";
 import { useSelector } from "react-redux";
 import { ParsedUrlQueryInput } from "querystring";
 import { useDispatch } from "react-redux";
-import { setImageUrl } from "../../config/profileSlice";
+import { clearStore, getAccount } from "../../config/accountSlice";
+import { AppDispatch } from "../../config/store";
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -37,19 +38,19 @@ function Header() {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isConnectModalOpen, setIsConnectModalOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const { isAuthenticated, user, logout: moralisLogout, Moralis } = useMoralis();
+  const { isAuthenticated, user, logout: moralisLogout, isInitialized } = useMoralis();
   const { pathname, push } = useRouter();
   const containerRef = useRef<HTMLElement>(null);
   const marketplaceDropdownRef = useRef<HTMLDivElement>(null);
   const userDropdownRef = useRef<HTMLDivElement>(null);
   const isLandingPage = pathname === "/";
   const { isDarkMode } = useSelector((store: StoreType) => store.theme);
-  const { imageUrl } = useSelector((store: StoreType) => store.profile);
-  const dispatch = useDispatch();
+  const { imageUrl, username } = useSelector((store: StoreType) => store.account);
+  const dispatch = useDispatch<AppDispatch>();
 
   const logout = () => {
     moralisLogout();
-    dispatch(setImageUrl(""));
+    dispatch(clearStore());
   };
 
   const openAuthModal = () => {
@@ -85,17 +86,10 @@ function Header() {
   useClickOutside(userDropdownRef, () => setIsUserMenuOpen(false));
 
   useEffect(() => {
-    if (!user) return;
-    const fetchAccount = async (): Promise<void> => {
-      const accounts = new Moralis.Query("Accounts");
-      const query = accounts.equalTo("walletAddress", user?.get("ethAddress"));
-      const response = await query.find();
-      if (response.length > 0) {
-        dispatch(setImageUrl(response[0].get("imageUrl")));
-      }
-    };
-    fetchAccount();
-  }, [user, Moralis, dispatch]);
+    if (isInitialized && user) {
+      dispatch(getAccount(user?.get("ethAddress")));
+    }
+  }, [user, dispatch, isInitialized]);
 
   return (
     <Fragment>
@@ -159,7 +153,9 @@ function Header() {
                 ) : (
                   <Blockie seed={user?.get("ethAddress")} scale={3} />
                 )}
-                <UserAddress isLandingPage={isLandingPage}>{getDisplayName(user?.get("ethAddress"))}</UserAddress>
+                <UserAddress isLandingPage={isLandingPage}>
+                  {username || getDisplayName(user?.get("ethAddress"))}
+                </UserAddress>
                 <FiChevronDown color={getFontColor()} />
               </UserWrapper>
             </DropdownButton>

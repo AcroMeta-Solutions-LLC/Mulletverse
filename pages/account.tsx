@@ -34,7 +34,8 @@ import {
   LoadingWrapper,
 } from "../styles/AccountStyled";
 import { useDispatch } from "react-redux";
-import { setImageUrl } from "../config/profileSlice";
+import { setAccount } from "../config/accountSlice";
+import { AppDispatch } from "../config/store";
 
 const Account: NextPage = () => {
   const { user, isInitialized, Moralis } = useMoralis();
@@ -53,7 +54,7 @@ const Account: NextPage = () => {
   const [website, setWebsite] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const alert = useNotification();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const [accountMoralisObj, setAccountMoralisObj] = useState<Moralis.Object<Moralis.Attributes> | undefined>();
   const { save: saveAccount } = useNewMoralisObject("Accounts");
 
@@ -157,9 +158,9 @@ const Account: NextPage = () => {
       discord,
       instagram,
       website,
-      imageUrl,
+      imageUrl: imageUrl || profileImageUrl || "",
     };
-    dispatch(setImageUrl(imageUrl || profileImageUrl || ""));
+    dispatch(setAccount(data));
     if (accountMoralisObj) {
       updateAccount(data);
     } else {

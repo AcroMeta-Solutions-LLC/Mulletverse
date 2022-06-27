@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { Fragment, useEffect } from "react";
 import { useMoralis, useMoralisQuery } from "react-moralis";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
@@ -27,8 +27,8 @@ import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { ChartData } from "../../helpers/mocks";
 import Collapsable from "../Collapsable/Collapsable";
 
-const Dashboard = () => {
-  const { isInitialized } = useMoralis();
+const Dashboard = ({ address }: { address: string }) => {
+  const { isInitialized, user } = useMoralis();
   const dispatch = useDispatch<AppDispatch>();
   const { fetch: getWishlist } = useMoralisQuery("Wishlist");
   const { isDarkMode } = useSelector((store: StoreType) => store.theme);
@@ -111,20 +111,24 @@ const Dashboard = () => {
         </Collapsable>
       </Section>
       <Section>
-        <ErrorBanner hasError={hasErrorWishlist} />
-        <Collapsable isOpen title="Wishlist">
-          <Carousel size={wishlist.length} isLoading={isWishlistLoading}>
-            {wishlist.map((nft) => (
-              <NFTCard data={nft} key={nft.tokenId} />
-            ))}
-          </Carousel>
-          <EmptyWrapper>
-            <EmptyState
-              message="No items to display"
-              isEmpty={wishlist.length === 0 && !hasErrorWishlist && !isWishlistLoading}
-            />
-          </EmptyWrapper>
-        </Collapsable>
+        {user?.get("ethAddress") === address && (
+          <Fragment>
+            <ErrorBanner hasError={hasErrorWishlist} />
+            <Collapsable isOpen title="Wishlist">
+              <Carousel size={wishlist.length} isLoading={isWishlistLoading}>
+                {wishlist.map((nft) => (
+                  <NFTCard data={nft} key={nft.tokenId} />
+                ))}
+              </Carousel>
+              <EmptyWrapper>
+                <EmptyState
+                  message="No items to display"
+                  isEmpty={wishlist.length === 0 && !hasErrorWishlist && !isWishlistLoading}
+                />
+              </EmptyWrapper>
+            </Collapsable>
+          </Fragment>
+        )}
         <BuyAndSellWrapper>
           <Collapsable isOpen title="Buy and sell history">
             {}

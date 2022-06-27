@@ -113,6 +113,7 @@ function Header() {
             </DropdownButton>
             <DropdownArea position="left" isLandingPage={isLandingPage} isOpen={isMarketplaceOpen}>
               <DropdownItem onClick={() => redirectTo("/marketplace")}>Marketplace</DropdownItem>
+              <DropdownItem onClick={() => redirectTo("/marketplace/minters")}>Minters Market</DropdownItem>
               <DropdownItem onClick={() => redirectTo("/marketplace/mulletswap")}>MulletSwap</DropdownItem>
             </DropdownArea>
           </Dropdown>

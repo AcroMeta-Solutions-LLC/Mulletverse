@@ -131,13 +131,13 @@ export const DropdownButton = styled.button`
 
 export const DropdownArea = styled.ul<DropdownAreaType>`
   position: absolute;
-  box-shadow: ${(props) => (props.isLandingPage ? "none" : "rgb(4 17 29 / 25%) 0px 4px 8px 0px")};
+  box-shadow: ${(props) => (props.isLandingPage ? "none" : "rgb(4 17 29 / 25%) 0px 8px 8px 0px")};
   background-color: ${(props) => (props.isLandingPage ? "rgba(0, 0, 0, 0.5)" : props.theme?.NAVIGATION)};
   padding: 10px;
   display: ${(props) => (props.isOpen ? "flex" : "none")};
   flex-direction: column;
   width: 200px;
-  top: 53px;
+  top: 55px;
   left: ${(props) => (props.position === "left" ? "-15px" : "unset")};
   right: ${(props) => (props.position === "right" ? "-15px" : "unset")};
   list-style-type: none;

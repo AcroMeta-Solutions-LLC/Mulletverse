@@ -3,7 +3,8 @@ import { useRouter } from "next/router";
 import { useEffect, useMemo } from "react";
 import { useMoralis, useNewMoralisObject, useMoralisQuery } from "react-moralis";
 import { useSelector, useDispatch } from "react-redux";
-import { Icon, Loading, Tag, useNotification } from "web3uikit";
+import { Icon, Loading, Tag, useNotification, CopyButton } from "web3uikit";
+
 import ErrorBanner from "../../components/ErrorBanner/ErrorBanner";
 import { AppDispatch } from "../../config/store";
 import { getTokenData, removeTokenFromWishlist, saveTokenInWishlist, getOwners } from "../../config/tokenSlice";
@@ -110,8 +111,9 @@ const Token: NextPage = () => {
             <TitleWrapper>
               <Title>{data.metadata.name}</Title>
               <TokenHeader>
-                <span>{getDisplayName(token)}</span>
                 <Icon size={20} svg={getCryptoIconName(chain || "") as any} />
+                <span>{getDisplayName(token)}</span>
+                <CopyButton onCopy={(e) => e?.preventDefault()} text={token} />
               </TokenHeader>
             </TitleWrapper>
             <span>

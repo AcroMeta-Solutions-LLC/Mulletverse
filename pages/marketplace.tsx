@@ -1,33 +1,60 @@
 import type { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+import { useTheme } from "styled-components";
+import { Icon, Select } from "web3uikit";
 import EmptyState from "../components/EmptyState/EmptyState";
 import ErrorBanner from "../components/ErrorBanner/ErrorBanner";
 import NFTGrid from "../components/NFTGrid/NFTGrid";
 import { clearStore, getMarketplaceNFTs } from "../config/marketplaceSlice";
 import { AppDispatch } from "../config/store";
-import { Container, GridSection, Main, Tab, TabRow, Title, Wrapper } from "../styles/MarketplaceStyled";
+import { CHAINS } from "../constants/chains";
+import { ChainType } from "../types/ChainType";
 import StoreType from "../types/StoreType";
+import {
+  Container,
+  FilterApply,
+  FilterArea,
+  FilterButton,
+  FilterCheckbox,
+  FilterContainer,
+  FilterIconLabel,
+  FilterInput,
+  FilterLabel,
+  FilterPriceRow,
+  FilterRow,
+  FilterSelect,
+  FilterTitle,
+  FilterWrapper,
+  GridSection,
+  Header,
+  Main,
+  Tab,
+  TabRow,
+} from "../styles/MarketplaceStyled";
 
 const Marketplace: NextPage = () => {
   const { isInitialized, Moralis } = useMoralis();
   const dispatch = useDispatch<AppDispatch>();
   const { pathname } = useRouter();
   const PAGE_SIZE = 20;
+  const [chain, setChain] = useState<ChainType>("eth");
+  const [isFilterOpen, setIsFilterOpen] = useState(true);
+  const theme: any = useTheme();
   const { data, isLoading, total, nextCursor, previousCursor, page, hasError } = useSelector(
     (store: StoreType) => store.marketplace.main,
   );
 
   useEffect(() => {
-    if (isInitialized) dispatch(getMarketplaceNFTs({ account: Moralis.Web3API.account, limit: PAGE_SIZE }));
+    if (isInitialized) dispatch(getMarketplaceNFTs({ account: Moralis.Web3API.account, limit: PAGE_SIZE, chain }));
     return () => {
       dispatch(clearStore());
     };
-  }, [isInitialized, Moralis.Web3API.account, dispatch]);
+  }, [isInitialized, Moralis.Web3API.account, dispatch, chain]);
 
   const onPreviousPage = () => {
     dispatch(
@@ -35,17 +62,26 @@ const Marketplace: NextPage = () => {
         account: Moralis.Web3API.account,
         limit: PAGE_SIZE,
         cursor: previousCursor[previousCursor.length - 2],
+        chain,
       }),
     );
   };
 
   const onNextPage = () => {
-    dispatch(getMarketplaceNFTs({ account: Moralis.Web3API.account, limit: PAGE_SIZE, cursor: nextCursor }));
+    dispatch(getMarketplaceNFTs({ account: Moralis.Web3API.account, limit: PAGE_SIZE, cursor: nextCursor, chain }));
+  };
+
+  const applyFilter = (e: FormEvent) => {
+    e.preventDefault();
   };
 
   return (
     <Main>
-      <Container>
+      <Header>
+        <FilterButton onClick={() => setIsFilterOpen(!isFilterOpen)}>
+          <Icon size={28} svg="list" fill={theme.TITLE} />
+          <FilterIconLabel>Filters</FilterIconLabel>
+        </FilterButton>
         <TabRow>
           <Link href="/marketplace">
             <Tab isActive={pathname === "/marketplace"}>Marketplace</Tab>
@@ -54,9 +90,45 @@ const Marketplace: NextPage = () => {
             <Tab isActive={pathname === "/marketplace/featured"}>Featured Artists</Tab>
           </Link>
         </TabRow>
-        <Wrapper>
-          <Title>Marketplace</Title>
-          <EmptyState isEmpty={data.length === 0 && !hasError && !isLoading} />
+        <Select
+          defaultOptionIndex={0}
+          onChange={({ id }) => setChain(id as ChainType)}
+          options={CHAINS}
+          prefixText="Chain:"
+          value={chain}
+        />
+      </Header>
+      <FilterContainer isFilterOpen={isFilterOpen}>
+        <FilterArea isFilterOpen={isFilterOpen}>
+          {isFilterOpen && (
+            <FilterWrapper onSubmit={applyFilter}>
+              <FilterTitle>Status</FilterTitle>
+              <FilterRow>
+                <FilterLabel>Buy now</FilterLabel>
+                <FilterCheckbox type="checkbox" />
+              </FilterRow>
+              <FilterRow>
+                <FilterLabel>On auction</FilterLabel>
+                <FilterCheckbox type="checkbox" />
+              </FilterRow>
+              <FilterTitle>Price</FilterTitle>
+              <FilterPriceRow>
+                <FilterSelect>
+                  <option>USD</option>
+                  <option>ETH</option>
+                  <option>MATIC</option>
+                  <option>BNB</option>
+                </FilterSelect>
+                <FilterInput type="text" placeholder="Min" />
+                <FilterLabel>to</FilterLabel>
+                <FilterInput type="text" placeholder="Max" />
+              </FilterPriceRow>
+              <FilterApply type="submit" value="Apply" />
+            </FilterWrapper>
+          )}
+        </FilterArea>
+        <Container>
+          <EmptyState isEmpty={data.filter((nft) => nft.metadata).length === 0 && !hasError && !isLoading} />
           <ErrorBanner hasError={hasError} />
           <GridSection>
             <NFTGrid
@@ -69,8 +141,8 @@ const Marketplace: NextPage = () => {
               page={page}
             />
           </GridSection>
-        </Wrapper>
-      </Container>
+        </Container>
+      </FilterContainer>
     </Main>
   );
 };

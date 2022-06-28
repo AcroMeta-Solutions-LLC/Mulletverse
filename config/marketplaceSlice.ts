@@ -35,6 +35,7 @@ export type MarketplaceProps = {
 type GetNFTProps = {
   cursor?: string | null;
   limit: number;
+  chain?: string;
   account: { getNFTs: Function };
 };
 
@@ -64,7 +65,7 @@ const getNFTList = (list: NFTResponse[]): NFTType[] =>
 
 export const getMarketplaceNFTs = createAsyncThunk("marketplace/GET_MARKETPLACE", async (data: GetNFTProps) => {
   const address = "0x4F5beD793202f22d17CDC3d6eBe538c07A474126";
-  const chain = "eth";
+  const chain = data.chain || "eth";
   const limit = data.limit;
   const response = await data.account.getNFTs({ address, chain, limit, cursor: data.cursor });
   const nftList: NFTType[] = getNFTList(response.result);
@@ -79,7 +80,7 @@ export const getMarketplaceNFTs = createAsyncThunk("marketplace/GET_MARKETPLACE"
 
 export const getFeaturedNFTs = createAsyncThunk("marketplace/GET_FEATURED", async (data: GetNFTProps) => {
   const address = "0xd45058Bf25BBD8F586124C479D384c8C708CE23A";
-  const chain = "eth";
+  const chain = data.chain || "eth";
   const limit = data.limit;
   const response = await data.account.getNFTs({ address, chain, limit, cursor: data.cursor });
   const nftList: NFTType[] = getNFTList(response.result);

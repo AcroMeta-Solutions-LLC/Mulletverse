@@ -44,7 +44,7 @@ const Search: NextPage = () => {
   const { isInitialized, Moralis } = useMoralis();
   const dispatch = useDispatch<AppDispatch>();
   const [chain, setChain] = useState<ChainType>("eth");
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(true);
   const { query } = useRouter();
   const theme: any = useTheme();
   const searchValue: string = Array.isArray(query.value) ? query.value[0] : query.value || "";

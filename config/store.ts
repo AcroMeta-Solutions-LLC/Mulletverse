@@ -11,12 +11,14 @@ import themeReducer from "./themeSlice";
 import searchReducer from "./searchSlice";
 import profileReducer from "./profileSlice";
 import accountReducer from "./accountSlice";
+import listingReducer from "./listingSlice";
 
 export const rootReducer = combineReducers({
   marketplace: marketplaceReducer,
   token: tokenReducer,
   leaderboard: leaderboardReducer,
   search: searchReducer,
+  listing: listingReducer,
   account: persistReducer({ key: "account", storage }, accountReducer),
   profile: persistReducer({ key: "profile", storage }, profileReducer),
   theme: persistReducer({ key: "theme", storage }, themeReducer),

@@ -4,7 +4,6 @@ import { useEffect, useMemo } from "react";
 import { useMoralis, useNewMoralisObject, useMoralisQuery } from "react-moralis";
 import { useSelector, useDispatch } from "react-redux";
 import { Icon, Loading, Tag, useNotification, CopyButton } from "web3uikit";
-
 import ErrorBanner from "../../components/ErrorBanner/ErrorBanner";
 import { AppDispatch } from "../../config/store";
 import { getTokenData, removeTokenFromWishlist, saveTokenInWishlist, getOwners } from "../../config/tokenSlice";
@@ -50,7 +49,7 @@ import { getCryptoIconName } from "../../helpers/getCryptoIcon";
 
 const Token: NextPage = () => {
   const { isInitialized, Moralis, user } = useMoralis();
-  const { query } = useRouter();
+  const { query, push } = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const token: string = Array.isArray(query.token) ? query.token[0] : query.token || "";
   const tokenId: string = Array.isArray(query.id) ? query.id[0] : query.id || "";
@@ -136,7 +135,7 @@ const Token: NextPage = () => {
             )}
             {isUserOwner && (
               <ButtonRow>
-                <Button>
+                <Button onClick={() => push({ pathname: `/listing/${token}`, query: { id: tokenId, chain } })}>
                   <FaWallet size={24} />
                   <span>Sell</span>
                 </Button>

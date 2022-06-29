@@ -43,7 +43,7 @@ const Marketplace: NextPage = () => {
   const { pathname } = useRouter();
   const PAGE_SIZE = 20;
   const [chain, setChain] = useState<ChainType>("eth");
-  const [isFilterOpen, setIsFilterOpen] = useState(true);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const theme: any = useTheme();
   const { data, isLoading, total, nextCursor, previousCursor, page, hasError } = useSelector(
     (store: StoreType) => store.marketplace.main,

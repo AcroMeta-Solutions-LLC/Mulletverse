@@ -10,3 +10,13 @@ export const parseDatetime = (datetime: string): string => {
   const parsedDate = `${day}/${month}/${date.getFullYear()} ${hours}:${minutes}`;
   return parsedDate;
 };
+
+export const parseDate = (paramDate: string | Date | undefined): string => {
+  if (!paramDate) return "";
+  const date = new Date(paramDate);
+  const day = ("0" + date.getDate()).slice(-2);
+  const month = ("0" + date.getMonth()).slice(-2);
+
+  const parsedDate = `${day}/${month}/${date.getFullYear()}`;
+  return parsedDate;
+};

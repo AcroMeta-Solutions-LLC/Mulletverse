@@ -6,7 +6,7 @@ import { FiChevronDown } from "react-icons/fi";
 import COLORS from "../constants/colors";
 
 export const Main = styled.main`
-  padding: 80px 0 0 0; //70px 0 50px 0
+  padding: 73px 0 0 0; //70px 0 50px 0
   display: flex;
   justify-content: center;
   min-height: calc(100vh - 72px);
@@ -21,6 +21,7 @@ export const Container = styled.section`
   display: flex;
   flex-direction: column;
   width: 100%;
+  justify-content: flex-start;
 `;
 
 export const Title = styled.h1`
@@ -100,4 +101,20 @@ export const ChevronDown = styled(FiChevronDown).attrs({
   color: COLORS.PURPLE,
 })`
   align-self: center;
+`;
+
+export const SourceHeader = styled.header`
+  background-color: ${({ theme }: { theme: ThemeType }) => theme.CARD};
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid ${({ theme }: { theme: ThemeType }) => theme.BORDER};
+  flex-direction: row;
+
+  @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-start;
+  }
 `;

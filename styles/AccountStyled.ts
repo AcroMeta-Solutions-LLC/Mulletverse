@@ -55,7 +55,7 @@ export const Description = styled.p`
 export const TextInput = styled.input`
   width: 100%;
   padding: 10px;
-  border: 1px solid ${({ theme }: { theme: ThemeType }) => theme.TEXT};
+  border: 2px solid ${({ theme }: { theme: ThemeType }) => theme.BORDER};
   background-color: ${({ theme }: { theme: ThemeType }) => theme.BACKGROUND};
   color: ${({ theme }: { theme: ThemeType }) => theme.TITLE};
   border-radius: 5px;
@@ -66,12 +66,14 @@ export const TextInput = styled.input`
 export const TextArea = styled.textarea`
   width: 100%;
   padding: 10px;
-  border: 1px solid ${({ theme }: { theme: ThemeType }) => theme.TEXT};
+  border: 2px solid ${({ theme }: { theme: ThemeType }) => theme.BORDER};
   background-color: ${({ theme }: { theme: ThemeType }) => theme.BACKGROUND};
   color: ${({ theme }: { theme: ThemeType }) => theme.TITLE};
   border-radius: 5px;
   font-size: ${TYPOGRAPHY.SIZE.BODY_2};
   outline-color: ${({ theme }: { theme: ThemeType }) => theme.PRIMARY};
+  min-height: 100px;
+  font-family: inherit;
 `;
 
 export const Submit = styled.input.attrs({ type: "submit" })`
@@ -90,14 +92,14 @@ export const InputIconWrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  border: 1px solid ${({ theme }: { theme: ThemeType }) => theme.TEXT};
+  border: 2px solid ${({ theme }: { theme: ThemeType }) => theme.BORDER};
   border-radius: 5px;
   padding: 10px;
   gap: 10px;
   margin-bottom: 5px;
 
   &:focus-within {
-    outline: 1px solid ${({ theme }: { theme: ThemeType }) => theme.PRIMARY};
+    outline: 2px solid ${({ theme }: { theme: ThemeType }) => theme.PRIMARY};
   }
 `;
 
@@ -123,6 +125,7 @@ export const ProfileImage = styled.div`
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+  border: 2px dashed ${({ theme }: { theme: ThemeType }) => theme.BORDER};
 `;
 
 export const ProfileImageWrapper = styled.div`

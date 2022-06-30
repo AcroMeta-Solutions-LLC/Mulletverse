@@ -130,7 +130,7 @@ function Header() {
             placeholder="Search items, collections, and accounts"
           />
         </Search>
-        <Tab onClick={() => redirectTo("/")} isLandingPage={isLandingPage} isOpen={isMenuOpen}>
+        <Tab onClick={() => redirectTo("/create")} isLandingPage={isLandingPage} isOpen={isMenuOpen}>
           Create
         </Tab>
         <Tab

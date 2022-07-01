@@ -10,9 +10,9 @@ import StoreType from "../../types/StoreType";
 import COLORS from "../../constants/colors";
 import { getCryptoIconName } from "../../helpers/getCryptoIcon";
 
-type NFTBuyCardType = { data: NFTType; width?: string; action?: "Buy" | "Sell" };
+type NFTBuyCardType = { data: NFTType; width?: string; action?: "Buy" | "Sell"; onSell?: Function };
 
-function NFTCard({ data, width, action }: NFTBuyCardType) {
+function NFTCard({ data, width, action, onSell }: NFTBuyCardType) {
   const { isAuthenticated, authenticate } = useMoralis();
   const tokenURL = `/token/${data.address}?id=${data.tokenId}&chain=${data.chain || "eth"}`;
   const { isDarkMode } = useSelector((store: StoreType) => store.theme);
@@ -21,7 +21,11 @@ function NFTCard({ data, width, action }: NFTBuyCardType) {
     if (!isAuthenticated) {
       authenticate();
     } else {
-      console.log(action);
+      if (action === "Sell") {
+        !!onSell && onSell();
+      } else {
+        console.log(action);
+      }
     }
   };
 

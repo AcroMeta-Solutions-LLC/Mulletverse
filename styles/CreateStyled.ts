@@ -130,8 +130,90 @@ export const Select = styled.select`
   border-radius: 5px;
   border: 2px solid ${({ theme }: { theme: ThemeType }) => theme.BORDER};
   background-color: ${({ theme }: { theme: ThemeType }) => theme.BACKGROUND};
-  min-width: 100px;
+  margin: 5px 0 15px 0;
   &:focus {
     outline: 2px solid ${({ theme }: { theme: ThemeType }) => theme.PRIMARY};
   }
+`;
+
+export const SelectIconWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border: 2px solid ${({ theme }: { theme: ThemeType }) => theme.BORDER};
+  border-radius: 5px;
+  padding: 10px;
+  gap: 10px;
+  margin: 5px 0 15px 0;
+  &:focus-within {
+    outline: 2px solid ${({ theme }: { theme: ThemeType }) => theme.PRIMARY};
+  }
+`;
+
+export const SelectIcon = styled.select`
+  width: 100%;
+  border: none;
+  background-color: ${({ theme }: { theme: ThemeType }) => theme.BACKGROUND};
+  color: ${({ theme }: { theme: ThemeType }) => theme.TEXT};
+  font-size: ${TYPOGRAPHY.SIZE.BODY_2};
+  outline: none;
+`;
+
+export const Submit = styled.input.attrs({ type: "submit" })`
+  padding: 10px;
+  background-color: ${({ theme }: { theme: ThemeType }) => theme.PRIMARY};
+  color: #ffffff;
+  border-radius: 5px;
+  width: 150px;
+  border: none;
+  margin-top: 15px;
+  cursor: pointer;
+  box-shadow: rgb(4 17 29 / 25%) 0px 0px 8px 0px;
+`;
+
+export const AttributeWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  padding-bottom: 20px;
+  justify-content: space-between;
+`;
+
+export const Attribute = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+`;
+
+export const PlusButton = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: inherit;
+  color: ${({ theme }: { theme: ThemeType }) => theme.TEXT};
+  background-color: transparent;
+  cursor: pointer;
+  padding: 15px;
+  border: 2px dashed ${({ theme }: { theme: ThemeType }) => theme.BORDER};
+  border-radius: 5px;
+  &:focus {
+    outline: 2px solid ${({ theme }: { theme: ThemeType }) => theme.PRIMARY};
+  }
+`;
+
+export const AttributesRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+`;
+
+export const AttributesNumberRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  gap: 10px;
+  align-items: center;
 `;

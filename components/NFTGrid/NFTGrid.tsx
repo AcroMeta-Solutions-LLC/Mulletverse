@@ -6,6 +6,7 @@ import { CardWrapper, Container, Grid, LoadingWrapper, PageButton, PageNumber } 
 import COLORS from "../../constants/colors";
 import { useSelector } from "react-redux";
 import StoreType from "../../types/StoreType";
+import { useRouter } from "next/router";
 
 type NFTGridType = {
   data: NFTType[];
@@ -21,6 +22,7 @@ type NFTGridType = {
 
 function NFTGrid(props: NFTGridType) {
   const { isDarkMode } = useSelector((store: StoreType) => store.theme);
+  const { push } = useRouter();
 
   const hasPreviousPage = () => {
     return props.page > 0;
@@ -40,6 +42,10 @@ function NFTGrid(props: NFTGridType) {
     props.onNext();
   };
 
+  const onSell = (data: NFTType) => {
+    push({ pathname: `/listing/${data.address}`, query: { id: data.tokenId, chain: data.chain } });
+  };
+
   const color = isDarkMode ? COLORS.GREY_200 : COLORS.GREY_300;
 
   return props.isLoading ? (
@@ -51,7 +57,7 @@ function NFTGrid(props: NFTGridType) {
       <Grid>
         {props.data.map((nft, i) => (
           <CardWrapper key={i}>
-            <NFTCard data={nft} action={props.action} />
+            <NFTCard data={nft} action={props.action} onSell={() => onSell(nft)} />
           </CardWrapper>
         ))}
       </Grid>

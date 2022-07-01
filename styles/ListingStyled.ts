@@ -154,6 +154,7 @@ export const TypeButton = styled.button<TypeButtonProps>`
   align-items: center;
   border-radius: ${({ position }) => (position === "left" ? "10px 0 0 10px" : "0 10px 10px 0")};
   gap: 10px;
+  font-family: inherit;
   &:focus {
     outline: 2px solid ${({ theme }: { theme: ThemeType }) => theme.PRIMARY};
   }

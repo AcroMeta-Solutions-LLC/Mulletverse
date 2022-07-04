@@ -4,6 +4,7 @@ import { useDropzone } from "react-dropzone";
 import { useTheme } from "styled-components";
 import { Checkbox, Icon, Modal, Tag } from "web3uikit";
 import { FaPlus } from "react-icons/fa";
+import { INTERESTS } from "../constants/interests";
 import {
   Main,
   Title,
@@ -25,21 +26,26 @@ import {
   PlusButton,
   AttributesRow,
   AttributesNumberRow,
+  TagWrapper,
 } from "../styles/CreateStyled";
+import { CONTENT_TYPE } from "../constants/contentType";
 
 type BlockchainType = "eth" | "matic" | "bnb" | "solana";
 type AttributeType = { name: string; value: string };
+type TagType = { id: string; name: string };
 
 const Create: NextPage = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [isModalPropertiesOpen, setIsModalPropertiesOpen] = useState(false);
   const [isModalLevelsOpen, setIsModalLevelsOpen] = useState(false);
   const [isModalStatsOpen, setIsModalStatsOpen] = useState(false);
+  const [isModalTagsOpen, setIsModalTagsOpen] = useState(false);
   const [blockchain, setBlockchain] = useState<BlockchainType>("eth");
   const theme: any = useTheme();
   const [properties, setProperties] = useState<AttributeType[]>([]);
   const [levels, setLevels] = useState<AttributeType[]>([]);
   const [stats, setStats] = useState<AttributeType[]>([]);
+  const [tags, setTags] = useState<TagType[]>([]);
   const [propertyName, setPropertyName] = useState("");
   const [propertyValue, setPropertyValue] = useState("");
   const [levelName, setLevelName] = useState("");
@@ -48,6 +54,8 @@ const Create: NextPage = () => {
   const [statName, setStatName] = useState("");
   const [statValueStart, setStatValueStart] = useState(1);
   const [statValueEnd, setStatValueEnd] = useState(1);
+  const [newTag, setNewTag] = useState("");
+  const [contentType, setContentType] = useState("");
 
   const onAddfiles = useCallback((acceptedFiles: File[]) => {
     const imageUrl = URL.createObjectURL(acceptedFiles[0]);
@@ -61,7 +69,16 @@ const Create: NextPage = () => {
     onDrop: onAddfiles,
   });
 
-  const submitForm = (e: FormEvent) => {
+  const toogleTag = (tag: TagType): void => {
+    const isAlreadySelected = !!tags.find((t) => t.id === tag.id);
+    if (isAlreadySelected) {
+      setTags(tags.filter((t) => t.id !== tag.id));
+    } else {
+      setTags([...tags, tag]);
+    }
+  };
+
+  const submitForm = (e: FormEvent): void => {
     e.preventDefault();
   };
 
@@ -85,6 +102,19 @@ const Create: NextPage = () => {
           <Required>*</Required>
         </RequiredWrapper>
         <TextInput type="text" id="nft-name" placeholder="Item name" />
+
+        <Label htmlFor="content-type">Content Type</Label>
+        <SelectIconWrapper>
+          <Icon fill={theme.PRIMARY} size={20} svg="file" />
+          <SelectIcon value={contentType} id="content-type" onChange={(e) => setContentType(e.target.value)}>
+            {CONTENT_TYPE.map((content) => (
+              <option key={content.id} value={content.id}>
+                {content.name}
+              </option>
+            ))}
+          </SelectIcon>
+        </SelectIconWrapper>
+
         <Label htmlFor="external-link">External link</Label>
         <TextInput type="text" id="external-link" placeholder="http://website.com/item/123" />
         <Label htmlFor="description">Description</Label>
@@ -153,6 +183,25 @@ const Create: NextPage = () => {
             />
           ))}
         </AttributesRow>
+        <AttributeWrapper style={{ alignItems: "center" }}>
+          <Attribute>
+            <Label htmlFor="stats-btn">Tags</Label>
+            <Small>Identifiers for your creation.</Small>
+          </Attribute>
+          <PlusButton id="stats-btn" onClick={() => setIsModalTagsOpen(true)}>
+            <FaPlus size={20} />
+          </PlusButton>
+        </AttributeWrapper>
+        <AttributesRow>
+          {tags.map((tag) => (
+            <Tag
+              key={tag.name}
+              hasCancel
+              onCancelClick={() => setTags(tags.filter((t) => t.id !== tag.id))}
+              text={tag.name}
+            />
+          ))}
+        </AttributesRow>
         <AttributeWrapper>
           <Attribute>
             <Label htmlFor="unlockable-content">Unlockable Content</Label>
@@ -170,7 +219,9 @@ const Create: NextPage = () => {
         <AttributeWrapper>
           <Attribute>
             <Label htmlFor="explicit">Explicit & Sensitive Content</Label>
-            <Small>Set this item as explicit and sensitive content.</Small>
+            <Small>
+              Contains explicit content including, drugs, alcohol, adult content, profanity, and/or violence.
+            </Small>
           </Attribute>
           <Checkbox layout="switch" checked={false} label="" id="explicit" name="explicit" onChange={() => {}} />
         </AttributeWrapper>
@@ -306,6 +357,42 @@ const Create: NextPage = () => {
             onChange={(e) => setStatValueEnd(parseInt(e.target.value))}
           />
         </AttributesNumberRow>
+      </Modal>
+      <Modal
+        width="700px"
+        title="Tags"
+        isVisible={isModalTagsOpen}
+        onCloseButtonPressed={() => setIsModalTagsOpen(false)}
+        okButtonColor={theme.PRIMARY}
+        okText="Save"
+        onCancel={() => setIsModalTagsOpen(false)}
+        isOkDisabled={!newTag.trim()}
+        onOk={() => {
+          setTags([...tags, { name: newTag, id: tags[tags.length - 1].id + 1 }]);
+          setIsModalTagsOpen(false);
+        }}
+      >
+        <AttributesRow>
+          {INTERESTS.map((interest) => (
+            <TagWrapper key={interest.id} onClick={() => toogleTag(interest)}>
+              <Tag
+                active={!!tags.find((t) => t.id === interest.id)}
+                key={interest.id}
+                hasCancel={false}
+                text={interest.name}
+                theme="status"
+              />
+            </TagWrapper>
+          ))}
+        </AttributesRow>
+        <Label htmlFor="new-tag">Custom tag</Label>
+        <TextInput
+          value={newTag}
+          type="text"
+          id="new-tag"
+          placeholder="Your custom tag"
+          onChange={(e) => setNewTag(e.target.value)}
+        />
       </Modal>
     </Main>
   );

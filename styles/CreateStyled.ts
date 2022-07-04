@@ -217,3 +217,7 @@ export const AttributesNumberRow = styled.div`
   gap: 10px;
   align-items: center;
 `;
+
+export const TagWrapper = styled.div`
+  cursor: pointer;
+`;

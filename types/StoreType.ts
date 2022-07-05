@@ -1,4 +1,5 @@
 import { AccountProps } from "../config/accountSlice";
+import { CollectionProps } from "../config/collectionSlice";
 import { LandingProps } from "../config/landingSlice";
 import { LeaderboardProps } from "../config/leaderboardSlice";
 import { ListingProps } from "../config/listingSlice";
@@ -20,6 +21,7 @@ export type StoreType = {
   profile: ProfileProps;
   account: AccountProps;
   listing: ListingProps;
+  collection: CollectionProps;
 };
 
 export default StoreType;

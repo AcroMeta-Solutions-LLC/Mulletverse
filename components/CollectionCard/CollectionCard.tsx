@@ -13,7 +13,9 @@ import {
   NFT,
   NFTRow,
   Footer,
+  Pointer,
 } from "./CollectionCardStyled";
+import { useRouter } from "next/router";
 
 type CollectionCardPropType = {
   collection: {
@@ -35,10 +37,11 @@ type CollectionCardPropType = {
 
 function CollectionCard({ collection, width }: CollectionCardPropType) {
   const [isLiked, setIsLiked] = useState(false);
+  const { push } = useRouter();
 
   return (
     <Container width={width}>
-      <TitleWrapper>
+      <TitleWrapper onClick={() => push({ pathname: `/collection/${collection.address}` })}>
         <Image alt="collection-image" src={getImageURL(collection.imageURL)} />
         <Title>{collection.name}</Title>
       </TitleWrapper>
@@ -69,8 +72,16 @@ function CollectionCard({ collection, width }: CollectionCardPropType) {
         </NFT>
       </NFTRow>
       <Footer>
-        {isLiked && <IoThumbsUpSharp size={20} onClick={() => setIsLiked(false)} />}
-        {!isLiked && <IoThumbsUpOutline size={20} onClick={() => setIsLiked(true)} />}
+        {isLiked && (
+          <Pointer>
+            <IoThumbsUpSharp size={20} onClick={() => setIsLiked(false)} />
+          </Pointer>
+        )}
+        {!isLiked && (
+          <Pointer>
+            <IoThumbsUpOutline size={20} onClick={() => setIsLiked(true)} />
+          </Pointer>
+        )}
       </Footer>
     </Container>
   );

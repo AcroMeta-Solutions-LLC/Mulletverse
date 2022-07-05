@@ -50,16 +50,16 @@ const Marketplace: NextPage = () => {
   );
 
   useEffect(() => {
-    if (isInitialized) dispatch(getFeaturedNFTs({ account: Moralis.Web3API.account, limit: PAGE_SIZE, chain }));
+    if (isInitialized) dispatch(getFeaturedNFTs({ token: Moralis.Web3API.token, limit: PAGE_SIZE, chain }));
     return () => {
       dispatch(clearStore());
     };
-  }, [isInitialized, Moralis.Web3API.account, dispatch, chain]);
+  }, [isInitialized, Moralis, dispatch, chain]);
 
   const onPreviousPage = () => {
     dispatch(
       getFeaturedNFTs({
-        account: Moralis.Web3API.account,
+        token: Moralis.Web3API.token,
         limit: PAGE_SIZE,
         cursor: previousCursor[previousCursor.length - 2],
         chain,
@@ -68,7 +68,7 @@ const Marketplace: NextPage = () => {
   };
 
   const onNextPage = () => {
-    dispatch(getFeaturedNFTs({ account: Moralis.Web3API.account, limit: PAGE_SIZE, cursor: nextCursor, chain }));
+    dispatch(getFeaturedNFTs({ token: Moralis.Web3API.token, limit: PAGE_SIZE, cursor: nextCursor, chain }));
   };
 
   const applyFilter = (e: FormEvent) => {
@@ -136,7 +136,7 @@ const Marketplace: NextPage = () => {
               onPrevious={onPreviousPage}
               size={PAGE_SIZE}
               total={total}
-              data={data.filter((nft) => nft.metadata)}
+              data={data.filter((nft) => nft.metadata).map((nft) => ({ ...nft, chain }))}
               isLoading={isLoading}
               page={page}
             />

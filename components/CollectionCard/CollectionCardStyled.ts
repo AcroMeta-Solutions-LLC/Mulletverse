@@ -13,7 +13,6 @@ export const Container = styled.div<ContainerType>`
   width: 100%;
   flex-direction: column;
   justify-content: space-between;
-  cursor: pointer;
   transition: all ease 0.3s;
   max-width: ${({ width }) => (width ? width : "675px")};
   &:hover {
@@ -24,6 +23,7 @@ export const Container = styled.div<ContainerType>`
 export const TitleWrapper = styled.div`
   display: flex;
   flex-direction: row;
+  cursor: pointer;
 `;
 
 export const Image = styled.img`
@@ -37,6 +37,11 @@ export const Title = styled.h2`
   font-size: ${TYPOGRAPHY.SIZE.HEADLINE_3};
   color: ${({ theme }: { theme: ThemeType }) => theme.TITLE};
   margin-left: 20px;
+  border-bottom: 1px dashed transparent;
+  &:hover {
+    color: ${({ theme }: { theme: ThemeType }) => theme.PRIMARY};
+    border-bottom: 1px dashed ${({ theme }: { theme: ThemeType }) => theme.PRIMARY};
+  }
   @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
     font-size: ${TYPOGRAPHY.SIZE.BODY_1};
   }
@@ -93,4 +98,8 @@ export const Footer = styled.div`
   flex-direction: row;
   justify-content: flex-end;
   padding-top: 15px;
+`;
+
+export const Pointer = styled.span`
+  cursor: pointer;
 `;

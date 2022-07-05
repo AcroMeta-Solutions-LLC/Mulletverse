@@ -14,7 +14,7 @@ export const NFTWrapper = styled.div<NFTWrapperType>`
   justify-content: space-between;
   border: 1px solid ${({ theme }: { theme: ThemeType }) => theme.BORDER};
   width: ${({ width }) => (width ? width : "260px")};
-  min-width: 260px;
+  min-width: ${({ width }) => (width ? width : "260px")};
   height: 380px;
   cursor: pointer;
   transition: all ease 0.3s;

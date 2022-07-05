@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useMoralis } from "react-moralis";
 import { getImageURL } from "../../helpers/getTokenImage";
 import NFTType from "../../types/NFTType";
-import { Icon, useNotification } from "web3uikit";
+import { Icon } from "web3uikit";
 import { IoWalletOutline } from "react-icons/io5";
 import { Actions, Buy, Collection, Content, Image, NFTWrapper, Title } from "./NFTCardStyled";
 import { useSelector } from "react-redux";

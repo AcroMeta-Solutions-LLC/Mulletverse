@@ -48,13 +48,19 @@ export const TabRow = styled.div`
   margin: 20px 0;
 `;
 
-export const TabButton = styled.button`
+type TabButtonType = { isActive?: boolean };
+export const TabButton = styled.button<TabButtonType>`
   font-size: ${TYPOGRAPHY.SIZE.SUBTITLE_1};
   font-weight: ${TYPOGRAPHY.WEIGHT.SUBTITLE_1};
   border: none;
   cursor: pointer;
   background-color: transparent;
-  color: ${({ theme }: { theme: ThemeType }) => theme.TITLE};
+  color: ${({ theme, isActive }) => (isActive ? theme.PRIMARY : theme.TITLE)};
+  border-bottom: 1px dashed transparent;
+  &:hover {
+    border-bottom: 1px dashed ${({ theme }) => theme.PRIMARY};
+    color: ${({ theme }) => theme.PRIMARY};
+  }
 `;
 
 export const Controls = styled.div`

@@ -12,6 +12,7 @@ import searchReducer from "./searchSlice";
 import profileReducer from "./profileSlice";
 import accountReducer from "./accountSlice";
 import listingReducer from "./listingSlice";
+import collectionReducer from "./collectionSlice";
 
 export const rootReducer = combineReducers({
   marketplace: marketplaceReducer,
@@ -19,6 +20,7 @@ export const rootReducer = combineReducers({
   leaderboard: leaderboardReducer,
   search: searchReducer,
   listing: listingReducer,
+  collection: collectionReducer,
   account: persistReducer({ key: "account", storage }, accountReducer),
   profile: persistReducer({ key: "profile", storage }, profileReducer),
   theme: persistReducer({ key: "theme", storage }, themeReducer),

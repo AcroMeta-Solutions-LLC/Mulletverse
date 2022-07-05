@@ -110,9 +110,15 @@ const Artist: NextPage = () => {
           </TitleWrapper>
         </TitleSection>
         <TabRow>
-          <TabButton onClick={() => setActiveTab(tabs[0])}>{tabs[0].label}</TabButton>
-          <TabButton onClick={() => setActiveTab(tabs[1])}>{tabs[1].label}</TabButton>
-          <TabButton onClick={() => setActiveTab(tabs[2])}>{tabs[2].label}</TabButton>
+          <TabButton isActive={activeTab === tabs[0]} onClick={() => setActiveTab(tabs[0])}>
+            {tabs[0].label}
+          </TabButton>
+          <TabButton isActive={activeTab === tabs[1]} onClick={() => setActiveTab(tabs[1])}>
+            {tabs[1].label}
+          </TabButton>
+          <TabButton isActive={activeTab === tabs[2]} onClick={() => setActiveTab(tabs[2])}>
+            {tabs[2].label}
+          </TabButton>
         </TabRow>
         <section>
           {activeTab.id === tabs[0].id && <Dashboard address={address} />}

@@ -18,6 +18,7 @@ type NFTGridType = {
   page: number;
   align?: "center" | "flex-start";
   action?: "Buy" | "Sell";
+  cardWidth?: string;
 };
 
 function NFTGrid(props: NFTGridType) {
@@ -57,7 +58,7 @@ function NFTGrid(props: NFTGridType) {
       <Grid>
         {props.data.map((nft, i) => (
           <CardWrapper key={i}>
-            <NFTCard data={nft} action={props.action} onSell={() => onSell(nft)} />
+            <NFTCard width={props.cardWidth} data={nft} action={props.action} onSell={() => onSell(nft)} />
           </CardWrapper>
         ))}
       </Grid>

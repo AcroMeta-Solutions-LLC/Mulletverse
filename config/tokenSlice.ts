@@ -28,15 +28,6 @@ type GetTokenProps = {
   getWishlist: Function;
 };
 
-type GetOwnerProps = {
-  address: string;
-  token_id: string;
-  chain: string;
-  token: {
-    getTokenIdOwners: Function;
-  };
-};
-
 type GetCollectionProps = {
   address: string;
   chain: string;
@@ -115,15 +106,6 @@ export const getCollection = createAsyncThunk("token/GET_COLLECTION", async (dat
   return collection;
 });
 
-export const getOwners = createAsyncThunk("token/GET_OWNERS", async (data: GetOwnerProps) => {
-  const { result } = await data.token.getTokenIdOwners({
-    chain: data.chain,
-    address: data.address,
-    token_id: data.token_id,
-  });
-  return result;
-});
-
 export const saveTokenInWishlist = createAsyncThunk(
   "token/SAVE_TO_WISHLIST",
   async (data: SaveToWishlistProps, thunkAPI) => {
@@ -200,13 +182,6 @@ const tokenSlice = createSlice({
     });
     builder.addCase(removeTokenFromWishlist.rejected, (state) => {
       state.isLoading = false;
-      state.hasError = true;
-    });
-    builder.addCase(getOwners.fulfilled, (state, action) => {
-      state.owners = action.payload;
-      state.hasError = false;
-    });
-    builder.addCase(getOwners.rejected, (state) => {
       state.hasError = true;
     });
   },

@@ -74,24 +74,27 @@ const setPreviousCursor = (cursorList: string[], newCursor: string | null | unde
 };
 
 type GetProfileReturnType = {
-  username: string
-  email: string
-  imageUrl: string
-  bio: string
-}
+  username: string;
+  email: string;
+  imageUrl: string;
+  bio: string;
+};
 
-export const getProfile = createAsyncThunk("profile/GET_PROFILE", async (address: string): Promise<GetProfileReturnType> => {
-  const accounts = new Moralis.Query("Accounts");
-  const query = accounts.equalTo("walletAddress", address);
-  const response = await query.find();
-  const profile = response[0];
-  return {
-    bio: profile?.get("bio"),
-    username: profile?.get("username"),
-    imageUrl: profile?.get("imageUrl"),
-    email: profile?.get("email"),
-  };
-});
+export const getProfile = createAsyncThunk(
+  "profile/GET_PROFILE",
+  async (address: string): Promise<GetProfileReturnType> => {
+    const accounts = new Moralis.Query("Accounts");
+    const query = accounts.equalTo("walletAddress", address);
+    const response = await query.find();
+    const profile = response[0];
+    return {
+      bio: profile?.get("bio"),
+      username: profile?.get("username"),
+      imageUrl: profile?.get("imageUrl"),
+      email: profile?.get("email"),
+    };
+  },
+);
 
 export const getCreatedNFT = createAsyncThunk("profile/GET_CREATED_NFT", async (data: GetNFTProps) => {
   return [];

@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Icon, Loading, Tag, useNotification, CopyButton } from "web3uikit";
 import ErrorBanner from "../../components/ErrorBanner/ErrorBanner";
 import { AppDispatch } from "../../config/store";
-import { getTokenData, removeTokenFromWishlist, saveTokenInWishlist, getOwners } from "../../config/tokenSlice";
+import { getTokenData, removeTokenFromWishlist, saveTokenInWishlist, getCollection } from "../../config/tokenSlice";
 import { getDisplayName } from "../../helpers/getDisplayName";
 import { getImageURL } from "../../helpers/getTokenImage";
 import { FiTag } from "react-icons/fi";
@@ -54,7 +54,7 @@ const Token: NextPage = () => {
   const token: string = Array.isArray(query.token) ? query.token[0] : query.token || "";
   const tokenId: string = Array.isArray(query.id) ? query.id[0] : query.id || "";
   const chain: string = Array.isArray(query.chain) ? query.chain[0] : query.chain || "eth";
-  const { data, isLoading, hasError, collection, owners } = useSelector((store: StoreType) => store.token);
+  const { data, isLoading, hasError, collection } = useSelector((store: StoreType) => store.token);
   const { save: saveToWishlist } = useNewMoralisObject("Wishlist");
   const { fetch: getWishlist } = useMoralisQuery("Wishlist");
   const alert = useNotification();
@@ -64,7 +64,7 @@ const Token: NextPage = () => {
   useEffect(() => {
     if (isInitialized && tokenId) {
       dispatch(getTokenData({ token: Moralis.Web3API.token, address: token, token_id: tokenId, chain, getWishlist }));
-      dispatch(getOwners({ token: Moralis.Web3API.token, address: token, chain, token_id: tokenId }));
+      dispatch(getCollection({ token: Moralis.Web3API.token, address: token, chain }));
     }
   }, [Moralis, getWishlist, dispatch, isInitialized, token, tokenId, chain]);
 
@@ -225,18 +225,16 @@ const Token: NextPage = () => {
             </Table>
           </Collapsable>
         </InfoContainer>
-        <Collapsable isOpen={collection.data.length > 0} title="More from Collection">
+        <Collapsable isOpen={true} title="More from Collection">
           <Carousel size={collection.data.length} isLoading={collection.isLoading}>
             {collection.data.map((nft) => (
               <NFTCard data={nft} key={nft.tokenId} />
             ))}
           </Carousel>
         </Collapsable>
-        {owners.length > 0 && (
-          <Link href={`/profile/${owners[owners.length - 1].owner_of}`}>
-            <SeeMoreButton>See More</SeeMoreButton>
-          </Link>
-        )}
+        <Link href={`/collection/${token}?chain=${chain}`}>
+          <SeeMoreButton>See More</SeeMoreButton>
+        </Link>
       </Wrapper>
     </Main>
   );

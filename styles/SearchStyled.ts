@@ -142,6 +142,7 @@ export const FilterInput = styled.input`
   padding: 10px;
   border-radius: 5px;
   border: 1px solid ${({ theme }: { theme: ThemeType }) => theme.BORDER};
+  background-color: transparent;
 `;
 
 export const FilterPriceRow = styled.div`
@@ -175,6 +176,7 @@ export const FilterSelect = styled.select`
   color: ${({ theme }: { theme: ThemeType }) => theme.TEXT};
   border-radius: 5px;
   border: 1px solid ${({ theme }: { theme: ThemeType }) => theme.BORDER};
+  background-color: transparent;
 `;
 
 export const FilterLabel = styled.label`

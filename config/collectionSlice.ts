@@ -50,7 +50,7 @@ const getNFTList = (list: NFTResponse[], chain: ChainType): NFTType[] =>
     metadata: JSON.parse(data.metadata),
   })) || [];
 
-export const getCollectionNFTs = createAsyncThunk("collection/GET_COLLECTION", async (data: GetNFTProps) => {
+export const getCollectionData = createAsyncThunk("collection/GET_COLLECTION", async (data: GetNFTProps) => {
   const address = data.address;
   const chain: ChainType = data.chain || "eth";
   const limit = data.limit;
@@ -93,7 +93,7 @@ const collectionSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(getCollectionNFTs.fulfilled, (state, action) => {
+    builder.addCase(getCollectionData.fulfilled, (state, action) => {
       state.data = action.payload.data;
       state.isLoading = false;
       state.hasError = false;
@@ -103,10 +103,10 @@ const collectionSlice = createSlice({
       state.previousCursor = setPreviousCursor(state.previousCursor, action.payload?.previousCursor);
       state.name = action.payload.name;
     });
-    builder.addCase(getCollectionNFTs.pending, (state) => {
+    builder.addCase(getCollectionData.pending, (state) => {
       state.isLoading = true;
     });
-    builder.addCase(getCollectionNFTs.rejected, (state) => {
+    builder.addCase(getCollectionData.rejected, (state) => {
       state.isLoading = false;
       state.hasError = true;
     });

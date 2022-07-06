@@ -1,7 +1,19 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useMoralisWeb3Api, useMoralis } from "react-moralis";
+import { AppDispatch } from "../../config/store";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import StoreType from "../../types/StoreType";
+import { clearStore, getCollectionData } from "../../config/collectionSlice";
+import ErrorBanner from "../../components/ErrorBanner/ErrorBanner";
+import { Icon, Loading } from "web3uikit";
+import { useTheme } from "styled-components";
+import NFTGrid from "../../components/NFTGrid/NFTGrid";
+import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { FaTwitter, FaDiscord, FaInstagram, FaTiktok, FaMedium } from "react-icons/fa";
+import { IoThumbsUpSharp, IoThumbsUpOutline } from "react-icons/io5";
 import {
   Main,
   Title,
@@ -17,16 +29,26 @@ import {
   Data,
   DataValue,
   DataLabel,
+  RowWrapper,
+  FilterArea,
+  FilterWrapper,
+  FilterTitle,
+  FilterRow,
+  FilterLabel,
+  FilterCheckbox,
+  FilterPriceRow,
+  FilterSelect,
+  FilterInput,
+  FilterApply,
+  FilterButton,
+  FilterIconLabel,
+  ActivityFilterRow,
+  ChartContainer,
+  ImageWrapper,
+  SocialLinks,
+  ImageContent,
+  LikeNumber,
 } from "../../styles/CollectionStyled";
-import { AppDispatch } from "../../config/store";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
-import StoreType from "../../types/StoreType";
-import { clearStore, getCollectionNFTs } from "../../config/collectionSlice";
-import ErrorBanner from "../../components/ErrorBanner/ErrorBanner";
-import { Loading } from "web3uikit";
-import { useTheme } from "styled-components";
-import NFTGrid from "../../components/NFTGrid/NFTGrid";
 
 type TabType = { id: number; label: string };
 const tabs: TabType[] = [
@@ -42,6 +64,7 @@ const Collection: NextPage = () => {
   const theme: any = useTheme();
   const { Web3API } = useMoralisWeb3Api();
   const { query } = useRouter();
+  const [isFilterOpen, setIsFilterOpen] = useState(true);
   const address: string = Array.isArray(query.address) ? query.address[0] : query.address || "";
   const chain: any = Array.isArray(query.chain) ? query.chain[0] : query.chain || "";
   const { data, isLoading, total, nextCursor, previousCursor, page, hasError, name } = useSelector(
@@ -50,7 +73,7 @@ const Collection: NextPage = () => {
 
   useEffect(() => {
     if (isInitialized && address) {
-      dispatch(getCollectionNFTs({ address, token: Web3API.token, limit: PAGE_SIZE, chain }));
+      dispatch(getCollectionData({ address, token: Web3API.token, limit: PAGE_SIZE, chain }));
     }
     return () => {
       dispatch(clearStore());
@@ -59,7 +82,7 @@ const Collection: NextPage = () => {
 
   const onPreviousPage = () => {
     dispatch(
-      getCollectionNFTs({
+      getCollectionData({
         address,
         token: Web3API.token,
         limit: PAGE_SIZE,
@@ -70,7 +93,7 @@ const Collection: NextPage = () => {
   };
 
   const onNextPage = () => {
-    dispatch(getCollectionNFTs({ address, token: Web3API.token, limit: PAGE_SIZE, cursor: nextCursor, chain }));
+    dispatch(getCollectionData({ address, token: Web3API.token, limit: PAGE_SIZE, cursor: nextCursor, chain }));
   };
 
   const renderLoaderOrError = () => (
@@ -92,7 +115,21 @@ const Collection: NextPage = () => {
     <Main>
       <Wrapper>
         <ImageTitleRow>
-          <CollectionImage style={{ backgroundImage: `url("/assets/logo.png")` }} />
+          <ImageWrapper>
+            <CollectionImage style={{ backgroundImage: `url("/assets/logo.png")` }}>
+              <ImageContent>
+                <LikeNumber>0</LikeNumber>
+                <IoThumbsUpOutline size={20} color={theme.CARD} style={{ cursor: "pointer" }} />
+              </ImageContent>
+            </CollectionImage>
+            <SocialLinks>
+              <FaTwitter size={20} />
+              <FaDiscord size={20} />
+              <FaInstagram size={20} />
+              <FaTiktok size={20} />
+              <FaMedium size={20} />
+            </SocialLinks>
+          </ImageWrapper>
           <TitleDescription>
             <div>
               <Title>{name}</Title>
@@ -131,16 +168,117 @@ const Collection: NextPage = () => {
           </TabButton>
         </TabRow>
         {activeTab.id === tabs[0].id && (
-          <NFTGrid
-            onNext={onNextPage}
-            onPrevious={onPreviousPage}
-            size={PAGE_SIZE}
-            total={total}
-            data={data.filter((nft) => nft.metadata).map((nft) => ({ ...nft, chain }))}
-            isLoading={isLoading}
-            page={page}
-            cardWidth="224px"
-          />
+          <Fragment>
+            <FilterButton onClick={() => setIsFilterOpen(!isFilterOpen)}>
+              <Icon size={28} svg="list" fill={theme.TITLE} />
+              <FilterIconLabel>Filters</FilterIconLabel>
+            </FilterButton>
+            <RowWrapper>
+              <FilterArea isFilterOpen={isFilterOpen}>
+                {isFilterOpen && (
+                  <FilterWrapper onSubmit={() => {}}>
+                    <FilterTitle>Status</FilterTitle>
+                    <FilterRow>
+                      <FilterLabel>Buy now</FilterLabel>
+                      <FilterCheckbox type="checkbox" />
+                    </FilterRow>
+                    <FilterRow>
+                      <FilterLabel>On auction</FilterLabel>
+                      <FilterCheckbox type="checkbox" />
+                    </FilterRow>
+                    <FilterTitle>Price</FilterTitle>
+                    <FilterPriceRow>
+                      <FilterSelect>
+                        <option>USD</option>
+                        <option>ETH</option>
+                        <option>MATIC</option>
+                        <option>BNB</option>
+                      </FilterSelect>
+                      <FilterInput type="text" placeholder="Min" />
+                      <FilterLabel>to</FilterLabel>
+                      <FilterInput type="text" placeholder="Max" />
+                    </FilterPriceRow>
+                    <FilterApply type="submit" value="Apply" />
+                  </FilterWrapper>
+                )}
+              </FilterArea>
+              <NFTGrid
+                onNext={onNextPage}
+                onPrevious={onPreviousPage}
+                size={PAGE_SIZE}
+                total={total}
+                data={data.filter((nft) => nft.metadata).map((nft) => ({ ...nft, chain }))}
+                isLoading={isLoading}
+                page={page}
+                cardWidth={isFilterOpen ? "324px" : "224px"}
+              />
+            </RowWrapper>
+          </Fragment>
+        )}
+        {activeTab.id === tabs[1].id && (
+          <Fragment>
+            <ActivityFilterRow>
+              <FilterButton onClick={() => setIsFilterOpen(!isFilterOpen)}>
+                <Icon size={28} svg="list" fill={theme.TITLE} />
+                <FilterIconLabel>Filters</FilterIconLabel>
+              </FilterButton>
+              <FilterSelect>
+                <option>Last 7 days</option>
+                <option>Last 14 days</option>
+                <option>Last 30 days</option>
+                <option>Last 60 days</option>
+                <option>Last 90 days</option>
+                <option>Last year</option>
+                <option>All time</option>
+              </FilterSelect>
+            </ActivityFilterRow>
+            <RowWrapper>
+              <FilterArea isFilterOpen={isFilterOpen}>
+                {isFilterOpen && (
+                  <FilterWrapper onSubmit={() => {}}>
+                    <FilterTitle>Event Type</FilterTitle>
+                    <FilterRow>
+                      <FilterLabel htmlFor="sales">Sales</FilterLabel>
+                      <FilterCheckbox id="sales" type="checkbox" />
+                    </FilterRow>
+                    <FilterRow>
+                      <FilterLabel htmlFor="listings">Listings</FilterLabel>
+                      <FilterCheckbox id="listings" type="checkbox" />
+                    </FilterRow>
+                    <FilterRow>
+                      <FilterLabel htmlFor="offers">Offers</FilterLabel>
+                      <FilterCheckbox id="offers" type="checkbox" />
+                    </FilterRow>
+                    <FilterRow>
+                      <FilterLabel htmlFor="collection_offers">Collection offers</FilterLabel>
+                      <FilterCheckbox id="collection_offers" type="checkbox" />
+                    </FilterRow>
+                    <FilterRow>
+                      <FilterLabel htmlFor="transfers">Transfers</FilterLabel>
+                      <FilterCheckbox id="transfers" type="checkbox" />
+                    </FilterRow>
+                  </FilterWrapper>
+                )}
+              </FilterArea>
+              <ChartContainer isFilterOpen={isFilterOpen}>
+                <ResponsiveContainer>
+                  <LineChart
+                    data={[
+                      { value: 0.4, name: "0" },
+                      { value: 2.1, name: "2" },
+                    ]}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Line dataKey="value" stroke="#8884d8" />
+                  </LineChart>
+                </ResponsiveContainer>
+              </ChartContainer>
+            </RowWrapper>
+          </Fragment>
         )}
       </Wrapper>
     </Main>

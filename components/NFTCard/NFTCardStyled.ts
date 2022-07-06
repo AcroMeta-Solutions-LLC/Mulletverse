@@ -3,9 +3,8 @@ import { SCREEN } from "../../constants/screen";
 import { TYPOGRAPHY } from "../../constants/typography";
 import ThemeType from "../../types/themeType";
 
-type NFTWrapperType = {
-  width?: string;
-};
+type NFTWrapperType = { width?: string };
+type ImageType = { width?: string; src: string; alt: string };
 
 export const NFTWrapper = styled.div<NFTWrapperType>`
   border-radius: 5px;
@@ -29,15 +28,15 @@ export const NFTWrapper = styled.div<NFTWrapperType>`
   }
 `;
 
-export const Image = styled.div`
-  background-image: ${({ src }: { src: string; alt: string }) => `url(${src})`};
+export const Image = styled.div<ImageType>`
+  background-image: ${({ src }) => `url(${src})`};
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
   flex: 1;
   border-radius: 5px 5px 0 0;
   background-color: ${({ theme }: { theme: ThemeType }) => theme.BACKGROUND};
-  min-width: 230px;
+  min-width: ${({ width }) => (width ? `calc(${width} - 2px)` : "230px")};
 `;
 
 export const Content = styled.div`

@@ -32,7 +32,7 @@ function NFTCard({ data, width, action, onSell }: NFTBuyCardType) {
   return (
     <NFTWrapper width={width}>
       <Link href={tokenURL}>
-        <Image alt="foo" src={getImageURL(data.metadata?.image)} />
+        <Image width={width} alt="foo" src={getImageURL(data.metadata?.image)} />
       </Link>
       <Link href={tokenURL}>
         <Content>

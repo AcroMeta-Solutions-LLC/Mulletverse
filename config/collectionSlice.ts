@@ -12,6 +12,9 @@ export type CollectionProps = {
   nextCursor?: string;
   page: number;
   name: string;
+  likes: number;
+  hasLike: boolean;
+  isLoadingLikes: boolean;
 };
 
 type GetNFTProps = {
@@ -39,6 +42,9 @@ const initialState: CollectionProps = {
   previousCursor: [""],
   page: 0,
   name: "",
+  likes: 0,
+  hasLike: false,
+  isLoadingLikes: false,
 };
 
 const getNFTList = (list: NFTResponse[], chain: ChainType): NFTType[] =>
@@ -67,6 +73,35 @@ export const getCollectionData = createAsyncThunk("collection/GET_COLLECTION", a
   };
 });
 
+export const getLikes = createAsyncThunk(
+  "collection/GET_LIKES",
+  async (data: { fetchLikes: Function; owner: string; address: string }) => {
+    const response = await data.fetchLikes();
+    const hasLike = response.find(
+      (like: any) => data.owner === like.get("owner") && data.address === like.get("address"),
+    );
+    return { likes: response.length, hasLike };
+  },
+);
+
+export const saveCollectionLike = createAsyncThunk(
+  "collection/SAVE_LIKE",
+  async (data: { address: string; saveLike: Function; owner: string }) => {
+    await data.saveLike({ address: data.address, owner: data.owner });
+    return true;
+  },
+);
+
+export const removeCollectionLike = createAsyncThunk(
+  "collection/REMOVE_LIKE",
+  async (data: { fetchLikes: Function; owner: string }) => {
+    const likeList = await data.fetchLikes();
+    const like = likeList.find((l: any) => data.owner === l.get("owner"));
+    await like?.destroy();
+    return false;
+  },
+);
+
 const setPreviousCursor = (cursorList: string[], newCursor: string | null | undefined): string[] => {
   if (newCursor === null || newCursor === undefined) return cursorList;
   let cursors = [...cursorList];
@@ -90,6 +125,8 @@ const collectionSlice = createSlice({
       state.total = 0;
       state.hasError = false;
       state.name = "";
+      state.likes = 0;
+      state.hasLike = false;
     },
   },
   extraReducers: (builder) => {
@@ -109,6 +146,45 @@ const collectionSlice = createSlice({
     builder.addCase(getCollectionData.rejected, (state) => {
       state.isLoading = false;
       state.hasError = true;
+    });
+    builder.addCase(getLikes.fulfilled, (state, action) => {
+      state.isLoadingLikes = false;
+      state.hasError = false;
+      state.likes = action.payload.likes;
+      state.hasLike = action.payload.hasLike;
+    });
+    builder.addCase(getLikes.pending, (state) => {
+      state.isLoadingLikes = true;
+    });
+    builder.addCase(getLikes.rejected, (state) => {
+      state.isLoadingLikes = false;
+      state.hasError = true;
+    });
+    builder.addCase(saveCollectionLike.fulfilled, (state, action) => {
+      state.hasError = false;
+      state.isLoadingLikes = false;
+      state.hasLike = action.payload;
+      state.likes = state.likes + 1;
+    });
+    builder.addCase(saveCollectionLike.pending, (state) => {
+      state.isLoadingLikes = true;
+    });
+    builder.addCase(saveCollectionLike.rejected, (state) => {
+      state.hasError = true;
+      state.isLoadingLikes = false;
+    });
+    builder.addCase(removeCollectionLike.fulfilled, (state, action) => {
+      state.hasError = false;
+      state.isLoadingLikes = false;
+      state.hasLike = action.payload;
+      state.likes = state.likes - 1;
+    });
+    builder.addCase(removeCollectionLike.pending, (state) => {
+      state.isLoadingLikes = true;
+    });
+    builder.addCase(removeCollectionLike.rejected, (state) => {
+      state.hasError = true;
+      state.isLoadingLikes = false;
     });
   },
 });

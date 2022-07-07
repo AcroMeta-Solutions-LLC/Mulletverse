@@ -1,12 +1,17 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { Fragment, useEffect, useState } from "react";
-import { useMoralisWeb3Api, useMoralis } from "react-moralis";
+import { useMoralisWeb3Api, useMoralis, useNewMoralisObject, useMoralisQuery } from "react-moralis";
 import { AppDispatch } from "../../config/store";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import StoreType from "../../types/StoreType";
-import { clearStore, getCollectionData } from "../../config/collectionSlice";
+import {
+  clearStore,
+  getCollectionData,
+  getLikes,
+  removeCollectionLike,
+  saveCollectionLike,
+} from "../../config/collectionSlice";
 import ErrorBanner from "../../components/ErrorBanner/ErrorBanner";
 import { Icon, Loading } from "web3uikit";
 import { useTheme } from "styled-components";
@@ -57,28 +62,30 @@ const tabs: TabType[] = [
 ];
 
 const Collection: NextPage = () => {
-  const { isInitialized } = useMoralis();
+  const { isInitialized, user } = useMoralis();
   const dispatch = useDispatch<AppDispatch>();
   const PAGE_SIZE = 30;
   const [activeTab, setActiveTab] = useState(tabs[0]);
   const theme: any = useTheme();
   const { Web3API } = useMoralisWeb3Api();
   const { query } = useRouter();
-  const [isFilterOpen, setIsFilterOpen] = useState(true);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const address: string = Array.isArray(query.address) ? query.address[0] : query.address || "";
   const chain: any = Array.isArray(query.chain) ? query.chain[0] : query.chain || "";
-  const { data, isLoading, total, nextCursor, previousCursor, page, hasError, name } = useSelector(
-    (store: StoreType) => store.collection,
-  );
+  const { save: saveLike } = useNewMoralisObject("CollectionLikes");
+  const { fetch: fetchLikes } = useMoralisQuery("CollectionLikes");
+  const { data, isLoading, total, nextCursor, previousCursor, page, hasError, name, likes, hasLike, isLoadingLikes } =
+    useSelector((store: StoreType) => store.collection);
 
   useEffect(() => {
     if (isInitialized && address) {
       dispatch(getCollectionData({ address, token: Web3API.token, limit: PAGE_SIZE, chain }));
+      dispatch(getLikes({ fetchLikes, owner: user?.get("ethAddress"), address }));
     }
     return () => {
       dispatch(clearStore());
     };
-  }, [isInitialized, Web3API, dispatch, chain, address]);
+  }, [isInitialized, Web3API, dispatch, chain, address, fetchLikes, user]);
 
   const onPreviousPage = () => {
     dispatch(
@@ -109,6 +116,14 @@ const Collection: NextPage = () => {
     </Main>
   );
 
+  const likeOrDislike = () => {
+    if (hasLike) {
+      dispatch(removeCollectionLike({ fetchLikes, owner: user?.get("ethAddress") }));
+    } else {
+      dispatch(saveCollectionLike({ saveLike, owner: user?.get("ethAddress"), address }));
+    }
+  };
+
   return isLoading || hasError ? (
     renderLoaderOrError()
   ) : (
@@ -118,8 +133,19 @@ const Collection: NextPage = () => {
           <ImageWrapper>
             <CollectionImage style={{ backgroundImage: `url("/assets/logo.png")` }}>
               <ImageContent>
-                <LikeNumber>0</LikeNumber>
-                <IoThumbsUpOutline size={20} color={theme.CARD} style={{ cursor: "pointer" }} />
+                <LikeNumber>{likes}</LikeNumber>
+                {hasLike && !isLoadingLikes && (
+                  <IoThumbsUpSharp size={20} color={theme.CARD} style={{ cursor: "pointer" }} onClick={likeOrDislike} />
+                )}
+                {!hasLike && !isLoadingLikes && (
+                  <IoThumbsUpOutline
+                    size={20}
+                    color={theme.CARD}
+                    style={{ cursor: "pointer" }}
+                    onClick={likeOrDislike}
+                  />
+                )}
+                {isLoadingLikes && <Loading spinnerColor={theme.CARD} />}
               </ImageContent>
             </CollectionImage>
             <SocialLinks>

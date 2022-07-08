@@ -28,7 +28,7 @@ export const Main = styled.main`
   }
 `;
 
-export const Form = styled.form`
+export const Form = styled.section`
   max-width: ${SCREEN.TABLET_SMALL};
   display: flex;
   flex-direction: column;
@@ -159,7 +159,7 @@ export const SelectIcon = styled.select`
   outline: none;
 `;
 
-export const Submit = styled.input.attrs({ type: "submit" })`
+export const Submit = styled.button`
   padding: 10px;
   background-color: ${({ theme }: { theme: ThemeType }) => theme.PRIMARY};
   color: #ffffff;
@@ -169,6 +169,8 @@ export const Submit = styled.input.attrs({ type: "submit" })`
   margin-top: 15px;
   cursor: pointer;
   box-shadow: rgb(4 17 29 / 25%) 0px 0px 8px 0px;
+  display: flex;
+  justify-content: center;
 `;
 
 export const AttributeWrapper = styled.div`

@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Chain } from "web3uikit";
 import { ChainType } from "../types/ChainType";
+import { LikeType } from "../types/LikesType";
 import NFTType from "../types/NFTType";
 
 export type CollectionProps = {
@@ -78,9 +79,9 @@ export const getLikes = createAsyncThunk(
   async (data: { fetchLikes: Function; owner: string; address: string }) => {
     const response = await data.fetchLikes();
     const hasLike = response.find(
-      (like: any) => data.owner === like.get("owner") && data.address === like.get("address"),
+      (like: LikeType) => data.owner === like.get("owner") && data.address === like.get("address"),
     );
-    return { likes: response.length, hasLike };
+    return { likes: response.filter((like: LikeType) => like.get("address") === data.address).length, hasLike };
   },
 );
 
@@ -96,7 +97,7 @@ export const removeCollectionLike = createAsyncThunk(
   "collection/REMOVE_LIKE",
   async (data: { fetchLikes: Function; owner: string }) => {
     const likeList = await data.fetchLikes();
-    const like = likeList.find((l: any) => data.owner === l.get("owner"));
+    const like = likeList.find((l: LikeType) => data.owner === l.get("owner"));
     await like?.destroy();
     return false;
   },

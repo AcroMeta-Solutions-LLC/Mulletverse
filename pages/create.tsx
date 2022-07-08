@@ -1,8 +1,8 @@
 import { NextPage } from "next";
-import { FormEvent, useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useTheme } from "styled-components";
-import { Checkbox, Icon, Modal, Tag } from "web3uikit";
+import { Checkbox, Icon, Loading, Modal, Tag, useNotification } from "web3uikit";
 import { FaPlus } from "react-icons/fa";
 import { INTERESTS } from "../constants/interests";
 import {
@@ -29,13 +29,18 @@ import {
   TagWrapper,
 } from "../styles/CreateStyled";
 import { CONTENT_TYPE } from "../constants/contentType";
+import { useMoralis } from "react-moralis";
 
 type BlockchainType = "eth" | "matic" | "bnb" | "solana";
 type AttributeType = { name: string; value: string };
 type TagType = { id: string; name: string };
 
 const Create: NextPage = () => {
+  const { isInitialized, user, Moralis } = useMoralis();
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [file, setFile] = useState<File>();
   const [isModalPropertiesOpen, setIsModalPropertiesOpen] = useState(false);
   const [isModalLevelsOpen, setIsModalLevelsOpen] = useState(false);
   const [isModalStatsOpen, setIsModalStatsOpen] = useState(false);
@@ -56,16 +61,23 @@ const Create: NextPage = () => {
   const [statValueEnd, setStatValueEnd] = useState(1);
   const [newTag, setNewTag] = useState("");
   const [contentType, setContentType] = useState("");
+  const [supply, setSupply] = useState(1);
+  const [externalLink, setExternalLink] = useState("");
+  const [isSensitive, setIsSensitive] = useState(false);
+  const [isUnlockable, setIsUnlockable] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const alert = useNotification();
 
   const onAddfiles = useCallback((acceptedFiles: File[]) => {
     const imageUrl = URL.createObjectURL(acceptedFiles[0]);
     setImageUrl(imageUrl);
+    setFile(acceptedFiles[0]);
   }, []);
 
   const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } = useDropzone({
     accept: { "image/*": [] },
     maxFiles: 1,
-    maxSize: 100000,
+    maxSize: 1000000,
     onDrop: onAddfiles,
   });
 
@@ -78,13 +90,79 @@ const Create: NextPage = () => {
     }
   };
 
-  const submitForm = (e: FormEvent): void => {
-    e.preventDefault();
+  const clearForm = () => {
+    setName("");
+    setDescription("");
+    setImageUrl("");
+    setFile(undefined);
+    setProperties([]);
+    setLevels([]);
+    setStats([]);
+    setTags([]);
+    setContentType("");
+    setExternalLink("");
+    setIsSensitive(false);
+    setIsUnlockable(false);
+  };
+
+  useEffect(() => {
+    Moralis.enableWeb3();
+  }, [Moralis]);
+
+  const submitForm = async (): Promise<void> => {
+    if (!isInitialized || !user || isLoading) return;
+    if (!file || !name) {
+      alert({
+        type: "warning",
+        title: "Fields missing",
+        message: "Please fill in all required fields",
+        position: "topR",
+      });
+      return;
+    }
+    setIsLoading(true);
+    const nftFile: any = new Moralis.File(file.name.replace(/[^\w\s]/gi, ""), file);
+    await nftFile.saveIPFS();
+    const imageHash = nftFile.hash();
+    const metadata = {
+      name,
+      contentType,
+      externalLink,
+      description,
+      image: "/ipfs/" + imageHash,
+      properties,
+      levels,
+      stats,
+      tags,
+      isSensitive,
+      isUnlockable,
+    };
+    const jsonFile: any = new Moralis.File("metadata.json", { base64: btoa(JSON.stringify(metadata)) });
+    await jsonFile.saveIPFS();
+    const metadataHash = jsonFile.hash();
+    try {
+      const { data } = await Moralis.Plugins.rarible.lazyMint({
+        chain: "eth",
+        userAddress: user.get("ethAddress"),
+        tokenType: "ERC721",
+        tokenUri: "/ipfs/" + metadataHash,
+        royaltiesAmount: 25,
+        supply,
+      });
+      alert({ type: "success", title: "NFT Created!", message: "Opening new tab...", position: "topR" });
+      clearForm();
+      const { tokenAddress, tokenId } = data.result;
+      window.open(`https://rarible.com/token/${tokenAddress}:${tokenId}`, "_blank")?.focus();
+    } catch (error: any) {
+      alert({ type: "error", title: error.name, message: error.message, position: "topR" });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <Main>
-      <Form onSubmit={submitForm}>
+      <Form>
         <Title>Create New Item</Title>
         <RequiredWrapper>
           <Label htmlFor="image">Image</Label>
@@ -101,8 +179,13 @@ const Create: NextPage = () => {
           <Label htmlFor="nft-name">Name</Label>
           <Required>*</Required>
         </RequiredWrapper>
-        <TextInput type="text" id="nft-name" placeholder="Item name" />
-
+        <TextInput
+          type="text"
+          id="nft-name"
+          placeholder="Item name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
         <Label htmlFor="content-type">Content Type</Label>
         <SelectIconWrapper>
           <Icon fill={theme.PRIMARY} size={20} svg="file" />
@@ -114,18 +197,20 @@ const Create: NextPage = () => {
             ))}
           </SelectIcon>
         </SelectIconWrapper>
-
         <Label htmlFor="external-link">External link</Label>
-        <TextInput type="text" id="external-link" placeholder="http://website.com/item/123" />
+        <TextInput
+          type="text"
+          id="external-link"
+          placeholder="http://website.com/item/123"
+          value={externalLink}
+          onChange={(e) => setExternalLink(e.target.value)}
+        />
         <Label htmlFor="description">Description</Label>
         <Small>The description provided will be included on the item`s details page.</Small>
-        <TextArea id="description" />
-        <RequiredWrapper>
-          <Label htmlFor="collection">Collection</Label>
-          <Required>*</Required>
-        </RequiredWrapper>
+        <TextArea id="description" value={description} onChange={(e) => setDescription(e.target.value)} />
+        <Label htmlFor="collection">Collection</Label>
         <Small>This is the collection where your item will appear.</Small>
-        <Select></Select>
+        <Select style={{ backgroundColor: theme.CARD }} disabled></Select>
         <AttributeWrapper style={{ alignItems: "center" }}>
           <Attribute>
             <Label htmlFor="properties-btn">Properties</Label>
@@ -185,10 +270,10 @@ const Create: NextPage = () => {
         </AttributesRow>
         <AttributeWrapper style={{ alignItems: "center" }}>
           <Attribute>
-            <Label htmlFor="stats-btn">Tags</Label>
+            <Label htmlFor="tags-btn">Tags</Label>
             <Small>Identifiers for your creation.</Small>
           </Attribute>
-          <PlusButton id="stats-btn" onClick={() => setIsModalTagsOpen(true)}>
+          <PlusButton id="tags-btn" onClick={() => setIsModalTagsOpen(true)}>
             <FaPlus size={20} />
           </PlusButton>
         </AttributeWrapper>
@@ -209,11 +294,13 @@ const Create: NextPage = () => {
           </Attribute>
           <Checkbox
             layout="switch"
-            checked={false}
+            checked={isUnlockable}
             label=""
             id="unlockable-content"
             name="unlockable-content"
-            onChange={() => {}}
+            onChange={(e) => {
+              setIsUnlockable(e.target.value !== "true");
+            }}
           />
         </AttributeWrapper>
         <AttributeWrapper>
@@ -223,28 +310,46 @@ const Create: NextPage = () => {
               Contains explicit content including, drugs, alcohol, adult content, profanity, and/or violence.
             </Small>
           </Attribute>
-          <Checkbox layout="switch" checked={false} label="" id="explicit" name="explicit" onChange={() => {}} />
+          <Checkbox
+            layout="switch"
+            checked={isSensitive}
+            label=""
+            id="explicit"
+            name="explicit"
+            onChange={(e) => {
+              setIsSensitive(e.target.value !== "true");
+            }}
+          />
         </AttributeWrapper>
-        <RequiredWrapper>
-          <Label htmlFor="supply">Supply</Label>
-          <Required>*</Required>
-        </RequiredWrapper>
+        <Label htmlFor="supply">Supply</Label>
         <Small>The number of items that can be minted.</Small>
-        <TextInput type="number" id="supply" min={1} />
+        <TextInput
+          type="number"
+          id="supply"
+          min={1}
+          value={supply}
+          onChange={(e) => setSupply(parseInt(e.target.value))}
+          disabled
+          style={{ backgroundColor: theme.CARD }}
+        />
         <Label htmlFor="blockchain">Blockchain</Label>
-        <SelectIconWrapper>
+        <SelectIconWrapper style={{ backgroundColor: theme.CARD }}>
           <Icon fill={theme.PRIMARY} size={20} svg={blockchain as any} />
           <SelectIcon
+            style={{ backgroundColor: theme.CARD }}
             value={blockchain}
             id="blockchain"
             onChange={(e) => setBlockchain(e.target.value as BlockchainType)}
+            disabled
           >
             <option value="eth">Ethereum</option>
             <option value="matic">Polygon</option>
             <option value="bnb">Binance</option>
           </SelectIcon>
         </SelectIconWrapper>
-        <Submit value="Create" />
+        <Submit disabled={isLoading} type="button" onClick={submitForm}>
+          {isLoading ? <Loading spinnerColor={theme.CARD} /> : "Create"}
+        </Submit>
       </Form>
       <Modal
         width="400px"

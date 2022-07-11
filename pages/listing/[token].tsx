@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { useMoralis } from "react-moralis";
 import { useSelector, useDispatch } from "react-redux";
-import { Icon, Loading, CopyButton, Modal } from "web3uikit";
+import { Icon, Loading, CopyButton, Modal, useNotification } from "web3uikit";
 import ErrorBanner from "../../components/ErrorBanner/ErrorBanner";
 import { AppDispatch } from "../../config/store";
 import { getTokenData } from "../../config/listingSlice";
@@ -45,6 +45,7 @@ import {
 } from "../../styles/ListingStyled";
 import { parseDate } from "../../helpers/parseDatetime";
 import { useTheme } from "styled-components";
+import { ethers } from "ethers";
 
 const Listing: NextPage = () => {
   const { isInitialized, Moralis, user } = useMoralis();
@@ -60,6 +61,7 @@ const Listing: NextPage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const theme: any = useTheme();
   const [amount, setAmount] = useState(0);
+  const alert = useNotification();
   const [dateRange, setDateRange] = useState<Range[]>([
     {
       startDate: new Date(),
@@ -67,6 +69,10 @@ const Listing: NextPage = () => {
       key: "selection",
     },
   ]);
+
+  useEffect(() => {
+    Moralis.enableWeb3();
+  }, [Moralis]);
 
   useEffect(() => {
     if (isInitialized && tokenId) {
@@ -86,6 +92,32 @@ const Listing: NextPage = () => {
       </Wrapper>
     </Main>
   );
+
+  const completeListing = async () => {
+    if (!isInitialized || !user || isLoading || amount <= 0) return;
+    const takeValue = ethers.utils.parseEther(amount.toString()).toString();
+    try {
+      await Moralis.Plugins.rarible.createSellOrder({
+        chain: "eth",
+        userAddress: user?.get("ethAddress"),
+        makeTokenId: tokenId,
+        makeTokenAddress: token,
+        makeAssetClass: "ERC1155",
+        makeValue: "1",
+        takeAssetClass: "ETH",
+        takeValue,
+      });
+      alert({ type: "success", title: "NFT Created!", message: "Opening new tab...", position: "topR" });
+    } catch (error: any) {
+      alert({
+        type: "error",
+        title: error.name,
+        message: "An error occurred when trying to create the Sell Order",
+        position: "topR",
+      });
+      console.log(error.message);
+    }
+  };
 
   return isLoading || hasError ? (
     renderLoaderOrError()
@@ -124,15 +156,15 @@ const Listing: NextPage = () => {
             )}
             <Subtitle>{type === TYPES[0] ? "Price" : "Starting Price"}</Subtitle>
             <PriceRow>
-              <Select>
-                <option>ETH</option>
-                <option>MATIC</option>
+              <Select disabled>
+                <option value="eth">ETH</option>
               </Select>
               <Input
                 type="number"
                 placeholder="Amount"
                 value={amount}
-                onChange={(e) => setAmount(parseInt(e.target.value))}
+                min={0}
+                onChange={(e) => setAmount(parseInt(e.target.value) || 0)}
               />
             </PriceRow>
             <Subtitle>Duration</Subtitle>
@@ -148,7 +180,9 @@ const Listing: NextPage = () => {
               <Fee>Service Fee</Fee>
               <Fee>2.5%</Fee>
             </FeeRow>
-            <CompleteButton>Complete listing</CompleteButton>
+            <CompleteButton disabled={isLoading || amount <= 0} onClick={completeListing}>
+              Complete listing
+            </CompleteButton>
           </LeftColumn>
           <RightColumn>
             <Title>Preview</Title>

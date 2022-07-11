@@ -98,6 +98,10 @@ export const MarketplaceTab = styled(Tab)`
   height: 30px;
   display: flex;
   align-items: center;
+  @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
+    width: max-content;
+    display: ${(props) => (props.isOpen ? "static" : "none")};
+  }
 `;
 
 export const Dropdown = styled.div<HeaderType>`

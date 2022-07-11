@@ -229,15 +229,16 @@ export const Fee = styled.label`
   font-size: ${TYPOGRAPHY.SIZE.CAPTION};
 `;
 
-export const CompleteButton = styled.button`
-  cursor: pointer;
-  color: ${({ theme }: { theme: ThemeType }) => theme.BACKGROUND};
-  background-color: ${({ theme }: { theme: ThemeType }) => theme.PRIMARY};
+type CompleteButtonType = { disabled: boolean };
+export const CompleteButton = styled.button<CompleteButtonType>`
+  cursor: ${({ disabled }) => (disabled ? "default" : "pointer")};
+  color: ${({ theme, disabled }) => (disabled ? theme.TEXT : theme.BACKGROUND)};
+  background-color: ${({ theme, disabled }) => (disabled ? theme.CARD : theme.PRIMARY)};
   padding: 15px 30px;
   border-radius: 7px;
-  border: 2px solid ${({ theme }: { theme: ThemeType }) => theme.BORDER};
+  border: 2px solid ${({ theme }) => theme.BORDER};
   width: max-content;
   &:focus {
-    outline: 2px solid ${({ theme }: { theme: ThemeType }) => theme.PRIMARY};
+    outline: 2px solid ${({ theme }) => theme.PRIMARY};
   }
 `;

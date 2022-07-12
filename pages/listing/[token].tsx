@@ -128,7 +128,7 @@ const Listing: NextPage = () => {
           <LeftColumn>
             <Title>List item for sale</Title>
             <TitleWrapper>
-              <Title>{data.metadata.name}</Title>
+              <Title>{data.metadata?.name}</Title>
               <TokenHeader>
                 <Icon size={20} svg={getCryptoIconName(chain || "") as any} fill={theme.TITLE} />
                 <span>{getDisplayName(token)}</span>
@@ -192,7 +192,7 @@ const Listing: NextPage = () => {
             <ImageData>
               <Strong>{getDisplayName(token)}</Strong>
               <ImageDataWrapper>
-                <Label>{data.metadata.name}</Label>
+                <Label>{data.metadata?.name}</Label>
                 <Label>Price: {amount || 0}</Label>
               </ImageDataWrapper>
             </ImageData>

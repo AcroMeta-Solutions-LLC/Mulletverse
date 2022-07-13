@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import { useEffect, useMemo } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { useMoralis, useNewMoralisObject, useMoralisQuery } from "react-moralis";
 import { useSelector, useDispatch } from "react-redux";
 import { Icon, Loading, Tag, useNotification, CopyButton } from "web3uikit";
@@ -58,6 +58,7 @@ const Token: NextPage = () => {
   const { save: saveToWishlist } = useNewMoralisObject("Wishlist");
   const { fetch: getWishlist } = useMoralisQuery("Wishlist");
   const alert = useNotification();
+  const [isBuyLoading, setIsBuyLoading] = useState(false);
 
   const isUserOwner: boolean = useMemo(() => data.owner_of === user?.get("ethAddress"), [data, user]);
 
@@ -91,6 +92,33 @@ const Token: NextPage = () => {
     }
   };
 
+  const buyNFT = async (): Promise<void> => {
+    if (isBuyLoading) return;
+    setIsBuyLoading(true);
+    try {
+      await Moralis.enableWeb3();
+      await Moralis.Plugins.opensea.createBuyOrder({
+        network: "mainnet",
+        tokenAddress: token,
+        tokenId: tokenId,
+        tokenType: "ERC20",
+        amount: 1,
+        userAddress: user?.get("ethAddress"),
+        paymentTokenAddress: "0xc778417e063141139fce010982780140aa0cd5ab",
+      });
+    } catch (error: any) {
+      alert({
+        type: "error",
+        title: error.name,
+        message: "An error occurred when trying to create the Buy Order",
+        position: "topR",
+      });
+      console.log(error);
+    } finally {
+      setIsBuyLoading(false);
+    }
+  };
+
   return isLoading || hasError ? (
     renderLoaderOrError()
   ) : (
@@ -108,7 +136,7 @@ const Token: NextPage = () => {
           </LeftColumn>
           <RightColumn>
             <TitleWrapper>
-              <Title>{data.metadata.name}</Title>
+              <Title>{data.metadata?.name}</Title>
               <TokenHeader>
                 <Icon size={20} svg={getCryptoIconName(chain || "") as any} />
                 <span>{getDisplayName(token)}</span>
@@ -123,9 +151,14 @@ const Token: NextPage = () => {
             </span>
             {!isUserOwner && (
               <ButtonRow>
-                <Button>
-                  <FaWallet size={24} />
-                  <span>Buy now</span>
+                <Button onClick={buyNFT}>
+                  {!isBuyLoading && (
+                    <Fragment>
+                      <FaWallet size={24} />
+                      <span>Buy now</span>
+                    </Fragment>
+                  )}
+                  {isBuyLoading && <Loading spinnerColor={COLORS.WHITE} />}
                 </Button>
                 <ButtonOutline>
                   <FiTag size={24} />
@@ -145,7 +178,7 @@ const Token: NextPage = () => {
               </ButtonRow>
             )}
             <Collapsable isOpen={!!data.metadata?.description} title="Description">
-              {data.metadata.description}
+              {data.metadata?.description}
             </Collapsable>
             <Collapsable title={`Attributes (${data.metadata?.attributes ? data.metadata?.attributes.length : 0})`}>
               {data.metadata?.attributes?.map((attr, i) => (

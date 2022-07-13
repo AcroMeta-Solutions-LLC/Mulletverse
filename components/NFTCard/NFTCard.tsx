@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import StoreType from "../../types/StoreType";
 import COLORS from "../../constants/colors";
 import { getCryptoIconName } from "../../helpers/getCryptoIcon";
+import { useRouter } from "next/router";
 
 type NFTBuyCardType = { data: NFTType; width?: string; action?: "Buy" | "Sell"; onSell?: Function };
 
@@ -16,6 +17,7 @@ function NFTCard({ data, width, action, onSell }: NFTBuyCardType) {
   const { isAuthenticated, authenticate } = useMoralis();
   const tokenURL = `/token/${data.address}?id=${data.tokenId}&chain=${data.chain || "eth"}`;
   const { isDarkMode } = useSelector((store: StoreType) => store.theme);
+  const { push } = useRouter();
 
   const buyOrSell = (): void => {
     if (!isAuthenticated) {
@@ -24,7 +26,7 @@ function NFTCard({ data, width, action, onSell }: NFTBuyCardType) {
       if (action === "Sell") {
         !!onSell && onSell();
       } else {
-        console.log(action);
+        push({ pathname: tokenURL });
       }
     }
   };

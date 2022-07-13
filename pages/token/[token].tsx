@@ -11,6 +11,7 @@ import { getDisplayName } from "../../helpers/getDisplayName";
 import { getImageURL } from "../../helpers/getTokenImage";
 import { FiTag } from "react-icons/fi";
 import { FaRegHeart, FaHeart, FaWallet } from "react-icons/fa";
+import { FiRefreshCcw } from "react-icons/fi";
 import StoreType from "../../types/StoreType";
 import Collapsable from "../../components/Collapsable/Collapsable";
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
@@ -44,8 +45,8 @@ import {
   OwnedByLabel,
 } from "../../styles/TokenStyled";
 import Link from "next/link";
-import COLORS from "../../constants/colors";
 import { getCryptoIconName } from "../../helpers/getCryptoIcon";
+import { useTheme } from "styled-components";
 
 const Token: NextPage = () => {
   const { isInitialized, Moralis, user } = useMoralis();
@@ -59,6 +60,7 @@ const Token: NextPage = () => {
   const { fetch: getWishlist } = useMoralisQuery("Wishlist");
   const alert = useNotification();
   const [isBuyLoading, setIsBuyLoading] = useState(false);
+  const theme: any = useTheme();
 
   const isUserOwner: boolean = useMemo(() => data.owner_of === user?.get("ethAddress"), [data, user]);
 
@@ -75,7 +77,7 @@ const Token: NextPage = () => {
         {hasError && <ErrorBanner hasError={hasError} />}
         {isLoading && (
           <LoadingWrapper>
-            <Loading spinnerColor={COLORS.PURPLE} />
+            <Loading spinnerColor={theme.PRIMARY} />
           </LoadingWrapper>
         )}
       </Wrapper>
@@ -119,6 +121,20 @@ const Token: NextPage = () => {
     }
   };
 
+  const refreshMetadata = async (): Promise<void> => {
+    try {
+      await Moralis.Web3API.token.reSyncMetadata({
+        address: token,
+        token_id: tokenId,
+        flag: "metadata",
+      });
+      alert({ type: "info", title: "Refreshing Metadata...", message: "", position: "topR" });
+    } catch (error) {
+      alert({ type: "error", title: "Error", message: "An error occurred when updating the Metadata.", position: "topR" });
+      console.error(error);
+    }
+  };
+
   return isLoading || hasError ? (
     renderLoaderOrError()
   ) : (
@@ -142,6 +158,7 @@ const Token: NextPage = () => {
                 <span>{getDisplayName(token)}</span>
                 <CopyButton onCopy={(e) => e?.preventDefault()} text={token} />
               </TokenHeader>
+              <FiRefreshCcw style={{ cursor: "pointer" }} size={24} color={theme.TITLE} onClick={refreshMetadata} />
             </TitleWrapper>
             <span>
               <OwnedByLabel>Owned by: </OwnedByLabel>
@@ -158,7 +175,7 @@ const Token: NextPage = () => {
                       <span>Buy now</span>
                     </Fragment>
                   )}
-                  {isBuyLoading && <Loading spinnerColor={COLORS.WHITE} />}
+                  {isBuyLoading && <Loading spinnerColor={theme.CARD} />}
                 </Button>
                 <ButtonOutline>
                   <FiTag size={24} />

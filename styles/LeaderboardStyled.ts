@@ -4,14 +4,14 @@ import { TYPOGRAPHY } from "../constants/typography";
 import ThemeType from "../types/themeType";
 
 export const Main = styled.main`
-  padding: 50px 0;
+  padding: 70px 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
   min-height: calc(100vh - 72px);
 
   @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
     min-height: calc(100vh - 110px);
+    padding: 61px 0;
   }
 `;
 
@@ -19,7 +19,8 @@ export const Section = styled.section`
   max-width: ${SCREEN.DESKTOP};
   display: flex;
   flex-direction: column;
-  width: 100%;
+  align-items: center;
+  min-width: 100%;
   padding: 0 20px;
 `;
 
@@ -41,4 +42,21 @@ export const LoadingWrapper = styled.div`
   flex-direction: row;
   justify-content: center;
   justify-content: center;
+  min-height: calc(100vh - 180px);
+`;
+
+export const Header = styled.header`
+  background-color: ${({ theme }: { theme: ThemeType }) => theme.CARD};
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  border-bottom: 2px solid ${({ theme }: { theme: ThemeType }) => theme.BORDER};
+  flex-direction: row;
+
+  @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-start;
+  }
 `;

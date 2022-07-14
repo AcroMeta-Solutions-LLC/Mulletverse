@@ -1,21 +1,25 @@
 import type { NextPage } from "next";
-import { Section, Main, Title, CollectionImage, LoadingWrapper } from "../styles/LeaderboardStyled";
+import { Section, Main, Title, CollectionImage, LoadingWrapper, Header } from "../styles/LeaderboardStyled";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
-import COLORS from "../constants/colors";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../config/store";
 import StoreType from "../types/StoreType";
 import { useSelector } from "react-redux";
 import { getLeaderboard } from "../config/leaderboardSlice";
 import ErrorBanner from "../components/ErrorBanner/ErrorBanner";
-import { Loading } from "web3uikit";
+import { Loading, Select } from "web3uikit";
+import { useTheme } from "styled-components";
+import { CHAINS } from "../constants/chains";
+import { ChainType } from "../types/ChainType";
+import { SCREEN } from "../constants/screen";
 
 const Leaderboard: NextPage = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { isDarkMode } = useSelector((store: StoreType) => store.theme);
   const { data, isLoading, hasError } = useSelector((store: StoreType) => store.leaderboard);
+  const theme: any = useTheme();
+  const [chain, setChain] = useState<ChainType>("matic");
 
   useEffect(() => {
     dispatch(getLeaderboard());
@@ -27,7 +31,7 @@ const Leaderboard: NextPage = () => {
         {hasError && <ErrorBanner hasError={hasError} />}
         {isLoading && (
           <LoadingWrapper>
-            <Loading spinnerColor={COLORS.PURPLE} />
+            <Loading spinnerColor={theme.PRIMARY} />
           </LoadingWrapper>
         )}
       </Section>
@@ -38,11 +42,20 @@ const Leaderboard: NextPage = () => {
     renderLoaderOrError()
   ) : (
     <Main>
+      <Header>
+        <Select
+          defaultOptionIndex={0}
+          onChange={({ id }) => setChain(id as ChainType)}
+          options={CHAINS}
+          prefixText="Chain:"
+          value={chain}
+        />
+      </Header>
       <Section>
         <Title>Leaderboard</Title>
-        <Table>
+        <Table style={{ maxWidth: SCREEN.TABLET_BIG }}>
           <Thead>
-            <Tr style={{ backgroundColor: COLORS.PURPLE, color: COLORS.WHITE }}>
+            <Tr style={{ backgroundColor: theme.PRIMARY, color: theme.CARD }}>
               <Th></Th>
               <Th>Collection</Th>
               <Th>Upvotes</Th>
@@ -54,7 +67,7 @@ const Leaderboard: NextPage = () => {
               <Th>Items</Th>
             </Tr>
           </Thead>
-          <Tbody style={{ color: isDarkMode ? COLORS.WHITE : COLORS.GREY_800 }}>
+          <Tbody style={{ color: theme.TEXT }}>
             {data.map((item, i) => (
               <Tr key={i}>
                 <Td>

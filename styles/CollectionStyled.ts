@@ -72,7 +72,7 @@ export const CollectionImage = styled.div`
   border: 2px solid ${({ theme }: { theme: ThemeType }) => theme.BORDER};
   padding: 10px;
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start;
   justify-content: flex-end;
   @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
     margin-top: 10px;

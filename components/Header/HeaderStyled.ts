@@ -171,6 +171,12 @@ export const DropdownItem = styled.li`
   }
 `;
 
+export const NightSwitch = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
 export const UserWrapper = styled.div`
   display: flex;
   flex-direction: row-reverse;

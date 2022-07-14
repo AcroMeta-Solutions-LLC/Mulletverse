@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useRef, FormEvent, useEffect } from "react";
 import { useMoralis } from "react-moralis";
-import { Blockie, WalletModal } from "web3uikit";
+import { Blockie, Checkbox, WalletModal } from "web3uikit";
 import { FiChevronDown } from "react-icons/fi";
 import { getDisplayName } from "../../helpers/getDisplayName";
 import { useRouter } from "next/router";
@@ -24,6 +24,7 @@ import {
   LogoDrawerWrapper,
   MarketplaceTab,
   ProfilePicture,
+  NightSwitch,
 } from "./HeaderStyled";
 import StoreType from "../../types/StoreType";
 import { useSelector } from "react-redux";
@@ -31,6 +32,7 @@ import { ParsedUrlQueryInput } from "querystring";
 import { useDispatch } from "react-redux";
 import { clearStore, getAccount } from "../../config/accountSlice";
 import { AppDispatch } from "../../config/store";
+import { switchTheme } from "../../config/themeSlice";
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -163,6 +165,18 @@ function Header() {
             <DropdownArea position="right" isLandingPage={isLandingPage} isOpen={isUserMenuOpen}>
               <DropdownItem onClick={() => redirectTo("/settings")}>Settings</DropdownItem>
               <DropdownItem onClick={() => redirectTo("/account")}>Account</DropdownItem>
+              <DropdownItem>
+                <NightSwitch>
+                  <span onClick={() => dispatch(switchTheme())}>Night Mode</span>
+                  <Checkbox
+                    layout="switch"
+                    checked={isDarkMode}
+                    label="&nbsp;"
+                    name="dark-mode"
+                    onChange={() => dispatch(switchTheme())}
+                  />
+                </NightSwitch>
+              </DropdownItem>
               <DropdownItem onClick={logout}>Logout</DropdownItem>
             </DropdownArea>
           </Dropdown>

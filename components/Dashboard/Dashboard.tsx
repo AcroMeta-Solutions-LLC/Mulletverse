@@ -82,7 +82,7 @@ const Dashboard = ({ address }: { address: string }) => {
         </Collapsable>
       </Section>
       <Section>
-        <Collapsable isOpen title="NFT Income Tracker">
+        <Collapsable isOpen title="NFT Dashboard">
           <IncomeTracker>
             <DataArea>
               <DataLabel>TOTAL SPENT</DataLabel>

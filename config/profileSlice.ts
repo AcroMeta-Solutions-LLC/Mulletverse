@@ -3,6 +3,7 @@ import { ChainType } from "../types/ChainType";
 import { NFTResponse } from "../types/NFTResponse";
 import NFTType from "../types/NFTType";
 import Moralis from "moralis";
+import { InterestType } from "../types/InterestType";
 
 export type ProfileProps = {
   isLoading: boolean;
@@ -13,6 +14,7 @@ export type ProfileProps = {
   username: string;
   bio: string;
   email: string;
+  interests: InterestType[];
   collection: {
     data: NFTType[];
     isLoading: boolean;
@@ -41,6 +43,7 @@ const initialState: ProfileProps = {
   username: "",
   bio: "",
   email: "",
+  interests: [],
   collection: {
     data: [],
     hasError: false,
@@ -78,6 +81,7 @@ type GetProfileReturnType = {
   email: string;
   imageUrl: string;
   bio: string;
+  interests: InterestType[];
 };
 
 export const getProfile = createAsyncThunk(
@@ -92,6 +96,7 @@ export const getProfile = createAsyncThunk(
       username: profile?.get("username"),
       imageUrl: profile?.get("imageUrl"),
       email: profile?.get("email"),
+      interests: profile?.get("interests"),
     };
   },
 );
@@ -125,6 +130,7 @@ const profileSlice = createSlice({
       state.hasError = false;
       state.isLoading = false;
       state.createdNFT = [];
+      state.interests = [];
     },
     setProfileChain(state: ProfileProps, action: PayloadAction<ChainType>) {
       state.chain = action.payload;
@@ -139,7 +145,7 @@ const profileSlice = createSlice({
       state.imageUrl = action.payload.imageUrl;
       state.email = action.payload.email;
       state.username = action.payload.username;
-
+      state.interests = action.payload.interests;
       state.isLoading = false;
       state.hasError = false;
     });

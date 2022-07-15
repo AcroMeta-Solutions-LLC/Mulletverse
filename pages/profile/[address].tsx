@@ -7,7 +7,7 @@ import ErrorBanner from "../../components/ErrorBanner/ErrorBanner";
 import { AppDispatch } from "../../config/store";
 import StoreType from "../../types/StoreType";
 import { getDisplayName } from "../../helpers/getDisplayName";
-import { Loading, Select } from "web3uikit";
+import { Loading, Select, Tag } from "web3uikit";
 import { Collections } from "../../helpers/mocks";
 import CollectionCard from "../../components/CollectionCard/CollectionCard";
 import { clearStore, getCollectionNFTs, getProfile, setProfileChain } from "../../config/profileSlice";
@@ -17,6 +17,7 @@ import { ChainType } from "../../types/ChainType";
 import EmptyState from "../../components/EmptyState/EmptyState";
 import NFTGrid from "../../components/NFTGrid/NFTGrid";
 import Dashboard from "../../components/Dashboard/Dashboard";
+import { CopyButton } from "web3uikit";
 import {
   Wrapper,
   Main,
@@ -31,6 +32,7 @@ import {
   TitleSection,
   CollectionsTab,
   CreatedTabContent,
+  Interests,
 } from "../../styles/ProfileStyled";
 
 const sortOptions = [
@@ -54,7 +56,7 @@ const Artist: NextPage = () => {
   const { query } = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const address: string = Array.isArray(query.address) ? query.address[0] : query.address || "";
-  const { collection, isLoading, hasError, chain, bio, email, imageUrl, username } = useSelector(
+  const { collection, isLoading, hasError, chain, bio, imageUrl, username, interests } = useSelector(
     (store: StoreType) => store.profile,
   );
   const [sortOrder, setSortOrder] = useState(sortOptions[0].id);
@@ -104,9 +106,17 @@ const Artist: NextPage = () => {
         <TitleSection>
           <ProfileImage style={{ backgroundImage: `url(${imageUrl || "/assets/major-mullet.png"})` }} />
           <TitleWrapper>
-            <Title>{username || getDisplayName(address)}</Title>
-            <Description>{email}</Description>
+            {username && <Title>{username}</Title>}
+            <Description>
+              {getDisplayName(address)}
+              <CopyButton onCopy={(e) => e?.preventDefault()} text={address} />
+            </Description>
             <Description>{bio}</Description>
+            <Interests>
+              {interests?.map((interest) => (
+                <Tag key={interest.id} hasCancel={false} text={interest.name} />
+              ))}
+            </Interests>
           </TitleWrapper>
         </TitleSection>
         <TabRow>

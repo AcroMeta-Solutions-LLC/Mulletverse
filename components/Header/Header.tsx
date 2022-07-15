@@ -37,6 +37,8 @@ import { switchTheme } from "../../config/themeSlice";
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMarketplaceOpen, setIsMarketplaceOpen] = useState(false);
+  const [isMulletswapOpen, setIsMulletswapOpen] = useState(false);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isConnectModalOpen, setIsConnectModalOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -44,6 +46,8 @@ function Header() {
   const { pathname, push } = useRouter();
   const containerRef = useRef<HTMLElement>(null);
   const marketplaceDropdownRef = useRef<HTMLDivElement>(null);
+  const mulletswapDropdownRef = useRef<HTMLDivElement>(null);
+  const createDropdownRef = useRef<HTMLDivElement>(null);
   const userDropdownRef = useRef<HTMLDivElement>(null);
   const isLandingPage = pathname === "/";
   const { isDarkMode } = useSelector((store: StoreType) => store.theme);
@@ -116,7 +120,7 @@ function Header() {
             <DropdownArea position="left" isLandingPage={isLandingPage} isOpen={isMarketplaceOpen}>
               <DropdownItem onClick={() => redirectTo("/marketplace")}>Marketplace</DropdownItem>
               <DropdownItem onClick={() => redirectTo("/marketplace/minters")}>Minters Market</DropdownItem>
-              <DropdownItem onClick={() => redirectTo("/marketplace/mulletswap")}>MulletSwap</DropdownItem>
+              <DropdownItem onClick={() => redirectTo("/")}>Shared Storefronts</DropdownItem>
             </DropdownArea>
           </Dropdown>
         )}
@@ -132,16 +136,30 @@ function Header() {
             placeholder="Search items, collections, and accounts"
           />
         </Search>
-        <Tab onClick={() => redirectTo("/create")} isLandingPage={isLandingPage} isOpen={isMenuOpen}>
-          Create
-        </Tab>
-        <Tab
-          onClick={() => redirectTo(`/profile/${user?.get("ethAddress")}`)}
-          isLandingPage={isLandingPage}
-          isOpen={isMenuOpen}
-        >
-          Profile
-        </Tab>
+        <Dropdown isLandingPage={isLandingPage} isOpen={isMenuOpen} ref={createDropdownRef}>
+          <DropdownButton onClick={() => setIsCreateOpen(!isCreateOpen)}>
+            <Tab isLandingPage={isLandingPage} isOpen={isMenuOpen}>
+              <DropdownLabel isLandingPage={isLandingPage}>Create</DropdownLabel>
+              <FiChevronDown color={getFontColor()} />
+            </Tab>
+          </DropdownButton>
+          <DropdownArea position="left" isLandingPage={isLandingPage} isOpen={isCreateOpen}>
+            <DropdownItem onClick={() => redirectTo("/create")}>Lazy Minting</DropdownItem>
+            <DropdownItem onClick={() => redirectTo("/")}>Form a Guild</DropdownItem>
+          </DropdownArea>
+        </Dropdown>
+        <Dropdown isLandingPage={isLandingPage} isOpen={isMenuOpen} ref={mulletswapDropdownRef}>
+          <DropdownButton onClick={() => setIsMulletswapOpen(!isMulletswapOpen)}>
+            <Tab isLandingPage={isLandingPage} isOpen={isMenuOpen}>
+              <DropdownLabel isLandingPage={isLandingPage}>Mulletswap</DropdownLabel>
+              <FiChevronDown color={getFontColor()} />
+            </Tab>
+          </DropdownButton>
+          <DropdownArea position="left" isLandingPage={isLandingPage} isOpen={isMulletswapOpen}>
+            <DropdownItem onClick={() => redirectTo("/mulletswap", { src: "lifi" })}>Bridge and Swap</DropdownItem>
+            <DropdownItem onClick={() => redirectTo("/mulletswap", { src: "onramper" })}>Fiat On-Ramp</DropdownItem>
+          </DropdownArea>
+        </Dropdown>
         {!isAuthenticated && (
           <Tab onClick={openAuthModal} isLandingPage={isLandingPage} isOpen={isMenuOpen}>
             Sign In
@@ -152,9 +170,14 @@ function Header() {
             <DropdownButton onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}>
               <UserWrapper isOpen={isMenuOpen}>
                 {imageUrl ? (
-                  <ProfilePicture style={{ backgroundImage: `url(${imageUrl})` }} />
+                  <ProfilePicture
+                    style={{ backgroundImage: `url(${imageUrl})` }}
+                    onClick={() => redirectTo(`/profile/${user?.get("ethAddress")}`)}
+                  />
                 ) : (
-                  <Blockie seed={user?.get("ethAddress")} scale={3} />
+                  <span onClick={() => redirectTo(`/profile/${user?.get("ethAddress")}`)}>
+                    <Blockie seed={user?.get("ethAddress")} scale={3} />
+                  </span>
                 )}
                 <UserAddress isLandingPage={isLandingPage}>
                   {username || getDisplayName(user?.get("ethAddress"))}
@@ -163,6 +186,7 @@ function Header() {
               </UserWrapper>
             </DropdownButton>
             <DropdownArea position="right" isLandingPage={isLandingPage} isOpen={isUserMenuOpen}>
+              <DropdownItem onClick={() => redirectTo(`/profile/${user?.get("ethAddress")}`)}>Profile</DropdownItem>
               <DropdownItem onClick={() => redirectTo("/settings")}>Settings</DropdownItem>
               <DropdownItem onClick={() => redirectTo("/account")}>Account</DropdownItem>
               <DropdownItem>

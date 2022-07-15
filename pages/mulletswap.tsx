@@ -1,28 +1,21 @@
 import type { NextPage } from "next";
-import { useState } from "react";
-import { Select } from "web3uikit";
-import { Main, Container, SourceHeader } from "../../styles/MulletSwapStyled";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { Main, Container } from "../styles/MulletSwapStyled";
 
 type SourceType = "lifi" | "onramper";
 const Mulletswap: NextPage = () => {
+  const { query } = useRouter();
+  const urlSource: SourceType = (Array.isArray(query.src) ? query.src[0] : query.src || "") as SourceType;
   const [source, setSource] = useState<SourceType>("lifi");
-  const SOURCES = [
-    { id: "lifi", label: "LI:FI" },
-    { id: "onramper", label: "Onramper" },
-  ];
+
+  useEffect(() => {
+    setSource(urlSource);
+  }, [urlSource]);
 
   return (
     <Main style={{ backgroundColor: "#FFFFFF" }}>
       <Container>
-        <SourceHeader>
-          <Select
-            defaultOptionIndex={0}
-            onChange={({ id }) => setSource(id as SourceType)}
-            options={SOURCES}
-            prefixText="Chain:"
-            value={source}
-          />
-        </SourceHeader>
         {source === "lifi" && (
           <iframe
             height="100%"

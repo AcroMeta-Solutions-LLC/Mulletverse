@@ -81,6 +81,9 @@ export const MenuIcon = styled(FiMenu)`
 
 export const Tab = styled.a<HeaderType>`
   padding: 20px 10px;
+  height: 30px;
+  display: flex;
+  align-items: center;
   color: ${(props) => (props.isLandingPage ? COLORS.CLEAR : props.theme?.TITLE)};
   cursor: pointer;
   &:hover {

@@ -80,6 +80,8 @@ export const Description = styled.p`
   font-size: ${TYPOGRAPHY.SIZE.BODY_1};
   color: ${({ theme }: { theme: ThemeType }) => theme.TEXT};
   margin: 5px 0;
+  display: flex;
+  gap: 10px;
 `;
 
 export const ProfileImage = styled.div`
@@ -120,4 +122,12 @@ export const CreatedTabContent = styled.div`
   flex-direction: row;
   flex-wrap: wrap;
   gap: 20px;
+`;
+
+export const Interests = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 15px;
 `;

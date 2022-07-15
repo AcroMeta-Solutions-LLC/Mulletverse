@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { ELEVATION } from "../constants/elevation";
 import { SCREEN } from "../constants/screen";
 import { TYPOGRAPHY } from "../constants/typography";
 import ThemeType from "../types/themeType";
@@ -88,6 +89,10 @@ export const TokenImage = styled.div`
   border-radius: 10px;
   margin-bottom: 15px;
   border: 1px solid ${({ theme }: { theme: ThemeType }) => theme.BORDER};
+  cursor: zoom-in;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
     width: 95vw;
   }
@@ -206,4 +211,27 @@ export const TitleWrapper = styled.div`
   align-items: center;
   flex-wrap: wrap;
   gap: 20px;
+`;
+
+type OverlayType = { isVisible: boolean };
+export const GlassOverlay = styled.div<OverlayType>`
+  background: rgba(87, 85, 85, 0.49);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  z-index: ${ELEVATION.NAVIGATION};
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: ${({ isVisible }) => (isVisible ? "flex" : "none")};
+  justify-content: center;
+  align-items: center;
+  cursor: zoom-out;
+`;
+
+export const ZoomedImage = styled.img`
+  height: 80vh;
+  border-radius: 10px;
 `;

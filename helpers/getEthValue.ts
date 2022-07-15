@@ -1,3 +1,7 @@
+import { ethers, BigNumber } from "ethers";
+
 export const getEthValue = (value: string): string => {
-  return (parseFloat(value) / 1e18).toString().slice(0, 5);
+  const bigNumber = BigNumber.from(value);
+  const parsedValue = ethers.utils.formatEther(bigNumber).toString();
+  return parsedValue;
 };

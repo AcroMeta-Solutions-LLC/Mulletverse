@@ -83,6 +83,7 @@ export const MintedAmount = styled.strong`
   color: ${({ theme }: { theme: ThemeType }) => theme.TITLE};
   font-size: ${TYPOGRAPHY.SIZE.SUBTITLE_1};
   font-weight: ${TYPOGRAPHY.WEIGHT.SUBTITLE_1};
+  margin-top: 15px;
 `;
 
 export const NumberToMint = styled.strong`
@@ -94,7 +95,7 @@ export const Description = styled.p`
 `;
 
 export const MintButton = styled.button`
-  color: ${({ theme }: { theme: ThemeType }) => theme.CARD};
+  color: white;
   background-color: ${({ theme }: { theme: ThemeType }) => theme.PRIMARY};
   border: 1px solid ${({ theme }: { theme: ThemeType }) => theme.BORDER};
   padding: 10px 20px;

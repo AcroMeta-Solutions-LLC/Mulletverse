@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
-import { FaTwitter, FaDiscord, FaGlobe, FaInstagram, FaCamera } from "react-icons/fa";
-import { FiPlusCircle, FiSearch } from "react-icons/fi";
+import { FaTwitter, FaDiscord, FaGlobe, FaInstagram, FaCamera, FaWallet } from "react-icons/fa";
+import { FiPlusCircle, FiSearch, FiX } from "react-icons/fi";
 import { useMoralis, useNewMoralisObject } from "react-moralis";
 import { CopyButton as CopyWeb3, Loading, Modal, Tag, useNotification } from "web3uikit";
 import { INTERESTS } from "../constants/interests";
@@ -32,6 +32,7 @@ import {
   InterestsLabels,
   Form,
   LoadingWrapper,
+  LabelButton,
 } from "../styles/AccountStyled";
 import { useDispatch } from "react-redux";
 import { setAccount } from "../config/accountSlice";
@@ -42,7 +43,8 @@ const Account: NextPage = () => {
   const inputImageRef = useRef<HTMLInputElement>(null);
   const [profileImageUrl, setProfileImageUrl] = useState("");
   const [profileImageFile, setProfileImageFile] = useState<File>();
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isInterestsModalVisible, setIsInterestsModalVisible] = useState(false);
+  const [isWalletModalVisible, setIsWalletModalVisible] = useState(false);
   const [selectedInterests, setSelectedInterests] = useState<InterestType[]>([]);
   const [search, setSearch] = useState("");
   const [username, setUsername] = useState("");
@@ -57,6 +59,8 @@ const Account: NextPage = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [accountMoralisObj, setAccountMoralisObj] = useState<Moralis.Object<Moralis.Attributes> | undefined>();
   const { save: saveAccount } = useNewMoralisObject("Accounts");
+  const [newAddress, setNewAddress] = useState("");
+  const [wallets, setWallets] = useState<string[]>([]);
 
   const throwError = (errorMessage: string) => {
     alert({ type: "error", title: errorMessage, message: "", position: "topR" });
@@ -90,6 +94,7 @@ const Account: NextPage = () => {
     accountMoralisObj.set("twitter", data.twitter);
     accountMoralisObj.set("username", data.username);
     accountMoralisObj.set("website", data.website);
+    accountMoralisObj.set("wallets", data.wallets);
     accountMoralisObj
       .save()
       .then(() => {
@@ -130,7 +135,7 @@ const Account: NextPage = () => {
     setProfileImageUrl("");
   };
 
-  const onAddOrRemoveInterest = (interest: InterestType): void => {
+  const addOrRemoveInterest = (interest: InterestType): void => {
     const isAlreadySelected: boolean = !!selectedInterests.find((selected) => interest.id === selected.id);
     if (isAlreadySelected) {
       setSelectedInterests(selectedInterests.filter((selected) => interest.id !== selected.id));
@@ -150,6 +155,7 @@ const Account: NextPage = () => {
     const imageUrl: string = await getIPFSImageUrl();
     const data: ProfileType = {
       walletAddress: user?.get("ethAddress"),
+      wallets,
       username,
       bio,
       email,
@@ -165,6 +171,15 @@ const Account: NextPage = () => {
       updateAccount(data);
     } else {
       saveNewAccount(data);
+    }
+  };
+
+  const addOrRemoveWallet = (address: string): void => {
+    const isAlreadySelected: boolean = !!wallets.find((selected) => selected === address);
+    if (isAlreadySelected) {
+      setWallets(wallets.filter((selected) => address !== selected));
+    } else {
+      setWallets([...wallets, address]);
     }
   };
 
@@ -184,6 +199,7 @@ const Account: NextPage = () => {
           setWebsite(moralisObject.get("website"));
           setSelectedInterests(moralisObject.get("interests"));
           setProfileImageUrl(moralisObject.get("imageUrl"));
+          setWallets(moralisObject.get("wallets") || []);
         })
         .catch(() => {
           throwError("An error occurred when fetching the account data.");
@@ -210,20 +226,16 @@ const Account: NextPage = () => {
             <TextArea value={bio} onChange={(e) => setBio(e.target.value)} />
             <Label>Email Address</Label>
             <TextInput type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-            <Label>
+            <LabelButton onClick={() => setIsInterestsModalVisible(true)}>
               Interests
-              <FiPlusCircle
-                onClick={() => setIsModalVisible(true)}
-                style={{ alignSelf: "center", marginLeft: 5, cursor: "pointer" }}
-                size={24}
-              />
-            </Label>
+              <FiPlusCircle size={24} />
+            </LabelButton>
             <InterestsLabels>
               {selectedInterests.map((interest) => (
                 <Tag
                   key={interest.id}
                   hasCancel
-                  onCancelClick={() => onAddOrRemoveInterest(interest)}
+                  onCancelClick={() => addOrRemoveInterest(interest)}
                   text={interest.name}
                 />
               ))}
@@ -267,11 +279,25 @@ const Account: NextPage = () => {
                 onChange={(e) => setWebsite(e.target.value)}
               />
             </InputIconWrapper>
-            <Label style={{ marginTop: 30 }}>Wallet Address</Label>
+            <LabelButton style={{ marginTop: 30, width: 170 }} onClick={() => setIsWalletModalVisible(true)}>
+              Wallet Address
+              <FiPlusCircle size={24} />
+            </LabelButton>
             <InputIconWrapper>
               <WalletAddress>{user?.get("ethAddress")}</WalletAddress>
               <CopyWeb3 onCopy={(e) => e?.preventDefault()} text={user?.get("ethAddress")} />
             </InputIconWrapper>
+            {wallets.map((wallet, i) => (
+              <InputIconWrapper key={i}>
+                <WalletAddress>{wallet}</WalletAddress>
+                <FiX
+                  size={24}
+                  style={{ color: "#FF6961", cursor: "pointer" }}
+                  onClick={() => addOrRemoveWallet(wallet)}
+                />
+                <CopyWeb3 onCopy={(e) => e?.preventDefault()} text={wallet} />
+              </InputIconWrapper>
+            ))}
             <Submit value={isLoading ? "Loading..." : "Save"} disabled={isLoading} />
             <input
               onChange={onChangeImage}
@@ -298,8 +324,8 @@ const Account: NextPage = () => {
       <Modal
         title="Interests"
         hasFooter={false}
-        isVisible={isModalVisible}
-        onCloseButtonPressed={() => setIsModalVisible(false)}
+        isVisible={isInterestsModalVisible}
+        onCloseButtonPressed={() => setIsInterestsModalVisible(false)}
       >
         <SearchWrapper>
           <FiSearch size={24} />
@@ -309,13 +335,37 @@ const Account: NextPage = () => {
           {getFilteredInterests().map((interest) => (
             <Interest
               isSelected={!!selectedInterests.find((selected) => interest.id === selected.id)}
-              onClick={() => onAddOrRemoveInterest(interest)}
+              onClick={() => addOrRemoveInterest(interest)}
               key={interest.id}
             >
               {interest.name}
             </Interest>
           ))}
         </InterestsWrapper>
+      </Modal>
+      <Modal
+        title="Add Wallet"
+        hasFooter={true}
+        isVisible={isWalletModalVisible}
+        onCloseButtonPressed={() => setIsWalletModalVisible(false)}
+        onCancel={() => setIsWalletModalVisible(false)}
+        width="500px"
+        onOk={() => {
+          addOrRemoveWallet(newAddress);
+          setIsWalletModalVisible(false);
+          setNewAddress("");
+        }}
+        okButtonColor="blue"
+      >
+        <InputIconWrapper>
+          <FaWallet size={24} />
+          <InputIcon
+            type="text"
+            placeholder="Wallet address"
+            value={newAddress}
+            onChange={(e) => setNewAddress(e.target.value)}
+          />
+        </InputIconWrapper>
       </Modal>
     </Main>
   );

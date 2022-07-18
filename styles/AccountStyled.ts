@@ -97,7 +97,6 @@ export const InputIconWrapper = styled.div`
   padding: 10px;
   gap: 10px;
   margin-bottom: 5px;
-
   &:focus-within {
     outline: 2px solid ${({ theme }: { theme: ThemeType }) => theme.PRIMARY};
   }
@@ -216,4 +215,25 @@ export const LoadingWrapper = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
+`;
+
+export const LabelButton = styled.button.attrs({ type: "button" })`
+  background-color: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: ${TYPOGRAPHY.SIZE.BODY_1};
+  color: ${({ theme }: { theme: ThemeType }) => theme.TITLE};
+  font-weight: ${TYPOGRAPHY.WEIGHT.HEADLINE_2};
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 110px;
+  &:focus {
+    outline: 2px solid ${({ theme }: { theme: ThemeType }) => theme.PRIMARY};
+  }
 `;

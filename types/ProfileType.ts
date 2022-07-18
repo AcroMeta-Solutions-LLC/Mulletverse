@@ -11,4 +11,5 @@ export type ProfileType = {
   website?: string;
   interests: InterestType[];
   imageUrl?: string;
+  wallets: string[];
 };

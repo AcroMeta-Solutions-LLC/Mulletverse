@@ -145,7 +145,7 @@ function Header() {
           </DropdownButton>
           <DropdownArea position="left" isLandingPage={isLandingPage} isOpen={isCreateOpen}>
             <DropdownItem onClick={() => redirectTo("/create")}>Lazy Minting</DropdownItem>
-            <DropdownItem onClick={() => redirectTo("/")}>Form a Guild</DropdownItem>
+            <DropdownItem onClick={() => redirectTo("/guild")}>Form a Guild</DropdownItem>
           </DropdownArea>
         </Dropdown>
         <Dropdown isLandingPage={isLandingPage} isOpen={isMenuOpen} ref={mulletswapDropdownRef}>

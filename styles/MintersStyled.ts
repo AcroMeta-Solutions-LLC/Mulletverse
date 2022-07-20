@@ -144,3 +144,9 @@ export const SocialRow = styled.div`
   align-items: center;
   margin-top: 15px;
 `;
+
+export const LoadingWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;

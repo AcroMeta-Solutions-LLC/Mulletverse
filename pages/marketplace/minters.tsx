@@ -8,6 +8,7 @@ import {
   Image,
   IncreaseDecrease,
   List,
+  LoadingWrapper,
   Main,
   MintButton,
   MintedAmount,
@@ -23,10 +24,11 @@ import NextImage from "next/image";
 import { useTheme } from "styled-components";
 import { useMoralis } from "react-moralis";
 import Web3 from "web3";
-import { useNotification } from "web3uikit";
+import { Loading, useNotification } from "web3uikit";
 import { AbiItem } from "web3-utils";
 import Abi from "../../config/abi.json";
 import { useRouter } from "next/router";
+import { getEthValue } from "../../helpers/getEthValue";
 
 type MinterType = {
   description: string;
@@ -58,7 +60,9 @@ const Minter = ({ description, amount, total, price, onMint }: MinterType) => {
             </Fragment>
           )}
         </MinterButtonRow>
-        <MintButton onClick={() => onMint(number)}>Mint for {price} MATIC</MintButton>
+        <MintButton onClick={() => onMint(number)}>
+          Mint for {parseInt(getEthValue(price.toString())).toFixed()} MATIC
+        </MintButton>
         {!shouldSeeMore && <Description>{truncate(description, { length: 150 })}</Description>}
         {shouldSeeMore && <Description>{description}</Description>}
         {!shouldSeeMore && description.length > 146 && (
@@ -87,20 +91,22 @@ const Minter = ({ description, amount, total, price, onMint }: MinterType) => {
 const Minters: NextPage = () => {
   const { Moralis, user } = useMoralis();
   const [supply, setSupply] = useState(0);
+  const [price, setPrice] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const alert = useNotification();
+  const theme: any = useTheme();
   const MULLETMAXI_ADDRESS = "0x6588919ef08Aaf176403406539D34fCCE873a35b";
   const mulletmaxiDesc = `
   The MulletMaxi Collection is a unique set of mullet-themed avatars. Owning a Mullet Maxi entitles holders to several premium membership features on the Mulletverse platform.`;
 
   const onMint = async (amount: number) => {
     const { ethereum } = window as any;
-    const weiCost = 150000000000000000000;
     const from: string = user?.get("ethAddress");
     const web3 = new Web3(ethereum);
     const contract = new web3.eth.Contract(Abi as AbiItem[], MULLETMAXI_ADDRESS);
     contract.methods
       .mint(amount)
-      .send({ from, to: MULLETMAXI_ADDRESS, value: weiCost * amount, gasLimit: "285000" }, (error: any) => {
+      .send({ from, to: MULLETMAXI_ADDRESS, value: price * amount, gasLimit: "285000" }, (error: any) => {
         alert({ type: "error", title: `Error ${error?.code || ""}`, message: error?.message || "", position: "topR" });
       })
       .on("receipt", (receipt: any) => {
@@ -117,18 +123,36 @@ const Minters: NextPage = () => {
     setSupply(totalSupply);
   };
 
+  const getPrice = async (): Promise<void> => {
+    const { ethereum } = window as any;
+    const web3 = new Web3(ethereum);
+    const contract = new web3.eth.Contract(Abi as AbiItem[], MULLETMAXI_ADDRESS);
+    const price = await contract.methods.cost().call();
+    setPrice(price);
+  };
+
   useEffect(() => {
+    setIsLoading(true);
     Moralis.enableWeb3();
     getSupply();
+    getPrice();
+    setIsLoading(false);
   }, [Moralis]);
 
   return (
     <Main>
       <Container>
         <Title>Minters Market</Title>
-        <List>
-          <Minter amount={supply} total={10000} description={mulletmaxiDesc} price={150} onMint={onMint} />
-        </List>
+        {isLoading && (
+          <LoadingWrapper>
+            <Loading spinnerColor={theme.PRIMARY} />
+          </LoadingWrapper>
+        )}
+        {!isLoading && (
+          <List>
+            <Minter amount={supply} total={10000} description={mulletmaxiDesc} price={price} onMint={onMint} />
+          </List>
+        )}
       </Container>
     </Main>
   );

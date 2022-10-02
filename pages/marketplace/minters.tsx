@@ -35,6 +35,7 @@ type MinterType = {
   amount: number;
   total: number;
   price: number;
+  // eslint-disable-next-line
   onMint: (amount: number) => void;
 };
 

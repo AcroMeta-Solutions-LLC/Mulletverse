@@ -101,7 +101,7 @@ export const getProfile = createAsyncThunk(
   },
 );
 
-export const getCreatedNFT = createAsyncThunk("profile/GET_CREATED_NFT", async (data: GetNFTProps) => {
+export const getCreatedNFT = createAsyncThunk("profile/GET_CREATED_NFT", async () => {
   return [];
 });
 

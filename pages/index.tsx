@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import { Fragment, useEffect } from "react";
 import Image from "next/image";
-import { NFT, Loading } from "web3uikit";
+import { Loading } from "web3uikit";
 import { useMoralis } from "react-moralis";
 import Carousel from "../components/Carousel/Carousel";
 import { getNFTs } from "../config/landingSlice";

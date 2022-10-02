@@ -20,7 +20,7 @@ const initialState: LandingProps = {
   hasError: false,
 };
 
-export const getNFTs = createAsyncThunk("landing/GET_NFTS", async (data: GetNFTProps, thunkAPI) => {
+export const getNFTs = createAsyncThunk("landing/GET_NFTS", async (data: GetNFTProps) => {
   const response = await data.account.getNFTs({ address: data.address, chain: data.chain, limit: data.limit });
   const nftList: NFTType[] =
     response.result?.map((data: any) => ({

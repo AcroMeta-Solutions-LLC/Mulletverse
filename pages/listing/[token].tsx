@@ -170,7 +170,7 @@ const Listing: NextPage = () => {
             <Subtitle>Duration</Subtitle>
             <CalendarSelect onClick={() => setIsModalVisible(true)}>
               <FaRegCalendar size={20} color={theme.TITLE} />
-              {!!dateRange[0].endDate
+              {dateRange[0].endDate !== undefined
                 ? `${parseDate(dateRange[0].startDate)} - ${parseDate(dateRange[0].endDate)}`
                 : "Select period"}
             </CalendarSelect>

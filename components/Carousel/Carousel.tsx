@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Fragment, useEffect, useRef, useState } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { Loading } from "web3uikit";

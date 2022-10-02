@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { FaTwitter, FaDiscord, FaTiktok, FaFacebook, FaInstagram, FaMedium } from "react-icons/fa";
+import { FaTwitter, FaDiscord, FaTiktok, FaInstagram, FaMedium } from "react-icons/fa";
 import { useRouter } from "next/router";
 import { Container, Tab, Links, Redirect } from "./FooterStyled";
 

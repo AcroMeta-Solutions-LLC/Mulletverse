@@ -5,7 +5,7 @@ Simplify Web3 by providing an NFT marketplace that allows nonnative crypto users
 ### Starting
 
 ```bash
-yarn dev
+npm run dev
 ```
 
 Then, open [http://localhost:3000](http://localhost:3000).

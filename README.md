@@ -2,7 +2,7 @@
 
 Simplify Web3 by providing an NFT marketplace that allows nonnative crypto users to participate in this new emerging industry of blockchain technology, cryptocurrency, and NFTs.
 
-### Starting
+### Local Development Setup
 
 ```bash
 npm run dev

@@ -33,7 +33,6 @@ const client = createClient({
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <WagmiConfig client={client}>
-      {/* <SessionProvider session={pageProps.session} refetchInterval={0}> */}
       <Provider store={store}>
         <PersistGate persistor={persistor}>
           <ConnectedTheme>
@@ -60,7 +59,6 @@ function MyApp({ Component, pageProps }: AppProps) {
           </ConnectedTheme>
         </PersistGate>
       </Provider>
-      {/* </SessionProvider> */}
     </WagmiConfig>
   );
 }

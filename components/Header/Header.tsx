@@ -280,13 +280,13 @@ function Header() {
               isLandingPage={isLandingPage}
               isOpen={isUserMenuOpen}
             >
-              {/* <DropdownItem
+              <DropdownItem
                 onClick={() =>
                   redirectTo(`/profile/${user?.get("ethAddress")}`)
                 }
               >
                 Profile
-              </DropdownItem> */}
+              </DropdownItem>
               <DropdownItem onClick={() => redirectTo("/settings")}>
                 Settings
               </DropdownItem>

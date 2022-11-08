@@ -11,32 +11,57 @@ import store, { persistor } from "../config/store";
 import { Provider } from "react-redux";
 import { NotificationProvider } from "web3uikit";
 import ConnectedTheme from "../components/ConnectedTheme/ConnectedTheme";
+import {
+  createClient,
+  configureChains,
+  defaultChains,
+  WagmiConfig,
+} from "wagmi";
+import { publicProvider } from "wagmi/providers/public";
+import { SessionProvider } from "next-auth/react";
+
+const { provider, webSocketProvider } = configureChains(defaultChains, [
+  publicProvider(),
+]);
+
+const client = createClient({
+  provider,
+  webSocketProvider,
+  autoConnect: true,
+});
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <Provider store={store}>
-      <PersistGate persistor={persistor}>
-        <ConnectedTheme>
-          <MoralisProvider
-            appId={process.env.NEXT_PUBLIC_APP_ID || ""}
-            serverUrl={process.env.NEXT_PUBLIC_SERVER_URL || ""}
-          >
-            <NotificationProvider>
-              <Head>
-                <title>MulletVerse</title>
-                <meta name="description" content="Simplify Web3 by providing an NFT marketplace" />
-                <link rel="icon" href="/favicon.ico" />
-              </Head>
-              <Header />
-              <RouteGuard>
-                <Component {...pageProps} />
-              </RouteGuard>
-              <Footer />
-            </NotificationProvider>
-          </MoralisProvider>
-        </ConnectedTheme>
-      </PersistGate>
-    </Provider>
+    <WagmiConfig client={client}>
+      {/* <SessionProvider session={pageProps.session} refetchInterval={0}> */}
+      <Provider store={store}>
+        <PersistGate persistor={persistor}>
+          <ConnectedTheme>
+            <MoralisProvider
+              appId={process.env.NEXT_PUBLIC_APP_ID || ""}
+              serverUrl={process.env.NEXT_PUBLIC_SERVER_URL || ""}
+            >
+              <NotificationProvider>
+                <Head>
+                  <title>MulletVerse</title>
+                  <meta
+                    name="description"
+                    content="Simplify Web3 by providing an NFT marketplace"
+                  />
+                  <link rel="icon" href="/favicon.ico" />
+                </Head>
+                <Header />
+                <RouteGuard>
+                  <Component {...pageProps} />
+                </RouteGuard>
+                <Footer />
+              </NotificationProvider>
+            </MoralisProvider>
+          </ConnectedTheme>
+        </PersistGate>
+      </Provider>
+      {/* </SessionProvider> */}
+    </WagmiConfig>
   );
 }
 

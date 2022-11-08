@@ -42,7 +42,12 @@ function Header() {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isConnectModalOpen, setIsConnectModalOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const { isAuthenticated, user, logout: moralisLogout, isInitialized } = useMoralis();
+  const {
+    isAuthenticated,
+    user,
+    logout: moralisLogout,
+    isInitialized,
+  } = useMoralis();
   const { pathname, push } = useRouter();
   const containerRef = useRef<HTMLElement>(null);
   const marketplaceDropdownRef = useRef<HTMLDivElement>(null);
@@ -51,18 +56,21 @@ function Header() {
   const userDropdownRef = useRef<HTMLDivElement>(null);
   const isLandingPage = pathname === "/";
   const { isDarkMode } = useSelector((store: StoreType) => store.theme);
-  const { imageUrl, username } = useSelector((store: StoreType) => store.account);
+  const { imageUrl, username } = useSelector(
+    (store: StoreType) => store.account
+  );
   const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
 
   const logout = () => {
     moralisLogout();
     dispatch(clearStore());
   };
 
-  const openAuthModal = () => {
-    setIsConnectModalOpen(true);
-    setIsMenuOpen(false);
-  };
+  // const openAuthModal = () => {
+  //   setIsConnectModalOpen(true);
+  //   setIsMenuOpen(false);
+  // };
 
   const redirectTo = (route: string, query: ParsedUrlQueryInput = {}): void => {
     setIsMarketplaceOpen(false);
@@ -99,32 +107,66 @@ function Header() {
 
   return (
     <Fragment>
-      <Container isOpen={isMenuOpen} isLandingPage={isLandingPage} ref={containerRef}>
+      <Container
+        isOpen={isMenuOpen}
+        isLandingPage={isLandingPage}
+        ref={containerRef}
+      >
         <LogoDrawerWrapper>
           <Logo onClick={() => redirectTo("/")} />
-          <MenuIcon color={getFontColor()} onClick={() => setIsMenuOpen(!isMenuOpen)} size={25} />
+          <MenuIcon
+            color={getFontColor()}
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            size={25}
+          />
         </LogoDrawerWrapper>
         {!isAuthenticated && (
-          <MarketplaceTab onClick={() => redirectTo("/marketplace")} isLandingPage={isLandingPage} isOpen={isMenuOpen}>
+          <MarketplaceTab
+            onClick={() => redirectTo("/marketplace")}
+            isLandingPage={isLandingPage}
+            isOpen={isMenuOpen}
+          >
             Marketplace
           </MarketplaceTab>
         )}
         {isAuthenticated && (
-          <Dropdown isLandingPage={isLandingPage} isOpen={isMenuOpen} ref={marketplaceDropdownRef}>
-            <DropdownButton onClick={() => setIsMarketplaceOpen(!isMarketplaceOpen)}>
+          <Dropdown
+            isLandingPage={isLandingPage}
+            isOpen={isMenuOpen}
+            ref={marketplaceDropdownRef}
+          >
+            <DropdownButton
+              onClick={() => setIsMarketplaceOpen(!isMarketplaceOpen)}
+            >
               <MarketplaceTab isLandingPage={isLandingPage} isOpen={isMenuOpen}>
-                <DropdownLabel isLandingPage={isLandingPage}>Marketplace</DropdownLabel>
+                <DropdownLabel isLandingPage={isLandingPage}>
+                  Marketplace
+                </DropdownLabel>
                 <FiChevronDown color={getFontColor()} />
               </MarketplaceTab>
             </DropdownButton>
-            <DropdownArea position="left" isLandingPage={isLandingPage} isOpen={isMarketplaceOpen}>
-              <DropdownItem onClick={() => redirectTo("/marketplace")}>Marketplace</DropdownItem>
-              <DropdownItem onClick={() => redirectTo("/marketplace/minters")}>Minters Market</DropdownItem>
-              <DropdownItem onClick={() => redirectTo("/storefronts")}>Shared Storefronts</DropdownItem>
+            <DropdownArea
+              position="left"
+              isLandingPage={isLandingPage}
+              isOpen={isMarketplaceOpen}
+            >
+              <DropdownItem onClick={() => redirectTo("/marketplace")}>
+                Marketplace
+              </DropdownItem>
+              <DropdownItem onClick={() => redirectTo("/marketplace/minters")}>
+                Minters Market
+              </DropdownItem>
+              <DropdownItem onClick={() => redirectTo("/storefronts")}>
+                Shared Storefronts
+              </DropdownItem>
             </DropdownArea>
           </Dropdown>
         )}
-        <Tab onClick={() => redirectTo("/leaderboard")} isLandingPage={isLandingPage} isOpen={isMenuOpen}>
+        <Tab
+          onClick={() => redirectTo("/leaderboard")}
+          isLandingPage={isLandingPage}
+          isOpen={isMenuOpen}
+        >
           Leaderboard
         </Tab>
         <Search isOpen={isMenuOpen} onSubmit={submitSearch}>
@@ -136,46 +178,94 @@ function Header() {
             placeholder="Search items, collections, and accounts"
           />
         </Search>
-        <Dropdown isLandingPage={isLandingPage} isOpen={isMenuOpen} ref={createDropdownRef}>
+        <Dropdown
+          isLandingPage={isLandingPage}
+          isOpen={isMenuOpen}
+          ref={createDropdownRef}
+        >
           <DropdownButton onClick={() => setIsCreateOpen(!isCreateOpen)}>
             <Tab isLandingPage={isLandingPage} isOpen={isMenuOpen}>
-              <DropdownLabel isLandingPage={isLandingPage}>Create</DropdownLabel>
+              <DropdownLabel isLandingPage={isLandingPage}>
+                Create
+              </DropdownLabel>
               <FiChevronDown color={getFontColor()} />
             </Tab>
           </DropdownButton>
-          <DropdownArea position="left" isLandingPage={isLandingPage} isOpen={isCreateOpen}>
-            <DropdownItem onClick={() => redirectTo("/create")}>Lazy Minting</DropdownItem>
-            <DropdownItem onClick={() => redirectTo("/guild")}>Form a Guild</DropdownItem>
+          <DropdownArea
+            position="left"
+            isLandingPage={isLandingPage}
+            isOpen={isCreateOpen}
+          >
+            <DropdownItem onClick={() => redirectTo("/create")}>
+              Lazy Minting
+            </DropdownItem>
+            <DropdownItem onClick={() => redirectTo("/guild")}>
+              Form a Guild
+            </DropdownItem>
           </DropdownArea>
         </Dropdown>
-        <Dropdown isLandingPage={isLandingPage} isOpen={isMenuOpen} ref={mulletswapDropdownRef}>
-          <DropdownButton onClick={() => setIsMulletswapOpen(!isMulletswapOpen)}>
+        <Dropdown
+          isLandingPage={isLandingPage}
+          isOpen={isMenuOpen}
+          ref={mulletswapDropdownRef}
+        >
+          <DropdownButton
+            onClick={() => setIsMulletswapOpen(!isMulletswapOpen)}
+          >
             <Tab isLandingPage={isLandingPage} isOpen={isMenuOpen}>
-              <DropdownLabel isLandingPage={isLandingPage}>Mulletswap</DropdownLabel>
+              <DropdownLabel isLandingPage={isLandingPage}>
+                Mulletswap
+              </DropdownLabel>
               <FiChevronDown color={getFontColor()} />
             </Tab>
           </DropdownButton>
-          <DropdownArea position="left" isLandingPage={isLandingPage} isOpen={isMulletswapOpen}>
-            <DropdownItem onClick={() => redirectTo("/mulletswap", { src: "lifi" })}>Bridge and Swap</DropdownItem>
-            <DropdownItem onClick={() => redirectTo("/mulletswap", { src: "onramper" })}>Fiat On-Ramp</DropdownItem>
+          <DropdownArea
+            position="left"
+            isLandingPage={isLandingPage}
+            isOpen={isMulletswapOpen}
+          >
+            <DropdownItem
+              onClick={() => redirectTo("/mulletswap", { src: "lifi" })}
+            >
+              Bridge and Swap
+            </DropdownItem>
+            <DropdownItem
+              onClick={() => redirectTo("/mulletswap", { src: "onramper" })}
+            >
+              Fiat On-Ramp
+            </DropdownItem>
           </DropdownArea>
         </Dropdown>
         {!isAuthenticated && (
-          <Tab onClick={openAuthModal} isLandingPage={isLandingPage} isOpen={isMenuOpen}>
+          <Tab
+            onClick={() => router.push("/signin")}
+            isLandingPage={isLandingPage}
+            isOpen={isMenuOpen}
+          >
             Sign In
           </Tab>
         )}
         {isAuthenticated && (
-          <Dropdown isLandingPage={isLandingPage} isOpen={isMenuOpen} ref={userDropdownRef}>
+          <Dropdown
+            isLandingPage={isLandingPage}
+            isOpen={isMenuOpen}
+            ref={userDropdownRef}
+          >
             <DropdownButton onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}>
               <UserWrapper isOpen={isMenuOpen}>
                 {imageUrl ? (
                   <ProfilePicture
                     style={{ backgroundImage: `url(${imageUrl})` }}
-                    onClick={() => redirectTo(`/profile/${user?.get("ethAddress")}`)}
+                    onClick={() =>
+                      redirectTo(`/profile/${user?.get("ethAddress")}`)
+                    }
                   />
                 ) : (
-                  <span onClick={() => redirectTo(`/profile/${user?.get("ethAddress")}`)}>
+                  <span
+                    onClick={() =>
+                      redirectTo(`/profile/${user?.get("ethAddress")}`)
+                    }
+                  >
                     <Blockie seed={user?.get("ethAddress")} scale={3} />
                   </span>
                 )}
@@ -185,13 +275,29 @@ function Header() {
                 <FiChevronDown color={getFontColor()} />
               </UserWrapper>
             </DropdownButton>
-            <DropdownArea position="right" isLandingPage={isLandingPage} isOpen={isUserMenuOpen}>
-              <DropdownItem onClick={() => redirectTo(`/profile/${user?.get("ethAddress")}`)}>Profile</DropdownItem>
-              <DropdownItem onClick={() => redirectTo("/settings")}>Settings</DropdownItem>
-              <DropdownItem onClick={() => redirectTo("/account")}>Account</DropdownItem>
+            <DropdownArea
+              position="right"
+              isLandingPage={isLandingPage}
+              isOpen={isUserMenuOpen}
+            >
+              {/* <DropdownItem
+                onClick={() =>
+                  redirectTo(`/profile/${user?.get("ethAddress")}`)
+                }
+              >
+                Profile
+              </DropdownItem> */}
+              <DropdownItem onClick={() => redirectTo("/settings")}>
+                Settings
+              </DropdownItem>
+              <DropdownItem onClick={() => redirectTo("/account")}>
+                Account
+              </DropdownItem>
               <DropdownItem>
                 <NightSwitch>
-                  <span onClick={() => dispatch(switchTheme())}>Night Mode</span>
+                  <span onClick={() => dispatch(switchTheme())}>
+                    Night Mode
+                  </span>
                   <Checkbox
                     layout="switch"
                     checked={isDarkMode}
@@ -206,7 +312,11 @@ function Header() {
           </Dropdown>
         )}
       </Container>
-      <WalletModal moralisAuth={true} isOpened={isConnectModalOpen} setIsOpened={setIsConnectModalOpen} />
+      <WalletModal
+        moralisAuth={true}
+        isOpened={isConnectModalOpen}
+        setIsOpened={setIsConnectModalOpen}
+      />
     </Fragment>
   );
 }

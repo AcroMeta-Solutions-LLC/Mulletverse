@@ -60,7 +60,7 @@ function Header() {
     (store: StoreType) => store.account
   );
   const dispatch = useDispatch<AppDispatch>();
-  const router = useRouter();
+  // const router = useRouter();
 
   const logout = () => {
     moralisLogout();
@@ -129,6 +129,7 @@ function Header() {
             Marketplace
           </MarketplaceTab>
         )}
+
         {isAuthenticated && (
           <Dropdown
             isLandingPage={isLandingPage}
@@ -237,13 +238,13 @@ function Header() {
           </DropdownArea>
         </Dropdown>
         {!isAuthenticated && (
-          <Tab
-            onClick={() => router.push("/signin")}
+          <MarketplaceTab
+            onClick={() => redirectTo("/signin")}
             isLandingPage={isLandingPage}
             isOpen={isMenuOpen}
           >
             Sign In
-          </Tab>
+          </MarketplaceTab>
         )}
         {isAuthenticated && (
           <Dropdown

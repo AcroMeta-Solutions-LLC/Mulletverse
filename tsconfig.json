@@ -20,7 +20,7 @@
     "**/*.ts",
     "**/*.tsx",
     "pages/auth/login.jsx",
-    "pages/signin.jsx"
+    "pages/signin.tsx"
   ],
   "exclude": ["node_modules"]
 }

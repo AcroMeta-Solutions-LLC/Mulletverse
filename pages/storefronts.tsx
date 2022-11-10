@@ -1,12 +1,18 @@
+import Moralis from "moralis/types";
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
-import { Loading, useNotification } from "web3uikit";
-import Moralis from "moralis/types";
 import { useTheme } from "styled-components";
-import { Main, Section, Title, Wrapper, LoadingWrapper } from "../styles/StorefrontsStyled";
-import { GuildType } from "../types/GuildType";
+import { Loading, useNotification } from "web3uikit";
 import GuildCard from "../components/GuildCard/GuildCard";
+import {
+  LoadingWrapper,
+  Main,
+  Section,
+  Title,
+  Wrapper,
+} from "../styles/StorefrontsStyled";
+import { GuildType } from "../types/GuildType";
 
 const Account: NextPage = () => {
   const { user, isInitialized, Moralis } = useMoralis();
@@ -15,9 +21,12 @@ const Account: NextPage = () => {
   const alert = useNotification();
   const theme: any = useTheme();
 
-  const fetchGuilds = async (): Promise<Moralis.Object<Moralis.Attributes>[]> => {
+  const fetchGuilds = async (): Promise<
+    Moralis.Object<Moralis.Attributes>[]
+  > => {
     const accounts = new Moralis.Query("Guilds");
-    const response = await accounts.find();
+    const response =
+      (await accounts.find()) as Moralis.Object<Moralis.Attributes>[];
     return response;
   };
 

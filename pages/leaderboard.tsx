@@ -27,7 +27,7 @@ const Leaderboard: NextPage = () => {
     return () => {
       dispatch(clearStore());
     };
-  }, [dispatch, user, chainId]);
+  }, [dispatch, user, chainId, isInitialized]);
 
   const renderLoaderOrError = () => (
     <Main>

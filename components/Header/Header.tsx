@@ -67,10 +67,10 @@ function Header() {
     dispatch(clearStore());
   };
 
-  // const openAuthModal = () => {
-  //   setIsConnectModalOpen(true);
-  //   setIsMenuOpen(false);
-  // };
+  const openAuthModal = () => {
+    setIsConnectModalOpen(true);
+    setIsMenuOpen(false);
+  };
 
   const redirectTo = (route: string, query: ParsedUrlQueryInput = {}): void => {
     setIsMarketplaceOpen(false);
@@ -239,7 +239,7 @@ function Header() {
         </Dropdown>
         {!isAuthenticated && (
           <MarketplaceTab
-            onClick={() => redirectTo("/signin")}
+            onClick={openAuthModal}
             isLandingPage={isLandingPage}
             isOpen={isMenuOpen}
           >

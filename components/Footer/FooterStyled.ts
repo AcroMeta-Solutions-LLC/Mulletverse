@@ -4,7 +4,8 @@ import { SCREEN } from "../../constants/screen";
 import ThemeType from "../../types/themeType";
 
 export const Container = styled.footer`
-  position: ${({ isFixed }: { isFixed: boolean }) => (isFixed ? "fixed" : "static")};
+  position: ${({ isFixed }: { isFixed: boolean }) =>
+    isFixed ? "fixed" : "static"};
   height: 72px;
   bottom: 0;
   left: 0;
@@ -17,7 +18,8 @@ export const Container = styled.footer`
   justify-content: space-between;
   align-items: center;
   z-index: ${ELEVATION.NAVIGATION};
-  box-shadow: ${(props) => (props.isFixed ? "rgb(4 17 29 / 25%) 0px 0px 8px 0px" : "none")};
+  box-shadow: ${(props) =>
+    props.isFixed ? "rgb(4 17 29 / 25%) 0px 0px 8px 0px" : "none"};
 
   @media only screen and (max-width: ${SCREEN.TABLET_SMALL}) {
     flex-direction: column;

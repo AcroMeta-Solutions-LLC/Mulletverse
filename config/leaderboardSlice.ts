@@ -14,10 +14,32 @@ const initialState: LeaderboardProps = {
   isLoading: false,
 };
 
-export const getLeaderboard = createAsyncThunk("marketplace/GET_LEADERBOARD", async () => {
-  const response = await axios.get("https://api.cryptoslam.io/v1/collections/top-100?timeRange=all");
-  return response.data;
-});
+interface ILeaderboard {
+  account: string;
+  chainId: string;
+}
+
+export const getLeaderboard = createAsyncThunk(
+  "marketplace/GET_LEADERBOARD",
+  async (data: ILeaderboard) => {
+    const apiKey = process.env.NEXT_PUBLIC_NFTSCAN_KEY || "";
+    const endpoint =
+      data.chainId === "0x1"
+        ? "https://restapi.nftscan.com"
+        : data.chainId === "0x38"
+        ? "https://bnbapi.nftscan.com"
+        : data.chainId === "0x89"
+        ? "https://polygonapi.nftscan.com"
+        : "https://polygonapi.nftscan.com";
+    const response = await axios.get(
+      `${endpoint}/api/v2/account/own/all/${data.account}`,
+      {
+        headers: { "X-API-KEY": apiKey },
+      }
+    );
+    return response.data.data;
+  }
+);
 
 const leaderboardSlice = createSlice({
   name: "leaderboard",

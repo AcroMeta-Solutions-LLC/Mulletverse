@@ -1,139 +1,109 @@
-import { Fragment, useEffect } from "react";
-import { useMoralis, useMoralisQuery } from "react-moralis";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import Carousel from "../Carousel/Carousel";
-import EmptyState from "../EmptyState/EmptyState";
-import ErrorBanner from "../ErrorBanner/ErrorBanner";
-import NFTCard from "../NFTCard/NFTCard";
-import { clearStore, getWishlistNFTs } from "../../config/portfolioSlice";
-import { AppDispatch } from "../../config/store";
-import {
-  Section,
-  IncomeTracker,
-  Main,
-  DataArea,
-  ChartArea,
-  DataLabel,
-  Data,
-  EmptyWrapper,
-  BuyAndSellWrapper,
-} from "./DashboardStyled";
-import StoreType from "../../types/StoreType";
-import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
+import { useEffect } from "react";
+import { useMoralis } from "react-moralis";
+import { useDispatch, useSelector } from "react-redux";
+import { Table, Tbody, Td, Th, Thead, Tr } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
+import { Avatar, CopyButton, Loading } from "web3uikit";
+import { clearStore, getAccountNFTs } from "../../config/portfolioSlice";
+import { AppDispatch } from "../../config/store";
 import COLORS from "../../constants/colors";
-import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
-import { ChartData } from "../../helpers/mocks";
+import { getDisplayName } from "../../helpers/getDisplayName";
+import { Wrapper } from "../../styles/AccountStyled";
+import StoreType from "../../types/StoreType";
 import Collapsable from "../Collapsable/Collapsable";
+import ErrorBanner from "../ErrorBanner/ErrorBanner";
+import { LoadingWrapper } from "../NFTGrid/NFTGridStyled";
+import { Main, Section } from "./DashboardStyled";
 
-const Dashboard = ({ address }: { address: string }) => {
-  const { isInitialized, user } = useMoralis();
+const Dashboard = () => {
+  const { isInitialized, user, chainId } = useMoralis();
   const dispatch = useDispatch<AppDispatch>();
-  const { fetch: getWishlist } = useMoralisQuery("Wishlist");
+  // const { fetch: getWishlist } = useMoralisQuery("Wishlist");
   const { isDarkMode } = useSelector((store: StoreType) => store.theme);
-  const {
-    data: wishlist,
-    isLoading: isWishlistLoading,
-    hasError: hasErrorWishlist,
-  } = useSelector((store: StoreType) => store.portfolio.wishlist);
+  const { data, isLoading, hasError } = useSelector(
+    (store: StoreType) => store.portfolio.personal
+  );
 
   useEffect(() => {
-    if (isInitialized) {
-      dispatch(getWishlistNFTs({ getWishlist }));
+    if (isInitialized && chainId) {
+      dispatch(getAccountNFTs({ account: user?.get("ethAddress"), chainId }));
     }
     return () => {
       dispatch(clearStore());
     };
-  }, [isInitialized, getWishlist, dispatch]);
+  }, [isInitialized, dispatch, user, chainId]);
 
-  return (
+  const renderLoaderOrError = () => (
+    <Main>
+      <Wrapper>
+        {hasError && <ErrorBanner hasError={hasError} />}
+        {isLoading && (
+          <LoadingWrapper>
+            <Loading spinnerColor={COLORS.PURPLE} />
+          </LoadingWrapper>
+        )}
+      </Wrapper>
+    </Main>
+  );
+
+  return isLoading || hasError ? (
+    renderLoaderOrError()
+  ) : (
     <Main>
       <Section>
         <Collapsable isOpen title="Portfolio">
           <Table>
             <Thead>
-              <Tr style={{ backgroundColor: COLORS.PURPLE, color: COLORS.WHITE }}>
+              <Tr
+                style={{ backgroundColor: COLORS.PURPLE, color: COLORS.WHITE }}
+              >
                 <Th></Th>
-                <Th>Collection</Th>
-                <Th>Floor Price</Th>
-                <Th>24h %</Th>
-                <Th>Volume</Th>
-                <Th>24h %</Th>
-                <Th>Quantity</Th>
-                <Th>Total Holdings</Th>
+                <Th>Id</Th>
+                <Th>Name</Th>
+                <Th>Mint Date</Th>
+                <Th>Mint Hash</Th>
               </Tr>
             </Thead>
-            <Tbody style={{ color: isDarkMode ? COLORS.WHITE : COLORS.GREY_800 }}>
-              {[...Array(8)].map((_, i) => (
-                <Tr key={i}>
-                  <Td>Tablescon</Td>
-                  <Td>9 April 2019</Td>
-                  <Td>East Annex</Td>
-                  <Td>Tablescon</Td>
-                  <Td>9 April 2019</Td>
-                  <Td>East Annex</Td>
-                  <Td>9 April 2019</Td>
-                  <Td>Tablescon</Td>
+            <Tbody
+              style={{ color: isDarkMode ? COLORS.WHITE : COLORS.GREY_800 }}
+            >
+              {data.map((item, index) => (
+                <Tr key={index}>
+                  <Td
+                    style={{
+                      width: "4rem",
+                    }}
+                  >
+                    <Avatar
+                      image={
+                        item.image_uri === null
+                          ? ""
+                          : item.image_uri.includes("https")
+                          ? item.image_uri
+                          : `https://ipfs.io/ipfs/${item.image_uri}`
+                      }
+                      isRounded
+                      size={42}
+                      theme="image"
+                    />
+                  </Td>
+                  <Td>{item.token_id}</Td>
+                  <Td>{item.name === null ? "No Name" : item.name}</Td>
+                  <Td>
+                    {new Date(item.mint_timestamp).toLocaleDateString("en-GB")}
+                  </Td>
+                  <Td>
+                    {getDisplayName(item.mint_transaction_hash)}
+                    <CopyButton
+                      onCopy={(e) => e?.preventDefault()}
+                      text={item.mint_transaction_hash}
+                    />
+                  </Td>
                 </Tr>
               ))}
             </Tbody>
           </Table>
         </Collapsable>
-      </Section>
-      <Section>
-        <Collapsable isOpen title="NFT Dashboard">
-          <IncomeTracker>
-            <DataArea>
-              <DataLabel>TOTAL SPENT</DataLabel>
-              <Data hasColor={false}>$400.00</Data>
-              <DataLabel>ESTIMATED VALUE</DataLabel>
-              <Data hasColor={false}>$450.00</Data>
-            </DataArea>
-            <ChartArea>
-              <ResponsiveContainer>
-                <PieChart>
-                  <Pie
-                    isAnimationActive={false}
-                    dataKey="value"
-                    data={ChartData}
-                    label={(e) => `${e.name} - ${e.value}%`}
-                  >
-                    {ChartData.map((entry, i) => (
-                      <Cell key={`cell-${i}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
-            </ChartArea>
-          </IncomeTracker>
-        </Collapsable>
-      </Section>
-      <Section>
-        {user?.get("ethAddress") === address && (
-          <Fragment>
-            <ErrorBanner hasError={hasErrorWishlist} />
-            <Collapsable isOpen title="Wishlist">
-              <Carousel size={wishlist.length} isLoading={isWishlistLoading}>
-                {wishlist.map((nft) => (
-                  <NFTCard data={nft} key={nft.tokenId} />
-                ))}
-              </Carousel>
-              <EmptyWrapper>
-                <EmptyState
-                  message="No items to display"
-                  isEmpty={wishlist.length === 0 && !hasErrorWishlist && !isWishlistLoading}
-                />
-              </EmptyWrapper>
-            </Collapsable>
-          </Fragment>
-        )}
-        <BuyAndSellWrapper>
-          <Collapsable isOpen title="Buy and sell history">
-            {}
-          </Collapsable>
-        </BuyAndSellWrapper>
       </Section>
     </Main>
   );

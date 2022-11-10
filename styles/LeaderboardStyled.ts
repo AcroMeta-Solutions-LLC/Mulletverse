@@ -60,3 +60,7 @@ export const Header = styled.header`
     align-items: flex-start;
   }
 `;
+
+export const TableContainer = styled.div`
+  padding: 1rem;
+`;

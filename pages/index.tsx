@@ -1,29 +1,29 @@
 import type { NextPage } from "next";
-import { Fragment, useEffect } from "react";
 import Image from "next/image";
-import { Loading } from "web3uikit";
+import { Fragment, useEffect } from "react";
 import { useMoralis } from "react-moralis";
+import { useDispatch, useSelector } from "react-redux";
+import { Loading } from "web3uikit";
 import Carousel from "../components/Carousel/Carousel";
-import { getNFTs } from "../config/landingSlice";
-import { useSelector, useDispatch } from "react-redux";
-import StoreType from "../types/StoreType";
-import type { AppDispatch } from "../config/store";
 import NFTCard from "../components/NFTCard/NFTCard";
+import { getNFTs } from "../config/landingSlice";
+import type { AppDispatch } from "../config/store";
 import {
   About,
-  Hero,
-  HeroTitle,
   AboutCircle,
-  Featured,
-  AboutWrapper,
   AboutDescription,
   AboutTitle,
-  FeaturedTitle,
-  MobileOnly,
-  DesktopOnly,
-  LoadingWrapper,
+  AboutWrapper,
   CarouselWrapper,
+  DesktopOnly,
+  Featured,
+  FeaturedTitle,
+  Hero,
+  HeroTitle,
+  LoadingWrapper,
+  MobileOnly,
 } from "../styles/HomeStyled";
+import StoreType from "../types/StoreType";
 
 const Home: NextPage = () => {
   const { isInitialized, Moralis } = useMoralis();
@@ -34,7 +34,14 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     if (isInitialized) {
-      dispatch(getNFTs({ account: Moralis.Web3API.account, address: ADDRESS, chain: CHAIN, limit: 20 }));
+      dispatch(
+        getNFTs({
+          account: Moralis.Web3API.account,
+          address: ADDRESS,
+          chain: CHAIN,
+          limit: 20,
+        })
+      );
     }
   }, [isInitialized, Moralis.Web3API.account, dispatch]);
 
@@ -46,14 +53,26 @@ const Home: NextPage = () => {
       <About>
         <AboutWrapper>
           <AboutTitle>The Mulletverse</AboutTitle>
-          <AboutDescription>Always delivering an innovative approach.</AboutDescription>
+          <AboutDescription>
+            Always delivering an innovative approach.
+          </AboutDescription>
         </AboutWrapper>
         <AboutCircle>
           <DesktopOnly>
-            <Image alt="Boxer" src="/assets/purple-boxer.png" width={280} height={500} />
+            <Image
+              alt="Boxer"
+              src="/assets/purple-boxer.png"
+              width={280}
+              height={500}
+            />
           </DesktopOnly>
           <MobileOnly>
-            <Image alt="Boxer" src="/assets/purple-boxer.png" width={170} height={300} />
+            <Image
+              alt="Boxer"
+              src="/assets/purple-boxer.png"
+              width={170}
+              height={300}
+            />
           </MobileOnly>
         </AboutCircle>
       </About>
@@ -67,8 +86,8 @@ const Home: NextPage = () => {
         {!isLoading && (
           <CarouselWrapper>
             <Carousel size={nfts.length}>
-              {nfts.map((nft) => (
-                <NFTCard data={nft} key={nft.tokenId} />
+              {nfts.map((nft, index) => (
+                <NFTCard data={nft} key={index} />
               ))}
             </Carousel>
           </CarouselWrapper>

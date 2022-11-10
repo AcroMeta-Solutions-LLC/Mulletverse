@@ -1,42 +1,55 @@
+import Moralis from "moralis/types";
 import { NextPage } from "next";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
-import { FaTwitter, FaDiscord, FaGlobe, FaInstagram, FaCamera, FaWallet } from "react-icons/fa";
+import {
+  FaCamera,
+  FaDiscord,
+  FaGlobe,
+  FaInstagram,
+  FaTwitter,
+  FaWallet,
+} from "react-icons/fa";
 import { FiPlusCircle, FiSearch, FiX } from "react-icons/fi";
 import { useMoralis, useNewMoralisObject } from "react-moralis";
-import { CopyButton as CopyWeb3, Loading, Modal, Tag, useNotification } from "web3uikit";
-import { INTERESTS } from "../constants/interests";
-import { InterestType } from "../types/InterestType";
-import { ProfileType } from "../types/ProfileType";
-import Moralis from "moralis/types";
+import { useDispatch } from "react-redux";
+import {
+  CopyButton as CopyWeb3,
+  Loading,
+  Modal,
+  Tag,
+  useNotification,
+} from "web3uikit";
+import { setAccount } from "../config/accountSlice";
+import { AppDispatch } from "../config/store";
 import COLORS from "../constants/colors";
+import { INTERESTS } from "../constants/interests";
 import {
   Description,
+  Form,
   IconWrapper,
+  InputIcon,
+  InputIconWrapper,
+  Interest,
+  InterestsLabels,
+  InterestsWrapper,
   Label,
+  LabelButton,
+  LoadingWrapper,
   Main,
   ProfileImage,
   ProfileImageWrapper,
   RemoveImageButton,
+  SearchWrapper,
   Section,
-  InputIcon,
-  InputIconWrapper,
   Submit,
   TextArea,
   TextInput,
   Title,
-  Wrapper,
   WalletAddress,
-  InterestsWrapper,
-  Interest,
-  SearchWrapper,
-  InterestsLabels,
-  Form,
-  LoadingWrapper,
-  LabelButton,
+  Wrapper,
 } from "../styles/AccountStyled";
-import { useDispatch } from "react-redux";
-import { setAccount } from "../config/accountSlice";
-import { AppDispatch } from "../config/store";
+import { InterestType } from "../types/InterestType";
+import { ProfileType } from "../types/ProfileType";
 
 const Account: NextPage = () => {
   const { user, isInitialized, Moralis } = useMoralis();
@@ -45,7 +58,9 @@ const Account: NextPage = () => {
   const [profileImageFile, setProfileImageFile] = useState<File>();
   const [isInterestsModalVisible, setIsInterestsModalVisible] = useState(false);
   const [isWalletModalVisible, setIsWalletModalVisible] = useState(false);
-  const [selectedInterests, setSelectedInterests] = useState<InterestType[]>([]);
+  const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
+    []
+  );
   const [search, setSearch] = useState("");
   const [username, setUsername] = useState("");
   const [bio, setBio] = useState("");
@@ -57,13 +72,20 @@ const Account: NextPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const alert = useNotification();
   const dispatch = useDispatch<AppDispatch>();
-  const [accountMoralisObj, setAccountMoralisObj] = useState<Moralis.Object<Moralis.Attributes> | undefined>();
+  const [accountMoralisObj, setAccountMoralisObj] = useState<
+    Moralis.Object<Moralis.Attributes> | undefined
+  >();
   const { save: saveAccount } = useNewMoralisObject("Accounts");
   const [newAddress, setNewAddress] = useState("");
   const [wallets, setWallets] = useState<string[]>([]);
 
   const throwError = (errorMessage: string) => {
-    alert({ type: "error", title: errorMessage, message: "", position: "topR" });
+    alert({
+      type: "error",
+      title: errorMessage,
+      message: "",
+      position: "topR",
+    });
   };
 
   const getIPFSImageUrl = async (): Promise<string> => {
@@ -75,7 +97,7 @@ const Account: NextPage = () => {
     return ipfsResponse._url;
   };
 
-  const fetchAccount = async (): Promise<Moralis.Object<Moralis.Attributes>> => {
+  const fetchAccount = async (): Promise<any> => {
     const accounts = new Moralis.Query("Accounts");
     const query = accounts.equalTo("walletAddress", user?.get("ethAddress"));
     const response = await query.find();
@@ -98,7 +120,12 @@ const Account: NextPage = () => {
     accountMoralisObj
       .save()
       .then(() => {
-        alert({ type: "success", title: "Account updated successfully.", message: "", position: "topR" });
+        alert({
+          type: "success",
+          title: "Account updated successfully.",
+          message: "",
+          position: "topR",
+        });
       })
       .catch(() => {
         throwError("An error occurred when updating the account.");
@@ -110,7 +137,12 @@ const Account: NextPage = () => {
     setIsLoading(true);
     saveAccount(data)
       .then(() => {
-        alert({ type: "success", title: "Account saved successfully.", message: "", position: "topR" });
+        alert({
+          type: "success",
+          title: "Account saved successfully.",
+          message: "",
+          position: "topR",
+        });
       })
       .catch(() => {
         throwError("An error occurred when saving the account.");
@@ -136,9 +168,13 @@ const Account: NextPage = () => {
   };
 
   const addOrRemoveInterest = (interest: InterestType): void => {
-    const isAlreadySelected: boolean = !!selectedInterests.find((selected) => interest.id === selected.id);
+    const isAlreadySelected: boolean = !!selectedInterests.find(
+      (selected) => interest.id === selected.id
+    );
     if (isAlreadySelected) {
-      setSelectedInterests(selectedInterests.filter((selected) => interest.id !== selected.id));
+      setSelectedInterests(
+        selectedInterests.filter((selected) => interest.id !== selected.id)
+      );
     } else {
       setSelectedInterests([...selectedInterests, interest]);
     }
@@ -146,7 +182,9 @@ const Account: NextPage = () => {
 
   const getFilteredInterests = (): InterestType[] => {
     if (!search.trim()) return INTERESTS;
-    return INTERESTS.filter((interest) => interest.name.toLowerCase().includes(search.toLowerCase()));
+    return INTERESTS.filter((interest) =>
+      interest.name.toLowerCase().includes(search.toLowerCase())
+    );
   };
 
   const onSubmit = async (e: FormEvent): Promise<void> => {
@@ -175,7 +213,9 @@ const Account: NextPage = () => {
   };
 
   const addOrRemoveWallet = (address: string): void => {
-    const isAlreadySelected: boolean = !!wallets.find((selected) => selected === address);
+    const isAlreadySelected: boolean = !!wallets.find(
+      (selected) => selected === address
+    );
     if (isAlreadySelected) {
       setWallets(wallets.filter((selected) => address !== selected));
     } else {
@@ -221,11 +261,19 @@ const Account: NextPage = () => {
         <Section>
           <Form onSubmit={onSubmit}>
             <Label>Username</Label>
-            <TextInput value={username} onChange={(e) => setUsername(e.target.value)} type="text" />
+            <TextInput
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              type="text"
+            />
             <Label>Bio</Label>
             <TextArea value={bio} onChange={(e) => setBio(e.target.value)} />
             <Label>Email Address</Label>
-            <TextInput type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <TextInput
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
             <LabelButton onClick={() => setIsInterestsModalVisible(true)}>
               Interests
               <FiPlusCircle size={24} />
@@ -241,7 +289,9 @@ const Account: NextPage = () => {
               ))}
             </InterestsLabels>
             <Label style={{ marginTop: 30 }}>Social Connections</Label>
-            <Description>Help collectors verify your account by connecting Twitter</Description>
+            <Description>
+              Help collectors verify your account by connecting Twitter
+            </Description>
             <Label>Links:</Label>
             <InputIconWrapper>
               <FaTwitter size={24} />
@@ -279,13 +329,19 @@ const Account: NextPage = () => {
                 onChange={(e) => setWebsite(e.target.value)}
               />
             </InputIconWrapper>
-            <LabelButton style={{ marginTop: 30, width: 170 }} onClick={() => setIsWalletModalVisible(true)}>
+            <LabelButton
+              style={{ marginTop: 30, width: 170 }}
+              onClick={() => setIsWalletModalVisible(true)}
+            >
               Wallet Address
               <FiPlusCircle size={24} />
             </LabelButton>
             <InputIconWrapper>
               <WalletAddress>{user?.get("ethAddress")}</WalletAddress>
-              <CopyWeb3 onCopy={(e) => e?.preventDefault()} text={user?.get("ethAddress")} />
+              <CopyWeb3
+                onCopy={(e) => e?.preventDefault()}
+                text={user?.get("ethAddress")}
+              />
             </InputIconWrapper>
             {wallets.map((wallet, i) => (
               <InputIconWrapper key={i}>
@@ -298,7 +354,10 @@ const Account: NextPage = () => {
                 <CopyWeb3 onCopy={(e) => e?.preventDefault()} text={wallet} />
               </InputIconWrapper>
             ))}
-            <Submit value={isLoading ? "Loading..." : "Save"} disabled={isLoading} />
+            <Submit
+              value={isLoading ? "Loading..." : "Save"}
+              disabled={isLoading}
+            />
             <input
               onChange={onChangeImage}
               ref={inputImageRef}
@@ -317,7 +376,11 @@ const Account: NextPage = () => {
                 <FaCamera color="white" size={24} />
               </IconWrapper>
             </ProfileImage>
-            {profileImageFile && <RemoveImageButton onClick={onRemoveImage}>Remove image</RemoveImageButton>}
+            {profileImageFile && (
+              <RemoveImageButton onClick={onRemoveImage}>
+                Remove image
+              </RemoveImageButton>
+            )}
           </ProfileImageWrapper>
         </Section>
       </Wrapper>
@@ -329,12 +392,21 @@ const Account: NextPage = () => {
       >
         <SearchWrapper>
           <FiSearch size={24} />
-          <InputIcon value={search} onChange={(e) => setSearch(e.target.value)} type="text" placeholder="Search" />
+          <InputIcon
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            type="text"
+            placeholder="Search"
+          />
         </SearchWrapper>
         <InterestsWrapper>
           {getFilteredInterests().map((interest) => (
             <Interest
-              isSelected={!!selectedInterests.find((selected) => interest.id === selected.id)}
+              isSelected={
+                !!selectedInterests.find(
+                  (selected) => interest.id === selected.id
+                )
+              }
               onClick={() => addOrRemoveInterest(interest)}
               key={interest.id}
             >

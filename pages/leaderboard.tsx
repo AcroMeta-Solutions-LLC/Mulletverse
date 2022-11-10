@@ -1,40 +1,37 @@
 import type { NextPage } from "next";
-import { Section, Main, Title, CollectionImage, LoadingWrapper, Header } from "../styles/LeaderboardStyled";
-import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
+import { useEffect } from "react";
+import { useMoralis } from "react-moralis";
+import { useDispatch, useSelector } from "react-redux";
+import { Table, Tbody, Td, Th, Thead, Tr } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
-import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../config/store";
-import StoreType from "../types/StoreType";
-import { useSelector } from "react-redux";
-import { getLeaderboard } from "../config/leaderboardSlice";
+import { Avatar } from "web3uikit";
+import Collapsable from "../components/Collapsable/Collapsable";
 import ErrorBanner from "../components/ErrorBanner/ErrorBanner";
-import { Loading, Select } from "web3uikit";
-import { useTheme } from "styled-components";
-import { CHAINS } from "../constants/chains";
-import { ChainType } from "../types/ChainType";
-import { SCREEN } from "../constants/screen";
+import { clearStore, getLeaderboard } from "../config/leaderboardSlice";
+import { AppDispatch } from "../config/store";
+import COLORS from "../constants/colors";
+import { Main, Section, TableContainer } from "../styles/LeaderboardStyled";
+import StoreType from "../types/StoreType";
 
 const Leaderboard: NextPage = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { data, isLoading, hasError } = useSelector((store: StoreType) => store.leaderboard);
-  const theme: any = useTheme();
-  const [chain, setChain] = useState<ChainType>("matic");
+  const { data, isLoading, hasError } = useSelector(
+    (store: StoreType) => store.leaderboard
+  );
+  const { isDarkMode } = useSelector((store: StoreType) => store.theme);
+  const { user, chainId, isInitialized } = useMoralis();
 
   useEffect(() => {
-    dispatch(getLeaderboard());
-  }, [dispatch]);
+    if (isInitialized && chainId)
+      dispatch(getLeaderboard({ account: user?.get("ethAddress"), chainId }));
+    return () => {
+      dispatch(clearStore());
+    };
+  }, [dispatch, user, chainId]);
 
   const renderLoaderOrError = () => (
     <Main>
-      <Section>
-        {hasError && <ErrorBanner hasError={hasError} />}
-        {isLoading && (
-          <LoadingWrapper>
-            <Loading spinnerColor={theme.PRIMARY} />
-          </LoadingWrapper>
-        )}
-      </Section>
+      <Section>{hasError && <ErrorBanner hasError={hasError} />}</Section>
     </Main>
   );
 
@@ -42,50 +39,52 @@ const Leaderboard: NextPage = () => {
     renderLoaderOrError()
   ) : (
     <Main>
-      <Header>
-        <Select
-          defaultOptionIndex={0}
-          onChange={({ id }) => setChain(id as ChainType)}
-          options={CHAINS}
-          prefixText="Chain:"
-          value={chain}
-        />
-      </Header>
-      <Section>
-        <Title>Leaderboard</Title>
-        <Table style={{ maxWidth: SCREEN.TABLET_BIG }}>
-          <Thead>
-            <Tr style={{ backgroundColor: theme.PRIMARY, color: theme.CARD }}>
-              <Th></Th>
-              <Th>Collection</Th>
-              <Th>Upvotes</Th>
-              <Th>Floor Price</Th>
-              <Th>Volume</Th>
-              <Th>24h %</Th>
-              <Th>7d %</Th>
-              <Th>Owned</Th>
-              <Th>Items</Th>
-            </Tr>
-          </Thead>
-          <Tbody style={{ color: theme.TEXT }}>
-            {data.map((item, i) => (
-              <Tr key={i}>
-                <Td>
-                  <CollectionImage src={item.iconUrl} />
-                </Td>
-                <Td>{item.contractName}</Td>
-                <Td>0</Td>
-                <Td>0</Td>
-                <Td>0</Td>
-                <Td>0</Td>
-                <Td>0</Td>
-                <Td>{item.owners}</Td>
-                <Td>0</Td>
+      <TableContainer>
+        <Collapsable isOpen title="Portfolio">
+          <Table>
+            <Thead>
+              <Tr
+                style={{
+                  backgroundColor: COLORS.PURPLE,
+                  color: COLORS.WHITE,
+                }}
+              >
+                <Th></Th>
+                <Th>Address</Th>
+                <Th>Name</Th>
+                <Th>Items Total</Th>
+                <Th>Total Holding</Th>
               </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      </Section>
+            </Thead>
+            <Tbody
+              style={{ color: isDarkMode ? COLORS.WHITE : COLORS.GREY_800 }}
+            >
+              {data.map((item, index) => (
+                <Tr key={index}>
+                  <Td
+                    style={{
+                      width: "8rem",
+                    }}
+                  >
+                    <Avatar
+                      image={item.logo_url}
+                      isRounded
+                      size={42}
+                      theme="image"
+                    />
+                  </Td>
+                  <Td>{item.contract_address}</Td>
+                  <Td>
+                    {item.contract_name === "" ? "NaN" : item.contract_name}
+                  </Td>
+                  <Td>{item.items_total}</Td>
+                  <Td>{item.owns_total}</Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </Collapsable>
+      </TableContainer>
     </Main>
   );
 };

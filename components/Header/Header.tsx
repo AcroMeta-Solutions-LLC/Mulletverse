@@ -12,6 +12,7 @@ import COLORS from "../../constants/colors";
 import { getDisplayName } from "../../helpers/getDisplayName";
 import { useClickOutside } from "../../hooks/useClickOutside";
 import StoreType from "../../types/StoreType";
+import Moralis from 'moralis-v1';
 import {
   Container,
   Dropdown,
@@ -34,6 +35,9 @@ import {
 } from "./HeaderStyled";
 
 function Header() {
+  const { authenticate, enableWeb3 } = useMoralis();
+  const [authError, setAuthError] = useState(null);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMarketplaceOpen, setIsMarketplaceOpen] = useState(false);
   const [isMulletswapOpen, setIsMulletswapOpen] = useState(false);
@@ -41,6 +45,37 @@ function Header() {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isConnectModalOpen, setIsConnectModalOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const handleAuth = async (provider : any) => {
+  
+      // setAuthError(null);
+      setIsAuthenticating(true);
+
+      // Enable web3 to get user address and chain
+      await enableWeb3({ throwOnError: true, provider });
+      const { account, chainId } = Moralis;
+
+      if (!account) {
+        throw new Error('Connecting to chain failed, as no connected account was found');
+      }
+      if (!chainId) {
+        throw new Error('Connecting to chain failed, as no connected chain was found');
+      }
+
+      // Get message to sign from the auth api
+      const { message } = await Moralis.Cloud.run('requestMessage', {
+        address: account,
+        chain: parseInt(chainId, 16),
+        network: 'evm',
+      });
+      await authenticate({
+        signingMessage: message,
+        throwOnError: true,
+      });
+    
+  };
+
+      // Authenticate and login via parse
+     
   const {
     isAuthenticated,
     user,
@@ -104,7 +139,8 @@ function Header() {
   }, [user, dispatch, isInitialized]);
 
   return (
-    <Fragment>
+    
+    <Fragment >
       <Container
         isOpen={isMenuOpen}
         isLandingPage={isLandingPage}
@@ -167,7 +203,6 @@ function Header() {
         >
           Dashboard
         </Tab>
-        <Tab onClick={()=>redirectTo("https://axelar--bridge.herokuapp.com/")}> Axelar Demo </Tab>
         <Search isOpen={isMenuOpen} onSubmit={submitSearch}>
           <SearchIcon color={getFontColor()} />
           <Input
@@ -232,7 +267,7 @@ function Header() {
         </Dropdown>
         {!isAuthenticated && (
           <Tab
-            onClick={openAuthModal}
+          onClick={() => handleAuth("metamask")}
             isLandingPage={isLandingPage}
             isOpen={isMenuOpen}
           >

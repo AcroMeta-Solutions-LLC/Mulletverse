@@ -59,7 +59,7 @@ const getNFTList = (list: NFTResponse[], chain: ChainType): NFTType[] =>
 
 export const getCollectionData = createAsyncThunk("collection/GET_COLLECTION", async (data: GetNFTProps) => {
   const address = data.address;
-  const chain: ChainType = data.chain || "eth";
+  const chain: ChainType = data.chain || "0x1";
   const limit = data.limit;
   const response = await data.token.getAllTokenIds({ address, chain, limit, cursor: data.cursor });
   const nftList: NFTType[] = getNFTList(response.result, chain);

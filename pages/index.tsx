@@ -30,7 +30,7 @@ const Home: NextPage = () => {
   const { nfts, isLoading } = useSelector((store: StoreType) => store.landing);
   const dispatch = useDispatch<AppDispatch>();
   const ADDRESS: string = "0xd45058Bf25BBD8F586124C479D384c8C708CE23A";
-  const CHAIN = "eth";
+  const CHAIN = "0x1";
 
   useEffect(() => {
     if (isInitialized) {

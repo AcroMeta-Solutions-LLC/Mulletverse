@@ -65,7 +65,7 @@ const getNFTList = (list: NFTResponse[]): NFTType[] =>
 
 export const getMarketplaceNFTs = createAsyncThunk("marketplace/GET_MARKETPLACE", async (data: GetNFTProps) => {
   const address = "0x6588919ef08aaf176403406539d34fcce873a35b";
-  const chain = data.chain || "eth";
+  const chain = data.chain || "0x1";
   const limit = data.limit;
   const response = await data.token.getAllTokenIds({ address, chain, limit, cursor: data.cursor });
   const nftList: NFTType[] = getNFTList(response.result);
@@ -80,7 +80,7 @@ export const getMarketplaceNFTs = createAsyncThunk("marketplace/GET_MARKETPLACE"
 
 export const getFeaturedNFTs = createAsyncThunk("marketplace/GET_FEATURED", async (data: GetNFTProps) => {
   const address = "0x6588919ef08aaf176403406539d34fcce873a35b";
-  const chain = data.chain || "eth";
+  const chain = data.chain || "0x1";
   const limit = data.limit;
   const response = await data.token.getAllTokenIds({ address, chain, limit, cursor: data.cursor });
   const nftList: NFTType[] = getNFTList(response.result);

@@ -203,6 +203,7 @@ function Header() {
         >
           Dashboard
         </Tab>
+        <Tab onClick={()=>redirectTo("https://axelar--bridge.herokuapp.com/")}> Axelar Demo </Tab>
         <Search isOpen={isMenuOpen} onSubmit={submitSearch}>
           <SearchIcon color={getFontColor()} />
           <Input

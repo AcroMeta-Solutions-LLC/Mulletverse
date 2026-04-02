@@ -84,7 +84,7 @@ export const Tab = styled.a<HeaderType>`
   height: 30px;
   display: flex;
   align-items: center;
-  color: ${(props) => (props.isLandingPage ? COLORS.CLEAR : props.theme?.TITLE)};
+  color: white;
   cursor: pointer;
   &:hover {
     font-weight: 600;
